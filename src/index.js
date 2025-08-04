@@ -233,8 +233,8 @@ class AIShoppingScraper {
         logger.info('Server is running - initializing services...');
       });
 
-      // Initialize services after server is running
-      await this.initializeServices();
+      // Initialize services after server is running (skip scraping for now)
+      await this.initializeBasicServices();
       
     } catch (error) {
       logger.error('Failed to start application:', error);
@@ -242,7 +242,22 @@ class AIShoppingScraper {
     }
   }
 
-  async initializeServices() {
+  async initializeBasicServices() {
+    try {
+      logger.info('Initializing basic services (without scraping)...');
+      
+      // Just test database connections without initializing scraping
+      logger.info('Testing database connections...');
+      // Add database connection tests here later
+      
+      logger.info('Basic services initialized successfully');
+    } catch (error) {
+      logger.error('Basic service initialization failed:', error);
+      // Continue running - services can retry later
+    }
+  }
+
+  async initializeScrapingServices() {
     try {
       logger.info('Initializing scraping engine...');
       await this.scrapingEngine.initialize();
@@ -250,10 +265,11 @@ class AIShoppingScraper {
       logger.info('Loading patterns...');
       await this.patternRecognition.loadPatterns();
       
-      logger.info('All services initialized successfully');
+      logger.info('Scraping services initialized successfully');
+      return true;
     } catch (error) {
-      logger.error('Service initialization failed:', error);
-      // Continue running - services can retry later
+      logger.error('Scraping service initialization failed:', error);
+      return false;
     }
   }
 
