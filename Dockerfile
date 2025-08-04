@@ -42,10 +42,11 @@ COPY package*.json ./
 # Install dependencies first
 RUN npm ci --only=production && npm cache clean --force
 
-# Install Playwright browsers with system dependencies
+# Install Playwright browsers with system dependencies for Linux
 ENV PLAYWRIGHT_BROWSERS_PATH=/app/.playwright
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=false
-RUN npx playwright install --with-deps chromium
+RUN npx playwright install chromium
+RUN npx playwright install-deps chromium
 
 # Copy application code
 COPY . .

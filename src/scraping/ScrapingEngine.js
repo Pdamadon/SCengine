@@ -14,6 +14,10 @@ class ScrapingEngine {
 
   async initialize() {
     try {
+      this.logger.info('Initializing Playwright browser...');
+      this.logger.info(`Platform: ${process.platform}, Architecture: ${process.arch}`);
+      this.logger.info(`PLAYWRIGHT_BROWSERS_PATH: ${process.env.PLAYWRIGHT_BROWSERS_PATH}`);
+      
       this.browser = await chromium.launch({
         headless: this.headless,
         args: [
@@ -30,6 +34,13 @@ class ScrapingEngine {
       this.logger.info('Scraping engine initialized successfully');
     } catch (error) {
       this.logger.error('Failed to initialize scraping engine:', error);
+      this.logger.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        platform: process.platform,
+        arch: process.arch,
+        browsers_path: process.env.PLAYWRIGHT_BROWSERS_PATH
+      });
       throw error;
     }
   }
