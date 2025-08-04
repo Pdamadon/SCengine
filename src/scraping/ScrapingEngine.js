@@ -89,7 +89,7 @@ class ScrapingEngine {
             '.price', '.product-price', '.cost', '.amount', '.money', '.sale-price',
             '[data-price]', '[data-cost]', '.price-current', '.price-now',
             '.regular-price', '.special-price', '.final-price', '.product-cost',
-            '$[class*="price"]', '[class*="cost"]', '[class*="money"]'
+            '[class*="price"]', '[class*="cost"]', '[class*="money"]'
           ],
           addToCart: [
             '.add-to-cart', '.addtocart', '.btn-add-cart', '.add-cart',
