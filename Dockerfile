@@ -10,6 +10,27 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     procps \
     curl \
+    fonts-liberation \
+    libappindicator3-1 \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libatspi2.0-0 \
+    libcups2 \
+    libdbus-1-3 \
+    libdrm2 \
+    libgbm1 \
+    libgtk-3-0 \
+    libnspr4 \
+    libnss3 \
+    libx11-xcb1 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxfixes3 \
+    libxkbcommon0 \
+    libxrandr2 \
+    libxss1 \
+    libxtst6 \
+    xvfb \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
@@ -18,15 +39,16 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Copy application code first
-COPY . .
-
-# Install dependencies
+# Install dependencies first
 RUN npm ci --only=production && npm cache clean --force
 
-# Install Playwright browsers and system dependencies
-RUN npx playwright install-deps chromium
-RUN npx playwright install chromium
+# Install Playwright browsers with system dependencies
+ENV PLAYWRIGHT_BROWSERS_PATH=/app/.playwright
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=false
+RUN npx playwright install --with-deps chromium
+
+# Copy application code
+COPY . .
 
 # Create non-root user for security
 RUN groupadd -r appuser && useradd -r -g appuser appuser
