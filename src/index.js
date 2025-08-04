@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const winston = require('winston');
+const { MongoClient } = require('mongodb');
 const ScrapingAPI = require('./api/scraping');
 
 dotenv.config();
@@ -21,13 +22,39 @@ class AIShoppingScraper {
   constructor() {
     this.app = express();
     this.port = process.env.PORT || 3000;
-    this.mongoClient = null; // MongoDB will be optional for now
-    
-    // Initialize simplified API handlers
-    this.scrapingAPI = new ScrapingAPI(logger, this.mongoClient);
+    this.mongoClient = null;
+    this.scrapingAPI = null;
     
     this.setupMiddleware();
     this.setupRoutes();
+  }
+
+  async initializeMongoDB() {
+    if (!process.env.MONGODB_URL) {
+      logger.warn('MONGODB_URL not configured, MongoDB features will be disabled');
+      return false;
+    }
+
+    try {
+      logger.info('Connecting to MongoDB...');
+      this.mongoClient = new MongoClient(process.env.MONGODB_URL, {
+        maxPoolSize: 10,
+        serverSelectionTimeoutMS: 5000,
+        socketTimeoutMS: 45000,
+      });
+      
+      await this.mongoClient.connect();
+      
+      // Test the connection
+      await this.mongoClient.db('ai_shopping_scraper').command({ ping: 1 });
+      
+      logger.info('MongoDB connected successfully');
+      return true;
+    } catch (error) {
+      logger.error('MongoDB connection failed:', error.message);
+      this.mongoClient = null;
+      return false;
+    }
   }
 
   setupMiddleware() {
@@ -43,12 +70,21 @@ class AIShoppingScraper {
         timestamp: new Date().toISOString(),
         uptime: process.uptime(),
         memory: process.memoryUsage(),
-        environment: process.env.NODE_ENV || 'development'
+        environment: process.env.NODE_ENV || 'development',
+        mongodb_connected: !!this.mongoClient
       });
     });
 
-    // API routes
-    this.app.use('/api/scraping', this.scrapingAPI.getRouter());
+    // API routes - will be set up after MongoDB initialization
+    this.app.use('/api/scraping', (req, res, next) => {
+      if (!this.scrapingAPI) {
+        return res.status(503).json({ 
+          error: 'Scraping API not initialized yet', 
+          suggestion: 'Try again in a few moments' 
+        });
+      }
+      this.scrapingAPI.getRouter()(req, res, next);
+    });
     
     // System stats endpoint
     this.app.get('/api/stats', async (req, res) => {
@@ -60,8 +96,8 @@ class AIShoppingScraper {
     this.app.get('/', (req, res) => {
       res.json({
         name: 'AI Shopping Scraper - Focused World Model Population',
-        version: '2.0.0',
-        description: 'Focused scrapers for populating e-commerce world model',
+        version: '2.1.0',
+        description: 'Focused scrapers for populating e-commerce world model with MongoDB integration',
         endpoints: {
           health: '/health',
           scrape_glasswing: 'POST /api/scraping/scrape-glasswing',
@@ -70,7 +106,9 @@ class AIShoppingScraper {
           system_stats: '/api/stats'
         },
         available_sites: ['glasswingshop.com'],
-        world_model_collections: ['domains', 'products', 'categories', 'service_providers']
+        world_model_collections: ['domains', 'products', 'categories', 'service_providers'],
+        mongodb_connected: !!this.mongoClient,
+        database: this.mongoClient ? 'ai_shopping_scraper' : 'file_storage_fallback'
       });
     });
   }
@@ -81,6 +119,7 @@ class AIShoppingScraper {
       uptime: process.uptime(),
       memory: process.memoryUsage(),
       environment: process.env.NODE_ENV || 'development',
+      mongodb_connected: !!this.mongoClient,
       scraping_status: this.scrapingAPI ? 'available' : 'not_initialized',
       timestamp: new Date().toISOString()
     };
@@ -89,13 +128,18 @@ class AIShoppingScraper {
   async start() {
     try {
       // Start server first for health checks
-      this.app.listen(this.port, () => {
+      this.app.listen(this.port, async () => {
         logger.info(`AI Shopping Scraper started on port ${this.port}`);
         logger.info('Server is running - initializing services...');
+        
+        // Initialize MongoDB connection
+        const mongoConnected = await this.initializeMongoDB();
+        
+        // Initialize scraping API with or without MongoDB
+        this.scrapingAPI = new ScrapingAPI(logger, this.mongoClient);
+        
+        logger.info(`Services initialized - MongoDB: ${mongoConnected ? 'connected' : 'disabled'}`);
       });
-
-      // Initialize services after server is running (skip scraping for now)
-      await this.initializeBasicServices();
       
     } catch (error) {
       logger.error('Failed to start application:', error);
@@ -103,22 +147,19 @@ class AIShoppingScraper {
     }
   }
 
-  async initializeBasicServices() {
-    try {
-      logger.info('Initializing basic services (without scraping)...');
-      logger.info('Testing database connections...');
-      // Add database connection tests here later
-      logger.info('Basic services initialized successfully');
-    } catch (error) {
-      logger.error('Basic service initialization failed:', error);
-      // Continue running - services can retry later
-    }
-  }
-
-
   async shutdown() {
     logger.info('Shutting down AI Shopping Scraper...');
-    // Cleanup will be handled by the API layer services
+    
+    // Close MongoDB connection
+    if (this.mongoClient) {
+      try {
+        await this.mongoClient.close();
+        logger.info('MongoDB connection closed');
+      } catch (error) {
+        logger.error('Error closing MongoDB connection:', error);
+      }
+    }
+    
     process.exit(0);
   }
 }

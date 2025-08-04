@@ -1,7 +1,7 @@
 {
   "name": "ai-shopping-scraper",
-  "version": "1.0.0",
-  "description": "AI Shopping Assistant that generates training data through synthetic human reasoning",
+  "version": "2.1.0",
+  "description": "Focused scrapers for populating e-commerce world model with MongoDB integration",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
