@@ -8,6 +8,15 @@ class RedisCache {
   }
 
   async connect() {
+    // Don't attempt connection if Redis is not configured
+    if (!process.env.REDIS_HOST && !process.env.REDIS_URL) {
+      this.logger.info('Redis not configured, using memory cache');
+      this.redis = null;
+      this.connected = false;
+      this.memoryCache = new Map();
+      return;
+    }
+
     try {
       this.redis = new Redis({
         host: process.env.REDIS_HOST || 'localhost',

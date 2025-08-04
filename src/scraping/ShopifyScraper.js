@@ -48,7 +48,14 @@ class ShopifyScraper {
 
   async initialize() {
     try {
-      await this.cache.connect();
+      // Only try Redis if we have connection details configured
+      if (process.env.REDIS_HOST || process.env.REDIS_URL) {
+        await this.cache.connect();
+      } else {
+        this.logger.info('Redis not configured, using memory cache for Shopify scraper');
+        this.cache.memoryCache = new Map();
+        this.cache.connected = false;
+      }
       
       this.browser = await chromium.launch({
         headless: process.env.HEADLESS_MODE !== 'false',
