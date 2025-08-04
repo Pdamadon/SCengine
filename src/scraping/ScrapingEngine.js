@@ -51,6 +51,66 @@ class ScrapingEngine {
     return context;
   }
 
+  async performBasicScrape(url) {
+    if (!this.browser) {
+      await this.initialize();
+    }
+    
+    const context = await this.createContext();
+    const page = await context.newPage();
+    
+    try {
+      this.logger.info(`Performing basic scrape for: ${url}`);
+      
+      await page.goto(url, { waitUntil: 'networkidle' });
+      await this.randomDelay();
+      
+      // Extract basic page information
+      const result = await page.evaluate(() => {
+        return {
+          title: document.title,
+          url: window.location.href,
+          h1_tags: Array.from(document.querySelectorAll('h1')).map(h1 => h1.textContent?.trim()).filter(text => text),
+          product_links: Array.from(document.querySelectorAll('a[href*="product"], a[href*="item"]')).slice(0, 10).map(a => ({
+            text: a.textContent?.trim(),
+            href: a.href
+          })),
+          images: Array.from(document.querySelectorAll('img')).slice(0, 5).map(img => ({
+            src: img.src,
+            alt: img.alt
+          })),
+          price_elements: Array.from(document.querySelectorAll('[class*="price"], [class*="cost"], .money, [data-price]')).slice(0, 10).map(el => ({
+            text: el.textContent?.trim(),
+            className: el.className,
+            tagName: el.tagName
+          })),
+          meta_description: document.querySelector('meta[name="description"]')?.content || '',
+          ecommerce_indicators: {
+            has_add_to_cart: !!document.querySelector('[class*="add-to-cart"], [class*="buy"], button[type="submit"]'),
+            has_shopping_cart: !!document.querySelector('[class*="cart"], [href*="cart"]'),
+            has_product_grid: !!document.querySelector('[class*="product"], [class*="item"]'),
+            platform_indicators: {
+              shopify: !!document.querySelector('[data-shopify], script[src*="shopify"]'),
+              woocommerce: !!document.querySelector('.woocommerce, [class*="woocommerce"]'),
+              magento: !!document.querySelector('[class*="magento"], script[src*="magento"]')
+            }
+          }
+        };
+      });
+      
+      this.logger.info(`Basic scrape completed for: ${url}`);
+      return result;
+      
+    } catch (error) {
+      this.logger.error(`Basic scrape failed for ${url}:`, error);
+      throw error;
+    } finally {
+      await page.close();
+      await context.close();
+      this.contexts = this.contexts.filter(ctx => ctx !== context);
+    }
+  }
+
   async analyzeSite(url) {
     if (!this.browser) {
       await this.initialize();
