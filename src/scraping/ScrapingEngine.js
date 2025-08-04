@@ -71,49 +71,160 @@ class ScrapingEngine {
     const page = await context.newPage();
     
     try {
-      this.logger.info(`Performing basic scrape for: ${url}`);
+      this.logger.info(`Performing universal scrape for: ${url}`);
       
       await page.goto(url, { waitUntil: 'networkidle' });
       await this.randomDelay();
       
-      // Extract basic page information
+      // Universal extraction using comprehensive selectors
       const result = await page.evaluate(() => {
+        const universalSelectors = {
+          productLinks: [
+            'a[href*="/product"]', 'a[href*="/item"]', 'a[href*="/p/"]', 'a[href*="/products/"]',
+            '.product-item a', '.product-card a', '.product a', '.item a',
+            '[data-product] a', '[data-product-id] a', '.grid-item a',
+            'a[href*="/shop/"]', 'a[href*="/store/"]', '.collection-item a'
+          ],
+          prices: [
+            '.price', '.product-price', '.cost', '.amount', '.money', '.sale-price',
+            '[data-price]', '[data-cost]', '.price-current', '.price-now',
+            '.regular-price', '.special-price', '.final-price', '.product-cost',
+            '$[class*="price"]', '[class*="cost"]', '[class*="money"]'
+          ],
+          addToCart: [
+            '.add-to-cart', '.addtocart', '.btn-add-cart', '.add-cart',
+            'button[data-action*="add"]', 'button[data-add-to-cart]',
+            '.product-form button[type="submit"]', '.btn-primary',
+            'button[class*="add"]', 'input[value*="add" i]'
+          ],
+          cart: [
+            '.cart', '.shopping-cart', '.minicart', '.bag', '.basket',
+            '[href*="/cart"]', '[data-cart]', '.cart-icon', '.cart-count'
+          ],
+          navigation: [
+            'nav', '.navigation', '.nav', '.menu', '.main-menu',
+            '.header-nav', '.primary-nav', '.site-nav', '.navbar'
+          ],
+          search: [
+            'input[type="search"]', 'input[name*="search"]', 'input[placeholder*="search" i]',
+            '.search-input', '.search-field', '.search-box', '[data-search]'
+          ],
+          products: [
+            '.product', '.product-item', '.product-card', '.grid-item',
+            '.collection-item', '[data-product]', '.item', '.listing-item'
+          ]
+        };
+
+        const findElements = (selectors) => {
+          for (const selector of selectors) {
+            const elements = document.querySelectorAll(selector);
+            if (elements.length > 0) return Array.from(elements);
+          }
+          return [];
+        };
+
+        const detectPlatform = () => {
+          const indicators = {
+            shopify: ['shopify', 'cdn/shop/', 'myshopify.com', 'shopify-section'],
+            woocommerce: ['woocommerce', 'wp-content', 'wc-', 'single-product'],
+            magento: ['magento', 'mage-', 'catalog-product', 'checkout/cart'],
+            bigcommerce: ['bigcommerce', 'bc-sf-filter', '/product/'],
+            squarespace: ['squarespace', 'static1.squarespace'],
+            etsy: ['etsy.com', 'etsystatic.com'],
+            amazon: ['amazon.com', 'ssl-images-amazon'],
+            custom: []
+          };
+
+          const html = document.documentElement.outerHTML.toLowerCase();
+          const url = window.location.href.toLowerCase();
+          
+          for (const [platform, patterns] of Object.entries(indicators)) {
+            if (patterns.some(pattern => html.includes(pattern) || url.includes(pattern))) {
+              return platform;
+            }
+          }
+          return 'unknown';
+        };
+
+        // Universal product link extraction
+        const productLinkElements = findElements(universalSelectors.productLinks);
+        const product_links = productLinkElements.slice(0, 20).map(a => ({
+          text: a.textContent?.trim(),
+          href: a.href,
+          selector: a.className ? `.${a.className.split(' ')[0]}` : 'a'
+        })).filter(link => link.text && link.href);
+
+        // Universal price extraction
+        const priceElements = findElements(universalSelectors.prices);
+        const price_elements = priceElements.slice(0, 15).map(el => ({
+          text: el.textContent?.trim(),
+          className: el.className,
+          tagName: el.tagName,
+          selector: el.className ? `.${el.className.split(' ')[0]}` : el.tagName.toLowerCase()
+        })).filter(price => price.text && /[\$£€¥₹]|\d+[\.\,]\d+|\d+/.test(price.text));
+
+        // Universal navigation detection
+        const navElements = findElements(universalSelectors.navigation);
+        const navigation_links = navElements.slice(0, 5).map(nav => {
+          const links = nav.querySelectorAll('a');
+          return Array.from(links).slice(0, 8).map(a => ({
+            text: a.textContent?.trim(),
+            href: a.href
+          })).filter(link => link.text && link.text.length < 50);
+        }).flat();
+
+        // Universal search detection
+        const searchElements = findElements(universalSelectors.search);
+        const search_available = searchElements.length > 0;
+
+        // Universal cart detection
+        const cartElements = findElements(universalSelectors.cart);
+        const cart_available = cartElements.length > 0;
+
+        // Universal product grid detection  
+        const productElements = findElements(universalSelectors.products);
+        const product_count = productElements.length;
+
+        // Add-to-cart detection
+        const addToCartElements = findElements(universalSelectors.addToCart);
+        const add_to_cart_available = addToCartElements.length > 0;
+
         return {
           title: document.title,
           url: window.location.href,
           h1_tags: Array.from(document.querySelectorAll('h1')).map(h1 => h1.textContent?.trim()).filter(text => text),
-          product_links: Array.from(document.querySelectorAll('a[href*="product"], a[href*="item"]')).slice(0, 10).map(a => ({
-            text: a.textContent?.trim(),
-            href: a.href
-          })),
-          images: Array.from(document.querySelectorAll('img')).slice(0, 5).map(img => ({
+          product_links,
+          price_elements,
+          navigation_links: navigation_links.slice(0, 10),
+          images: Array.from(document.querySelectorAll('img')).slice(0, 8).map(img => ({
             src: img.src,
             alt: img.alt
-          })),
-          price_elements: Array.from(document.querySelectorAll('[class*="price"], [class*="cost"], .money, [data-price]')).slice(0, 10).map(el => ({
-            text: el.textContent?.trim(),
-            className: el.className,
-            tagName: el.tagName
-          })),
+          })).filter(img => img.src && !img.src.startsWith('data:')),
           meta_description: document.querySelector('meta[name="description"]')?.content || '',
           ecommerce_indicators: {
-            has_add_to_cart: !!document.querySelector('[class*="add-to-cart"], [class*="buy"], button[type="submit"]'),
-            has_shopping_cart: !!document.querySelector('[class*="cart"], [href*="cart"]'),
-            has_product_grid: !!document.querySelector('[class*="product"], [class*="item"]'),
-            platform_indicators: {
-              shopify: !!document.querySelector('[data-shopify], script[src*="shopify"]'),
-              woocommerce: !!document.querySelector('.woocommerce, [class*="woocommerce"]'),
-              magento: !!document.querySelector('[class*="magento"], script[src*="magento"]')
-            }
+            has_add_to_cart: add_to_cart_available,
+            has_shopping_cart: cart_available,
+            has_product_grid: product_count > 0,
+            has_search: search_available,
+            product_count: product_count,
+            navigation_count: navElements.length,
+            platform: detectPlatform(),
+            ecommerce_score: (
+              (add_to_cart_available ? 1 : 0) +
+              (cart_available ? 1 : 0) + 
+              (product_count > 0 ? 1 : 0) +
+              (price_elements.length > 0 ? 1 : 0) +
+              (search_available ? 1 : 0)
+            ) / 5
           }
         };
       });
       
-      this.logger.info(`Basic scrape completed for: ${url}`);
+      this.logger.info(`Universal scrape completed for: ${url} - Found ${result.product_links.length} products, ${result.price_elements.length} prices, platform: ${result.ecommerce_indicators.platform}`);
       return result;
       
     } catch (error) {
-      this.logger.error(`Basic scrape failed for ${url}:`, error);
+      this.logger.error(`Universal scrape failed for ${url}:`, error);
       throw error;
     } finally {
       await page.close();

@@ -129,17 +129,9 @@ class ScrapingAPI {
   }
 
   async generateTrainingScenario(url, userIntent) {
-    // Check if this is a Shopify site for specialized handling
-    if (url.includes('shopify') || url.includes('myshopify') || await this.isShopifyStore(url)) {
-      this.logger.info('Detected Shopify store, using specialized scraper');
-      const shoppingSession = await this.shopifyScraper.scrapeShopifyStore(url, userIntent);
-      
-      // Convert Shopify session to our training format
-      const trainingData = await this.convertShopifySessionToTraining(shoppingSession, userIntent);
-      return trainingData;
-    }
+    this.logger.info('Using universal scraper for all sites');
     
-    // Use general scraper for non-Shopify sites
+    // Use universal scraper for all sites
     const siteStructure = await this.scrapingEngine.analyzeSite(url);
     const patterns = await this.patternRecognition.identifyPatterns(siteStructure);
     const reasoning = await this.reasoningEngine.generateReasoning(userIntent, patterns);
