@@ -1,7 +1,7 @@
 # Multi-stage Dockerfile for AI Shopping Scraper
 # Optimized for Railway deployment with Playwright support
 
-FROM node:18-slim as base
+FROM node:20-slim as base
 
 # Install system dependencies for Playwright
 RUN apt-get update && apt-get install -y \

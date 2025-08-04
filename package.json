@@ -46,9 +46,8 @@
     "bcrypt": "^5.1.1",
     "jsonwebtoken": "^9.0.2",
     "uuid": "^9.0.1",
-    "crypto": "^1.0.1",
     "cheerio": "^1.0.0-rc.12",
-    "axios": "^1.6.2",
+    "axios": "^1.7.7",
     "dotenv": "^16.3.1",
     "moment": "^2.29.4",
     "lodash": "^4.17.21",
@@ -63,8 +62,8 @@
     "@types/node": "^20.10.4"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
   },
   "repository": {
     "type": "git",
