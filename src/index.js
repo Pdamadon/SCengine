@@ -30,14 +30,16 @@ class AIShoppingScraper {
   }
 
   async initializeMongoDB() {
-    if (!process.env.MONGODB_URL) {
-      logger.warn('MONGODB_URL not configured, MongoDB features will be disabled');
+    const mongoUrl = process.env.MONGO_URL || process.env.MONGODB_URL;
+    
+    if (!mongoUrl) {
+      logger.warn('MONGO_URL or MONGODB_URL not configured, MongoDB features will be disabled');
       return false;
     }
 
     try {
       logger.info('Connecting to MongoDB...');
-      this.mongoClient = new MongoClient(process.env.MONGODB_URL, {
+      this.mongoClient = new MongoClient(mongoUrl, {
         maxPoolSize: 10,
         serverSelectionTimeoutMS: 5000,
         socketTimeoutMS: 45000,
