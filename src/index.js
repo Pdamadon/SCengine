@@ -227,16 +227,33 @@ class AIShoppingScraper {
 
   async start() {
     try {
-      await this.scrapingEngine.initialize();
-      await this.patternRecognition.loadPatterns();
-      
+      // Start server first for health checks
       this.app.listen(this.port, () => {
         logger.info(`AI Shopping Scraper started on port ${this.port}`);
-        logger.info(`Target: ${process.env.SCENARIOS_PER_DAY_TARGET} scenarios per day`);
+        logger.info('Server is running - initializing services...');
       });
+
+      // Initialize services after server is running
+      await this.initializeServices();
+      
     } catch (error) {
       logger.error('Failed to start application:', error);
-      process.exit(1);
+      // Don't exit - keep server running for health checks
+    }
+  }
+
+  async initializeServices() {
+    try {
+      logger.info('Initializing scraping engine...');
+      await this.scrapingEngine.initialize();
+      
+      logger.info('Loading patterns...');
+      await this.patternRecognition.loadPatterns();
+      
+      logger.info('All services initialized successfully');
+    } catch (error) {
+      logger.error('Service initialization failed:', error);
+      // Continue running - services can retry later
     }
   }
 
