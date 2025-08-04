@@ -12,7 +12,7 @@ class WorldModelPopulator {
     }
     
     try {
-      this.db = this.mongoClient.db('ai_shopping_scraper');
+      this.db = this.mongoClient.db('Worldmodel1');
       this.logger.info('WorldModelPopulator initialized with MongoDB connection');
       return true;
     } catch (error) {

@@ -46,7 +46,7 @@ class AIShoppingScraper {
       await this.mongoClient.connect();
       
       // Test the connection
-      await this.mongoClient.db('ai_shopping_scraper').command({ ping: 1 });
+      await this.mongoClient.db('Worldmodel1').command({ ping: 1 });
       
       logger.info('MongoDB connected successfully');
       return true;
@@ -108,7 +108,7 @@ class AIShoppingScraper {
         available_sites: ['glasswingshop.com'],
         world_model_collections: ['domains', 'products', 'categories', 'service_providers'],
         mongodb_connected: !!this.mongoClient,
-        database: this.mongoClient ? 'ai_shopping_scraper' : 'file_storage_fallback'
+        database: this.mongoClient ? 'Worldmodel1' : 'file_storage_fallback'
       });
     });
   }
