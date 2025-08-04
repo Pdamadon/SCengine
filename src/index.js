@@ -21,9 +21,10 @@ class AIShoppingScraper {
   constructor() {
     this.app = express();
     this.port = process.env.PORT || 3000;
+    this.mongoClient = null; // MongoDB will be optional for now
     
-    // Initialize API handlers
-    this.scrapingAPI = new ScrapingAPI(logger);
+    // Initialize simplified API handlers
+    this.scrapingAPI = new ScrapingAPI(logger, this.mongoClient);
     
     this.setupMiddleware();
     this.setupRoutes();
@@ -58,16 +59,18 @@ class AIShoppingScraper {
     // Root endpoint
     this.app.get('/', (req, res) => {
       res.json({
-        name: 'AI Shopping Scraper',
-        version: '1.0.0',
-        description: 'Generate training data through synthetic human reasoning',
+        name: 'AI Shopping Scraper - Focused World Model Population',
+        version: '2.0.0',
+        description: 'Focused scrapers for populating e-commerce world model',
         endpoints: {
           health: '/health',
-          test_scraping: 'POST /api/scraping/test-scrape',
-          full_scraping: 'POST /api/scraping/scrape',
+          scrape_glasswing: 'POST /api/scraping/scrape-glasswing',
+          scrape_and_populate: 'POST /api/scraping/scrape-and-populate',
           scraping_status: '/api/scraping/status',
           system_stats: '/api/stats'
-        }
+        },
+        available_sites: ['glasswingshop.com'],
+        world_model_collections: ['domains', 'products', 'categories', 'service_providers']
       });
     });
   }
