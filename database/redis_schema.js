@@ -1,14 +1,18 @@
 // AI Shopping Scraper - Redis Schema and Data Structures
 // Caching, job queues, and real-time data management
 
-const Redis = require('ioredis');
+// Note: This file defines Redis configuration and schemas but does not create connections
+// Connections are managed by individual services (RedisCache, etc.)
 
-// Redis connection configuration
-const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
-  retryDelayOnFailover: 100,
-  enableReadyCheck: false,
-  maxRetriesPerRequest: null,
-});
+// Redis connection configuration for reference
+const REDIS_CONFIG = {
+  url: process.env.REDIS_URL || 'redis://localhost:6379',
+  options: {
+    retryDelayOnFailover: 100,
+    enableReadyCheck: false,
+    maxRetriesPerRequest: null,
+  }
+};
 
 // =====================================================
 // CACHING STRUCTURES AND TTL SETTINGS
@@ -66,6 +70,7 @@ const REDIS_KEYS = {
 // CACHING HELPER FUNCTIONS
 // =====================================================
 
+/* COMMENTED OUT - CAUSING CONNECTION ERRORS
 class RedisCache {
   constructor(redisClient) {
     this.redis = redisClient;
@@ -507,17 +512,16 @@ class RedisRateLimit {
     return failureData.count;
   }
 }
+*/
 
 // =====================================================
-// EXPORT CLASSES AND UTILITIES
+// EXPORT CONFIGURATION AND UTILITIES
 // =====================================================
 
 module.exports = {
-  redis,
-  RedisCache,
-  RedisJobQueue,
-  RedisRealTime,
-  RedisRateLimit,
+  REDIS_CONFIG,
   REDIS_KEYS,
   CACHE_TTL
+  // Classes are implemented in individual service files
+  // to avoid unwanted Redis connections on module load
 };
