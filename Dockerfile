@@ -18,14 +18,15 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
+# Copy application code first
+COPY . .
+
 # Install dependencies
 RUN npm ci --only=production && npm cache clean --force
 
-# Install Playwright browsers and dependencies
-RUN npx playwright install chromium --with-deps
-
-# Copy application code
-COPY . .
+# Install Playwright browsers and system dependencies
+RUN npx playwright install-deps chromium
+RUN npx playwright install chromium
 
 # Create non-root user for security
 RUN groupadd -r appuser && useradd -r -g appuser appuser
