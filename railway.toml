@@ -1,0 +1,53 @@
+# Railway Configuration for AI Shopping Scraper
+# Deployment settings and service configuration
+
+[build]
+builder = "nixpacks"
+buildCommand = "npm ci"
+
+[deploy]
+startCommand = "npm start"
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+
+[variables]
+# Node.js environment
+NODE_ENV = "production"
+NODE_OPTIONS = "--max-old-space-size=2048"
+
+# Database connections will be automatically provided by Railway services:
+# DATABASE_URL (PostgreSQL)
+# MONGODB_URL (MongoDB) 
+# REDIS_URL (Redis)
+
+# Application settings
+PORT = "3000"
+LOG_LEVEL = "info"
+MAX_CONCURRENT_SCRAPES = "5"
+MAX_BROWSER_INSTANCES = "3"
+DEFAULT_TIMEOUT_MS = "30000"
+
+# Rate limiting
+SCRAPING_RATE_LIMIT = "10" # requests per minute per domain
+API_RATE_LIMIT = "1000" # requests per hour per user
+
+# Cache settings
+CACHE_TTL_DOMAIN = "86400" # 24 hours
+CACHE_TTL_PRODUCT = "14400" # 4 hours  
+CACHE_TTL_PRICE = "1800" # 30 minutes
+
+# Job queue settings
+MAX_QUEUE_SIZE = "1000"
+JOB_TIMEOUT_MS = "300000" # 5 minutes
+MAX_RETRIES = "3"
+
+# Training data settings
+MAX_TRAINING_RECORDS_PER_SESSION = "100"
+TRAINING_DATA_RETENTION_DAYS = "30"
+
+# Monitoring and alerts
+ENABLE_METRICS = "true"
+ENABLE_HEALTH_CHECKS = "true"
+ALERT_ON_FAILURES = "true"

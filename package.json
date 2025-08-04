@@ -1,47 +1,77 @@
 {
   "name": "ai-shopping-scraper",
   "version": "1.0.0",
-  "description": "AI Shopping Assistant that learns to navigate e-commerce sites through synthetic human reasoning",
+  "description": "AI Shopping Assistant that generates training data through synthetic human reasoning",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "test": "jest",
-    "lint": "eslint src/",
-    "lint:fix": "eslint src/ --fix"
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src/ --fix",
+    "format": "prettier --write src/",
+    "db:migrate": "node scripts/migrate.js",
+    "db:seed": "node scripts/seed.js",
+    "scrape:test": "node test-basic.js",
+    "scrape:enhanced": "node test-enhanced.js",
+    "scrape:intelligence": "node test-site-intelligence.js",
+    "queue:worker": "node src/workers/queueWorker.js",
+    "health": "curl -f http://localhost:3000/health || exit 1"
   },
   "keywords": [
     "ai",
-    "shopping",
     "scraping",
-    "ecommerce",
-    "machine-learning",
-    "training-data"
+    "training-data",
+    "e-commerce",
+    "automation",
+    "machine-learning"
   ],
-  "author": "Your Name",
+  "author": "Peter Amadon <pdamadon@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "bull": "^4.12.0",
-    "cheerio": "^1.0.0-rc.12",
-    "dotenv": "^16.3.0",
-    "express": "^4.18.0",
-    "ioredis": "^5.7.0",
-    "pg": "^8.11.0",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.0.0",
+    "morgan": "^1.10.0",
+    "compression": "^1.7.4",
     "playwright": "^1.40.0",
-    "redis": "^4.6.0",
-    "uuid": "^9.0.0",
-    "winston": "^3.11.0"
+    "ioredis": "^5.3.2",
+    "pg": "^8.11.3",
+    "mongodb": "^6.3.0",
+    "mongoose": "^8.0.3",
+    "bull": "^4.12.2",
+    "winston": "^3.11.0",
+    "joi": "^17.11.0",
+    "bcrypt": "^5.1.1",
+    "jsonwebtoken": "^9.0.2",
+    "uuid": "^9.0.1",
+    "crypto": "^1.0.1",
+    "cheerio": "^1.0.0-rc.12",
+    "axios": "^1.6.2",
+    "dotenv": "^16.3.1",
+    "moment": "^2.29.4",
+    "lodash": "^4.17.21",
+    "validator": "^13.11.0"
   },
   "devDependencies": {
-    "eslint": "^8.53.0",
-    "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-import": "^2.29.0",
-    "eslint-plugin-n": "^16.3.0",
-    "eslint-plugin-promise": "^6.1.0",
+    "nodemon": "^3.0.2",
     "jest": "^29.7.0",
-    "nodemon": "^3.0.0"
+    "supertest": "^6.3.3",
+    "eslint": "^8.55.0",
+    "prettier": "^3.1.0",
+    "@types/node": "^20.10.4"
   },
   "engines": {
-    "node": ">=18.0.0"
-  }
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pdamadon/codesight-scraping-ai-generation.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Pdamadon/codesight-scraping-ai-generation/issues"
+  },
+  "homepage": "https://github.com/Pdamadon/codesight-scraping-ai-generation#readme"
 }
