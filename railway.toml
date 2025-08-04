@@ -22,7 +22,7 @@ NODE_OPTIONS = "--max-old-space-size=2048"
 # MONGODB_URL (MongoDB) 
 # REDIS_URL (Redis)
 
-# Application settings
+# Application settings  
 PORT = "3000"
 LOG_LEVEL = "info"
 MAX_CONCURRENT_SCRAPES = "5"
