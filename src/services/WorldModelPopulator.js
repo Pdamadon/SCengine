@@ -140,6 +140,8 @@ class WorldModelPopulator {
       const normalizedTitle = this.normalizeTitle(productData.productData.title);
       const priceValue = this.parsePrice(productData.productData.price);
       
+      this.logger.debug(`Processing product: ${productData.productData.title} (ID: ${productId})`);
+      
       // Check for existing product using multiple deduplication strategies
       const existingProduct = await this.findExistingProduct(collection, {
         domain,
@@ -197,22 +199,26 @@ class WorldModelPopulator {
     }
 
     if (productDocs.length > 0) {
-      // Use bulk operations with enhanced deduplication
-      const bulkOps = productDocs.map(doc => ({
-        replaceOne: {
-          filter: { 
-            $or: [
-              { domain: domain, product_id: doc.product_id },
-              { domain: domain, url_hash: doc.url_hash },
-              { domain: domain, url: doc.url }
-            ]
-          },
-          replacement: doc,
-          upsert: true
+      this.logger.info(`Processing ${productDocs.length} products for ${domain}`);
+      
+      // Process each product individually to avoid conflicts
+      for (const doc of productDocs) {
+        try {
+          const result = await collection.replaceOne(
+            { 
+              domain: domain, 
+              product_id: doc.product_id 
+            },
+            doc,
+            { upsert: true }
+          );
+          
+          this.logger.debug(`Product ${doc.product_id}: ${result.upsertedCount ? 'inserted' : 'updated'}`);
+        } catch (error) {
+          this.logger.error(`Failed to save product ${doc.product_id}:`, error);
         }
-      }));
-
-      await collection.bulkWrite(bulkOps);
+      }
+      
       this.logger.info(`Product deduplication complete for ${domain}:`, deduplicationStats);
     } else {
       this.logger.info(`No new products to save for ${domain} - all were duplicates`);
