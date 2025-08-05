@@ -129,10 +129,16 @@ class GlasswingScraper {
           };
         };
         
-        // Find product links
-        const productLinks = Array.from(document.querySelectorAll('a[href*="/products/"]'))
-          .slice(0, 20)
-          .map(link => getEssentialSelectors(link));
+        // Find product links and deduplicate by href
+        const productLinksMap = new Map();
+        Array.from(document.querySelectorAll('a[href*="/products/"]'))
+          .forEach(link => {
+            if (link.href && !productLinksMap.has(link.href)) {
+              productLinksMap.set(link.href, getEssentialSelectors(link));
+            }
+          });
+        
+        const productLinks = Array.from(productLinksMap.values()).slice(0, 20);
         
         // Navigation elements
         const nextPageLink = document.querySelector('a[rel="next"], .pagination a[href*="page="]');
@@ -346,12 +352,17 @@ class GlasswingScraper {
     
     const productLinks = categoryData.productLinks.slice(0, maxProducts);
     
+    this.logger.info(`Processing ${productLinks.length} unique product links:`);
+    productLinks.forEach((link, index) => {
+      this.logger.info(`  ${index + 1}. ${link.element.href}`);
+    });
+    
     for (let i = 0; i < productLinks.length; i++) {
       const productLink = productLinks[i];
       
       if (!productLink.element.href) continue;
       
-      this.logger.info(`Analyzing product ${i + 1}/${productLinks.length}`);
+      this.logger.info(`Analyzing product ${i + 1}/${productLinks.length}: ${productLink.element.href}`);
       
       try {
         const productData = await this.scrapeProductPage(productLink.element.href);
