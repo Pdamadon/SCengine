@@ -1,0 +1,74 @@
+[
+  {
+    "collection": "7115 by Szeki",
+    "handle": "7115-by-szeki-1",
+    "processed": 20,
+    "successful": 20,
+    "found": 20,
+    "world_model_records": 20,
+    "scraped_at": "2025-08-09T20:06:28.430Z"
+  },
+  {
+    "collection": "7115 by Szeki Archive",
+    "handle": "7115-by-szeki-archive",
+    "processed": 20,
+    "successful": 20,
+    "found": 20,
+    "world_model_records": 20,
+    "scraped_at": "2025-08-09T20:07:30.766Z"
+  },
+  {
+    "collection": "Accessories For Her",
+    "handle": "accessories-for-her",
+    "processed": 20,
+    "successful": 20,
+    "found": 20,
+    "world_model_records": 20,
+    "scraped_at": "2025-08-09T20:08:34.559Z"
+  },
+  {
+    "collection": "Accessories",
+    "handle": "mens-accessories",
+    "processed": 20,
+    "successful": 20,
+    "found": 20,
+    "world_model_records": 20,
+    "scraped_at": "2025-08-09T20:09:34.691Z"
+  },
+  {
+    "collection": "Aleph Geddis",
+    "handle": "aleph-geddis",
+    "processed": 20,
+    "successful": 20,
+    "found": 20,
+    "world_model_records": 20,
+    "scraped_at": "2025-08-09T20:10:34.752Z"
+  },
+  {
+    "collection": "All Shoes",
+    "handle": "all-shoes",
+    "processed": 20,
+    "successful": 20,
+    "found": 20,
+    "world_model_records": 20,
+    "scraped_at": "2025-08-09T20:11:36.964Z"
+  },
+  {
+    "collection": "Agmes",
+    "handle": "agmes",
+    "processed": 20,
+    "successful": 20,
+    "found": 20,
+    "world_model_records": 20,
+    "scraped_at": "2025-08-09T20:12:38.048Z"
+  },
+  {
+    "collection": "Another Feather",
+    "handle": "another-feather",
+    "processed": 12,
+    "successful": 12,
+    "found": 20,
+    "world_model_records": 12,
+    "scraped_at": "2025-08-09T20:13:21.175Z"
+  }
+]

@@ -1,4 +1,7 @@
 const { chromium } = require('playwright');
+const IntelligentSelectorGenerator = require('./IntelligentSelectorGenerator');
+const SelectorValidator = require('./SelectorValidator');
+const AdvancedFallbackSystem = require('./AdvancedFallbackSystem');
 
 class ConcurrentExplorer {
   constructor(logger, worldModel) {
@@ -6,6 +9,11 @@ class ConcurrentExplorer {
     this.worldModel = worldModel;
     this.browsers = [];
     this.explorationResults = new Map();
+    
+    // Initialize intelligent selector system
+    this.selectorGenerator = new IntelligentSelectorGenerator(logger);
+    this.selectorValidator = new SelectorValidator(logger);
+    this.fallbackSystem = new AdvancedFallbackSystem(logger);
   }
 
   async initialize() {
@@ -89,51 +97,192 @@ class ConcurrentExplorer {
   }
 
   async exploreSection(baseUrl, section, navigationIntelligence) {
-    const browser = await chromium.launch({
-      headless: process.env.HEADLESS_MODE !== 'false',
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
+    const startTime = Date.now();
+    let browser = null;
+    let context = null;
+    let page = null;
     
-    this.browsers.push(browser);
-    const context = await browser.newContext();
-    const page = await context.newPage();
-
     try {
-      this.logger.info(`🔍 Exploring section: ${section.name}`);
+      browser = await chromium.launch({
+        headless: process.env.HEADLESS_MODE !== 'false',
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+      });
       
-      // Navigate to section
-      await page.goto(section.url, { waitUntil: 'domcontentloaded', timeout: 30000 });
-      await page.waitForTimeout(2000);
+      this.browsers.push(browser);
+      context = await browser.newContext({
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+      });
+      page = await context.newPage();
+
+      // Enhanced error handling with retries
+      this.logger.info(`🔍 Exploring section: ${section.name} (${section.url})`);
+      
+      let navigationSuccess = false;
+      let retryCount = 0;
+      const maxRetries = 2;
+      
+      while (!navigationSuccess && retryCount < maxRetries) {
+        try {
+          await page.goto(section.url, { 
+            waitUntil: 'domcontentloaded', 
+            timeout: 30000 
+          });
+          await page.waitForTimeout(2000);
+          navigationSuccess = true;
+        } catch (navError) {
+          retryCount++;
+          this.logger.warn(`Navigation attempt ${retryCount} failed for ${section.name}: ${navError.message}`);
+          
+          if (retryCount < maxRetries) {
+            await page.waitForTimeout(5000); // Wait before retry
+          } else {
+            throw new Error(`Failed to navigate to ${section.url} after ${maxRetries} attempts: ${navError.message}`);
+          }
+        }
+      }
 
       const sectionIntelligence = {
         section_name: section.name,
         section_url: section.url,
-        page_type: await this.classifyPageType(page),
-        selectors: await this.extractSelectors(page),
-        navigation_paths: await this.extractNavigationPaths(page),
-        product_discovery: await this.discoverProducts(page),
-        url_patterns: await this.analyzeURLPatterns(page),
-        interaction_elements: await this.mapInteractionElements(page)
+        exploration_metadata: {
+          start_time: startTime,
+          retry_count: retryCount,
+          navigation_success: navigationSuccess
+        },
+        page_type: null,
+        selectors: null,
+        navigation_paths: null,
+        product_discovery: null,
+        url_patterns: null,
+        interaction_elements: null,
+        errors: []
       };
 
-      // If this section has subcategories, explore them too
-      if (section.has_dropdown || sectionIntelligence.navigation_paths.subcategories.length > 0) {
-        sectionIntelligence.subcategory_exploration = await this.exploreSubcategories(
-          page, 
-          sectionIntelligence.navigation_paths.subcategories.slice(0, 3) // Limit for performance
-        );
+      // Enhanced data extraction with individual error handling
+      try {
+        sectionIntelligence.page_type = await this.classifyPageType(page);
+      } catch (error) {
+        this.logger.warn(`Page classification failed for ${section.name}:`, error.message);
+        sectionIntelligence.errors.push({ step: 'page_classification', error: error.message });
+        sectionIntelligence.page_type = 'unknown';
       }
 
+      try {
+        sectionIntelligence.selectors = await this.extractSelectors(page);
+      } catch (error) {
+        this.logger.warn(`Selector extraction failed for ${section.name}:`, error.message);
+        sectionIntelligence.errors.push({ step: 'selector_extraction', error: error.message });
+        sectionIntelligence.selectors = { _metadata: { extraction_failed: true } };
+      }
+
+      try {
+        sectionIntelligence.navigation_paths = await this.extractNavigationPaths(page);
+      } catch (error) {
+        this.logger.warn(`Navigation path extraction failed for ${section.name}:`, error.message);
+        sectionIntelligence.errors.push({ step: 'navigation_extraction', error: error.message });
+        sectionIntelligence.navigation_paths = { subcategories: [] };
+      }
+
+      try {
+        sectionIntelligence.product_discovery = await this.discoverProducts(page);
+      } catch (error) {
+        this.logger.warn(`Product discovery failed for ${section.name}:`, error.message);
+        sectionIntelligence.errors.push({ step: 'product_discovery', error: error.message });
+        sectionIntelligence.product_discovery = { total_found: 0, products: [] };
+      }
+
+      try {
+        sectionIntelligence.url_patterns = await this.analyzeURLPatterns(page);
+      } catch (error) {
+        this.logger.warn(`URL pattern analysis failed for ${section.name}:`, error.message);
+        sectionIntelligence.errors.push({ step: 'url_analysis', error: error.message });
+        sectionIntelligence.url_patterns = { current_url: section.url };
+      }
+
+      try {
+        sectionIntelligence.interaction_elements = await this.mapInteractionElements(page);
+      } catch (error) {
+        this.logger.warn(`Interaction element mapping failed for ${section.name}:`, error.message);
+        sectionIntelligence.errors.push({ step: 'interaction_mapping', error: error.message });
+        sectionIntelligence.interaction_elements = { buttons: [], forms: [] };
+      }
+
+      // Enhanced subcategory exploration with error handling
+      if (section.has_dropdown || (sectionIntelligence.navigation_paths && sectionIntelligence.navigation_paths.subcategories.length > 0)) {
+        try {
+          sectionIntelligence.subcategory_exploration = await this.exploreSubcategories(
+            page, 
+            sectionIntelligence.navigation_paths.subcategories.slice(0, 3) // Limit for performance
+          );
+        } catch (error) {
+          this.logger.warn(`Subcategory exploration failed for ${section.name}:`, error.message);
+          sectionIntelligence.errors.push({ step: 'subcategory_exploration', error: error.message });
+          sectionIntelligence.subcategory_exploration = [];
+        }
+      }
+
+      // Add completion metrics
+      const endTime = Date.now();
+      sectionIntelligence.exploration_metadata.end_time = endTime;
+      sectionIntelligence.exploration_metadata.duration_ms = endTime - startTime;
+      sectionIntelligence.exploration_metadata.success_rate = sectionIntelligence.errors.length === 0 ? 1.0 : 
+        Math.max(0, 1 - (sectionIntelligence.errors.length / 6)); // 6 main extraction steps
+
+      this.logger.info(`✅ Section exploration completed: ${section.name} (${sectionIntelligence.exploration_metadata.duration_ms}ms, ${sectionIntelligence.errors.length} errors)`);
+      
       return sectionIntelligence;
 
     } catch (error) {
-      this.logger.error(`Section exploration failed for ${section.name}:`, error);
-      throw error;
+      const endTime = Date.now();
+      this.logger.error(`❌ Critical section exploration failure for ${section.name}: ${error.message}`, {
+        section: section.name,
+        url: section.url,
+        duration: endTime - startTime,
+        error: error.message,
+        stack: error.stack
+      });
+      
+      // Return partial intelligence even on critical failure
+      return {
+        section_name: section.name,
+        section_url: section.url,
+        exploration_metadata: {
+          start_time: startTime,
+          end_time: endTime,
+          duration_ms: endTime - startTime,
+          critical_failure: true,
+          error: error.message
+        },
+        page_type: 'unknown',
+        selectors: { _metadata: { critical_failure: true } },
+        navigation_paths: { subcategories: [] },
+        product_discovery: { total_found: 0, products: [] },
+        url_patterns: { current_url: section.url },
+        interaction_elements: { buttons: [], forms: [] },
+        errors: [{ step: 'critical_failure', error: error.message }]
+      };
     } finally {
-      await page.close();
-      await context.close();
-      await browser.close();
-      this.browsers = this.browsers.filter(b => b !== browser);
+      // Enhanced cleanup with error handling
+      try {
+        if (page) await page.close();
+      } catch (error) {
+        this.logger.warn(`Failed to close page for ${section.name}:`, error.message);
+      }
+      
+      try {
+        if (context) await context.close();
+      } catch (error) {
+        this.logger.warn(`Failed to close context for ${section.name}:`, error.message);
+      }
+      
+      try {
+        if (browser) {
+          await browser.close();
+          this.browsers = this.browsers.filter(b => b !== browser);
+        }
+      } catch (error) {
+        this.logger.warn(`Failed to close browser for ${section.name}:`, error.message);
+      }
     }
   }
 
@@ -160,7 +309,14 @@ class ConcurrentExplorer {
   }
 
   async extractSelectors(page) {
-    return await page.evaluate(() => {
+    // Inject our intelligent selector classes into the page context
+    await page.addScriptTag({
+      content: `
+        ${this.getIntelligentSelectorScript()}
+      `
+    });
+
+    return await page.evaluate(async () => {
       const selectors = {
         navigation: {},
         product: {},
@@ -169,23 +325,41 @@ class ConcurrentExplorer {
         variants: {},
         images: {},
         filters: {},
-        pagination: {}
+        pagination: {},
+        _metadata: {
+          generation_strategy: 'intelligent',
+          confidence_scores: {},
+          fallback_count: 0,
+          validation_results: {}
+        }
       };
 
-      // Navigation selectors
+      // Initialize intelligent systems in page context
+      const intelligentGenerator = new window.IntelligentSelectorGenerator();
+      const validator = new window.SelectorValidator();
+      const fallbackSystem = new window.AdvancedFallbackSystem();
+
+      // Navigation selectors with intelligent generation
       const navElements = {
         breadcrumb: document.querySelector('.breadcrumb, .breadcrumbs, [aria-label="breadcrumb"]'),
         sidebar: document.querySelector('.sidebar, .category-nav, .filters, .facets'),
         pagination: document.querySelector('.pagination, .pager, .page-numbers')
       };
 
-      Object.entries(navElements).forEach(([key, element]) => {
+      for (const [key, element] of Object.entries(navElements)) {
         if (element) {
-          selectors.navigation[key] = this.generateReliableSelector(element);
+          const result = await this.generateIntelligentSelector(element, `navigation.${key}`, {
+            intelligentGenerator,
+            validator,
+            fallbackSystem,
+            document
+          });
+          selectors.navigation[key] = result.selector;
+          selectors._metadata.confidence_scores[`navigation.${key}`] = result.confidence;
         }
-      });
+      }
 
-      // Product-related selectors
+      // Product-related selectors with enhanced intelligence
       const productElements = document.querySelectorAll(
         '.product, .product-item, .product-card, .grid__item, .card-wrapper'
       );
@@ -193,76 +367,184 @@ class ConcurrentExplorer {
       if (productElements.length > 0) {
         const firstProduct = productElements[0];
         
-        // Extract product component selectors
-        const titleEl = firstProduct.querySelector('h1, h2, h3, .product-title, .card__heading, a');
-        const priceEl = firstProduct.querySelector('.price, .money, .product-price, .cost');
-        const imageEl = firstProduct.querySelector('img');
-        const linkEl = firstProduct.querySelector('a') || firstProduct.closest('a');
+        // Extract product component selectors with context awareness
+        const componentMap = {
+          title: {
+            element: firstProduct.querySelector('h1, h2, h3, .product-title, .card__heading, a'),
+            context: 'product.title'
+          },
+          price: {
+            element: firstProduct.querySelector('.price, .money, .product-price, .cost'),
+            context: 'pricing.price'
+          },
+          image: {
+            element: firstProduct.querySelector('img'),
+            context: 'images.product'
+          },
+          link: {
+            element: firstProduct.querySelector('a') || firstProduct.closest('a'),
+            context: 'product.link'
+          },
+          container: {
+            element: firstProduct,
+            context: 'product.container'
+          }
+        };
 
-        if (titleEl) selectors.product.title = this.generateReliableSelector(titleEl);
-        if (priceEl) selectors.pricing.price = this.generateReliableSelector(priceEl);
-        if (imageEl) selectors.images.product = this.generateReliableSelector(imageEl);
-        if (linkEl) selectors.product.link = this.generateReliableSelector(linkEl);
-        
-        selectors.product.container = this.generateReliableSelector(firstProduct);
+        for (const [componentKey, { element, context }] of Object.entries(componentMap)) {
+          if (element) {
+            const result = await this.generateIntelligentSelector(element, context, {
+              intelligentGenerator,
+              validator,
+              fallbackSystem,
+              document
+            });
+            
+            const [category, subKey] = context.split('.');
+            if (!selectors[category]) selectors[category] = {};
+            selectors[category][subKey] = result.selector;
+            selectors._metadata.confidence_scores[context] = result.confidence;
+          }
+        }
       }
 
-      // Filter selectors
+      // Enhanced filter selectors with classification
       const filterElements = document.querySelectorAll(
         '.filter, .facet, [data-filter], .filter-option, select'
       );
       
-      filterElements.forEach((filter, index) => {
-        if (index < 5) { // Limit to prevent overwhelming data
-          const filterType = this.classifyFilter(filter);
-          if (!selectors.filters[filterType]) {
-            selectors.filters[filterType] = [];
-          }
-          selectors.filters[filterType].push(this.generateReliableSelector(filter));
+      for (let i = 0; i < Math.min(filterElements.length, 5); i++) {
+        const filter = filterElements[i];
+        const filterType = this.classifyFilter(filter);
+        const context = `filters.${filterType}`;
+        
+        const result = await this.generateIntelligentSelector(filter, context, {
+          intelligentGenerator,
+          validator,
+          fallbackSystem,
+          document
+        });
+        
+        if (!selectors.filters[filterType]) {
+          selectors.filters[filterType] = [];
         }
-      });
+        selectors.filters[filterType].push(result.selector);
+        selectors._metadata.confidence_scores[`${context}.${i}`] = result.confidence;
+      }
 
       // Availability indicators
       const availabilityEl = document.querySelector(
         '.in-stock, .out-of-stock, .availability, .stock-status'
       );
       if (availabilityEl) {
-        selectors.availability.status = this.generateReliableSelector(availabilityEl);
+        const result = await this.generateIntelligentSelector(availabilityEl, 'availability.status', {
+          intelligentGenerator,
+          validator,
+          fallbackSystem,
+          document
+        });
+        selectors.availability.status = result.selector;
+        selectors._metadata.confidence_scores['availability.status'] = result.confidence;
       }
 
       // Variant selectors (for product pages)
       const variantSelects = document.querySelectorAll('select[name*="variant"], select.variant');
       if (variantSelects.length > 0) {
-        selectors.variants.dropdown = this.generateReliableSelector(variantSelects[0]);
+        const result = await this.generateIntelligentSelector(variantSelects[0], 'variants.dropdown', {
+          intelligentGenerator,
+          validator,
+          fallbackSystem,
+          document
+        });
+        selectors.variants.dropdown = result.selector;
+        selectors._metadata.confidence_scores['variants.dropdown'] = result.confidence;
       }
 
-      // Helper functions defined in page context
-      function generateReliableSelector(element) {
-        if (!element) return null;
+      // Helper function for intelligent selector generation
+      async function generateIntelligentSelector(element, context, { intelligentGenerator, validator, fallbackSystem, document }) {
+        try {
+          // 1. Generate optimal selector
+          const generationResult = intelligentGenerator.generateOptimalSelector(element, { context });
+          
+          // 2. Validate the selector
+          const validationResult = await validator.validateSelector(
+            generationResult.selector,
+            document,
+            context,
+            { requireUnique: false }
+          );
+          
+          // 3. If validation fails, try fallbacks
+          if (!validationResult.isValid || validationResult.confidence < 0.6) {
+            const fallbacks = await fallbackSystem.generateFallbackSelectors(
+              element,
+              generationResult.selector,
+              context,
+              document,
+              { maxFallbacks: 3 }
+            );
+            
+            // Find best fallback
+            for (const fallback of fallbacks) {
+              const fallbackValidation = await validator.validateSelector(
+                fallback.selector,
+                document,
+                context
+              );
+              
+              if (fallbackValidation.isValid && fallbackValidation.confidence > 0.5) {
+                return {
+                  selector: fallback.selector,
+                  confidence: fallbackValidation.confidence,
+                  strategy: fallback.strategy,
+                  isFallback: true
+                };
+              }
+            }
+          }
+          
+          return {
+            selector: generationResult.selector,
+            confidence: Math.min(generationResult.confidence, validationResult.confidence),
+            strategy: generationResult.strategy,
+            isFallback: false
+          };
+          
+        } catch (error) {
+          console.warn('Intelligent selector generation failed:', error);
+          // Fallback to basic generation
+          return this.generateBasicFallback(element);
+        }
+      }
+
+      // Basic fallback for error cases
+      function generateBasicFallback(element) {
+        if (!element) return { selector: null, confidence: 0, strategy: 'basic-fallback' };
         
-        if (element.id) return `#${element.id}`;
+        if (element.id) {
+          return { selector: `#${element.id}`, confidence: 0.8, strategy: 'basic-id' };
+        }
         
         if (element.className) {
           const classes = element.className.split(' ').filter(c => c.trim());
-          if (classes.length > 0) return `.${classes[0]}`;
+          if (classes.length > 0) {
+            return { selector: `.${classes[0]}`, confidence: 0.4, strategy: 'basic-class' };
+          }
         }
         
-        if (element.getAttribute('data-testid')) {
-          return `[data-testid="${element.getAttribute('data-testid')}"]`;
-        }
-        
-        return element.tagName.toLowerCase();
+        return { selector: element.tagName.toLowerCase(), confidence: 0.2, strategy: 'basic-tag' };
       }
 
       function classifyFilter(filter) {
         const text = filter.textContent.toLowerCase();
         const name = filter.name?.toLowerCase() || '';
+        const className = filter.className.toLowerCase();
         
-        if (text.includes('price') || name.includes('price')) return 'price';
-        if (text.includes('color') || name.includes('color')) return 'color';
-        if (text.includes('size') || name.includes('size')) return 'size';
-        if (text.includes('brand') || name.includes('brand')) return 'brand';
-        if (text.includes('category') || name.includes('category')) return 'category';
+        if (text.includes('price') || name.includes('price') || className.includes('price')) return 'price';
+        if (text.includes('color') || name.includes('color') || className.includes('color')) return 'color';
+        if (text.includes('size') || name.includes('size') || className.includes('size')) return 'size';
+        if (text.includes('brand') || name.includes('brand') || className.includes('brand')) return 'brand';
+        if (text.includes('category') || name.includes('category') || className.includes('category')) return 'category';
         
         return 'general';
       }
@@ -295,7 +577,7 @@ class ConcurrentExplorer {
             paths.subcategories.push({
               name: link.textContent.trim(),
               url: link.href,
-              selector: this.generateReliableSelector(link)
+              selector: generateBasicSelector(link)
             });
           }
         });
@@ -308,7 +590,7 @@ class ConcurrentExplorer {
           paths.filter_options.push({
             name: filter.textContent.trim(),
             value: filter.getAttribute('data-filter-value') || filter.value,
-            selector: this.generateReliableSelector(filter)
+            selector: generateBasicSelector(filter)
           });
         }
       });
@@ -322,14 +604,14 @@ class ConcurrentExplorer {
             paths.sorting_options.push({
               name: option.textContent.trim(),
               value: option.value,
-              selector: this.generateReliableSelector(sortSelect)
+              selector: generateBasicSelector(sortSelect)
             });
           }
         });
       }
 
       // Helper function for this context
-      function generateReliableSelector(element) {
+      function generateBasicSelector(element) {
         if (!element) return null;
         if (element.id) return `#${element.id}`;
         if (element.className) {
@@ -369,7 +651,7 @@ class ConcurrentExplorer {
                 price: priceEl ? priceEl.textContent.trim() : null,
                 url: linkEl.href,
                 image: imageEl ? imageEl.src : null,
-                container_selector: this.generateReliableSelector(element)
+                container_selector: await this.generateReliableSelector(element, 'product.container', document)
               });
             }
           });
@@ -377,24 +659,83 @@ class ConcurrentExplorer {
         }
       }
       
-      // Helper function for this context
-      function generateReliableSelector(element) {
+      // Helper function for this context - uses intelligent selector generation
+      async function generateReliableSelector(element, context, document) {
         if (!element) return null;
-        if (element.id) return `#${element.id}`;
-        if (element.className) {
-          const classes = element.className.split(' ').filter(c => c.trim());
-          if (classes.length > 0) return `.${classes[0]}`;
+        
+        try {
+          // Use intelligent selector generation
+          const intelligentGenerator = new window.IntelligentSelectorGenerator();
+          const result = intelligentGenerator.generateOptimalSelector(element, { context });
+          
+          // Validate the selector
+          const validator = new window.SelectorValidator();
+          const validationResult = await validator.validateSelector(
+            result.selector, document, context, { requireUnique: false }
+          );
+          
+          if (validationResult.isValid && validationResult.confidence > 0.5) {
+            return result.selector;
+          }
+        } catch (error) {
+          console.warn('Intelligent selector generation failed, using fallback:', error);
         }
+        
+        // Fallback to improved basic generation
+        return generateImprovedFallbackSelector(element);
+      }
+      
+      // Improved fallback selector generation
+      function generateImprovedFallbackSelector(element) {
+        if (!element) return null;
+        
+        // 1. Prioritize data attributes
+        const dataAttributes = ['data-testid', 'data-test', 'data-cy', 'data-product-id', 'data-id'];
+        for (const attr of dataAttributes) {
+          const value = element.getAttribute(attr);
+          if (value) return `[${attr}="${value}"]`;
+        }
+        
+        // 2. Use ID if available
+        if (element.id) return `#${element.id}`;
+        
+        // 3. Use semantic class combination
+        if (element.className) {
+          const classes = element.className.split(' ')
+            .filter(c => c.trim())
+            .filter(c => this.isSemanticClass(c))
+            .slice(0, 2); // Combine up to 2 semantic classes
+          
+          if (classes.length > 0) {
+            return '.' + classes.join('.');
+          }
+          
+          // Fallback to first class if no semantic classes
+          const firstClass = element.className.split(' ')[0].trim();
+          if (firstClass) return `.${firstClass}`;
+        }
+        
         return element.tagName.toLowerCase();
+      }
+      
+      // Check if class is semantic
+      function isSemanticClass(className) {
+        const semanticKeywords = [
+          'product', 'title', 'price', 'image', 'button', 'link', 'card', 'item',
+          'container', 'wrapper', 'content', 'header', 'footer', 'nav'
+        ];
+        return semanticKeywords.some(keyword => 
+          className.toLowerCase().includes(keyword.toLowerCase())
+        );
       }
 
       return {
         total_found: products.length,
         products: products,
         working_selector: products.length > 0 ? 
-          generateReliableSelector(document.querySelector(
+          await generateReliableSelector(document.querySelector(
             productSelectors.find(sel => document.querySelectorAll(sel).length > 0)
-          )) : null
+          ), 'product.container', document) : null
       };
     });
   }
@@ -449,7 +790,7 @@ class ConcurrentExplorer {
         if (index < 10 && button.textContent.trim()) {
           interactions.buttons.push({
             text: button.textContent.trim(),
-            selector: this.generateReliableSelector(button),
+            selector: await generateReliableSelector(button, 'interaction.button', document),
             purpose: this.classifyButtonPurpose(button)
           });
         }
@@ -462,26 +803,16 @@ class ConcurrentExplorer {
           interactions.forms.push({
             action: form.action,
             method: form.method,
-            selector: this.generateReliableSelector(form),
+            selector: await generateReliableSelector(form, 'form.container', document),
             inputs: Array.from(form.querySelectorAll('input, select, textarea')).map(input => ({
               name: input.name,
               type: input.type,
-              selector: this.generateReliableSelector(input)
+              selector: await generateReliableSelector(input, 'form.input', document)
             }))
           });
         }
       });
 
-      // Helper functions for this context
-      function generateReliableSelector(element) {
-        if (!element) return null;
-        if (element.id) return `#${element.id}`;
-        if (element.className) {
-          const classes = element.className.split(' ').filter(c => c.trim());
-          if (classes.length > 0) return `.${classes[0]}`;
-        }
-        return element.tagName.toLowerCase();
-      }
 
       function classifyButtonPurpose(button) {
         const text = button.textContent.toLowerCase();
@@ -662,6 +993,172 @@ class ConcurrentExplorer {
       .sort(([,a], [,b]) => b - a)
       .slice(0, 5)
       .map(([selector, count]) => ({ selector, success_count: count }));
+  }
+
+  /**
+   * Get the intelligent selector script to inject into page context
+   * @returns {string} JavaScript code for intelligent selector generation
+   */
+  getIntelligentSelectorScript() {
+    // This is a simplified version - in production, you'd want to bundle the actual classes
+    return `
+      // Simplified IntelligentSelectorGenerator for page context
+      class IntelligentSelectorGenerator {
+        generateOptimalSelector(element, options = {}) {
+          if (!element) return { selector: null, confidence: 0, strategy: 'none' };
+          
+          // Data attributes (highest priority)
+          const dataAttrs = ['data-testid', 'data-test', 'data-cy', 'data-id', 'data-product-id'];
+          for (const attr of dataAttrs) {
+            const value = element.getAttribute(attr);
+            if (value) {
+              return {
+                selector: \`[\${attr}="\${value}"]\`,
+                confidence: 0.95,
+                strategy: 'data-attribute'
+              };
+            }
+          }
+          
+          // Semantic class analysis
+          if (element.className) {
+            const classes = element.className.split(' ').filter(c => c.trim());
+            const semanticClasses = classes.filter(cls => this.isSemanticClass(cls));
+            if (semanticClasses.length > 0) {
+              const selector = '.' + semanticClasses.slice(0, 2).join('.');
+              return {
+                selector,
+                confidence: 0.8,
+                strategy: 'semantic-class'
+              };
+            }
+            
+            // Use first class as fallback
+            if (classes.length > 0) {
+              return {
+                selector: \`.\${classes[0]}\`,
+                confidence: 0.5,
+                strategy: 'first-class'
+              };
+            }
+          }
+          
+          // ID selector
+          if (element.id) {
+            return {
+              selector: \`#\${element.id}\`,
+              confidence: 0.9,
+              strategy: 'id'
+            };
+          }
+          
+          // Tag name fallback
+          return {
+            selector: element.tagName.toLowerCase(),
+            confidence: 0.2,
+            strategy: 'tag'
+          };
+        }
+        
+        isSemanticClass(className) {
+          const semanticKeywords = [
+            'product', 'title', 'price', 'image', 'button', 'link', 'card', 'item',
+            'container', 'wrapper', 'content', 'header', 'footer', 'nav'
+          ];
+          return semanticKeywords.some(keyword => 
+            className.toLowerCase().includes(keyword.toLowerCase())
+          );
+        }
+      }
+      
+      // Simplified SelectorValidator for page context
+      class SelectorValidator {
+        async validateSelector(selector, document, context, options = {}) {
+          if (!selector) return { isValid: false, confidence: 0 };
+          
+          try {
+            const elements = document.querySelectorAll(selector);
+            if (elements.length === 0) {
+              return { isValid: false, confidence: 0, reason: 'No elements found' };
+            }
+            
+            // Check visibility
+            let visibleCount = 0;
+            elements.forEach(el => {
+              const rect = el.getBoundingClientRect();
+              const style = getComputedStyle(el);
+              if (rect.width > 0 && rect.height > 0 && style.display !== 'none') {
+                visibleCount++;
+              }
+            });
+            
+            const confidence = elements.length === 1 ? 0.9 : 
+                              elements.length <= 5 ? 0.7 : 0.5;
+            
+            return {
+              isValid: visibleCount > 0,
+              confidence: confidence * (visibleCount / elements.length),
+              elementCount: elements.length,
+              visibleCount
+            };
+          } catch (error) {
+            return { isValid: false, confidence: 0, reason: error.message };
+          }
+        }
+      }
+      
+      // Simplified AdvancedFallbackSystem for page context
+      class AdvancedFallbackSystem {
+        async generateFallbackSelectors(element, failedSelector, context, document, options = {}) {
+          const fallbacks = [];
+          
+          if (!element) return fallbacks;
+          
+          // Sibling-based fallbacks
+          if (element.parentElement) {
+            const siblings = Array.from(element.parentElement.children);
+            const index = siblings.indexOf(element);
+            if (index >= 0) {
+              fallbacks.push({
+                selector: \`\${element.tagName.toLowerCase()}:nth-child(\${index + 1})\`,
+                confidence: 0.4,
+                strategy: 'positional'
+              });
+            }
+          }
+          
+          // Content-based fallbacks for short text
+          const text = element.textContent?.trim();
+          if (text && text.length < 30 && text.length > 2) {
+            const escapedText = text.replace(/"/g, '\\"');
+            fallbacks.push({
+              selector: \`*:contains("\${escapedText}")\`,
+              confidence: 0.6,
+              strategy: 'content-based'
+            });
+          }
+          
+          // Parent-child relationship fallbacks
+          if (element.parentElement) {
+            const parentClasses = element.parentElement.className.split(' ').filter(c => c.trim());
+            if (parentClasses.length > 0) {
+              fallbacks.push({
+                selector: \`.\${parentClasses[0]} \${element.tagName.toLowerCase()}\`,
+                confidence: 0.5,
+                strategy: 'parent-child'
+              });
+            }
+          }
+          
+          return fallbacks.slice(0, options.maxFallbacks || 3);
+        }
+      }
+      
+      // Make classes available globally
+      window.IntelligentSelectorGenerator = IntelligentSelectorGenerator;
+      window.SelectorValidator = SelectorValidator;
+      window.AdvancedFallbackSystem = AdvancedFallbackSystem;
+    `;
   }
 
   async cleanup() {
