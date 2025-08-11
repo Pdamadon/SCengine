@@ -633,6 +633,17 @@ class ConcurrentExplorer {
       ];
 
       let products = [];
+
+      // Helper function for generating selectors in page context
+      function generateBasicSelector(element) {
+        if (!element) return null;
+        if (element.id) return `#${element.id}`;
+        if (element.className) {
+          const classes = element.className.split(' ').filter(c => c.trim());
+          if (classes.length > 0) return `.${classes[0]}`;
+        }
+        return element.tagName.toLowerCase();
+      }
       
       for (const selector of productSelectors) {
         const elements = document.querySelectorAll(selector);
@@ -651,7 +662,7 @@ class ConcurrentExplorer {
                 price: priceEl ? priceEl.textContent.trim() : null,
                 url: linkEl.href,
                 image: imageEl ? imageEl.src : null,
-                container_selector: await this.generateReliableSelector(element, 'product.container', document)
+                container_selector: generateBasicSelector(element)
               });
             }
           });
@@ -659,83 +670,11 @@ class ConcurrentExplorer {
         }
       }
       
-      // Helper function for this context - uses intelligent selector generation
-      async function generateReliableSelector(element, context, document) {
-        if (!element) return null;
-        
-        try {
-          // Use intelligent selector generation
-          const intelligentGenerator = new window.IntelligentSelectorGenerator();
-          const result = intelligentGenerator.generateOptimalSelector(element, { context });
-          
-          // Validate the selector
-          const validator = new window.SelectorValidator();
-          const validationResult = await validator.validateSelector(
-            result.selector, document, context, { requireUnique: false }
-          );
-          
-          if (validationResult.isValid && validationResult.confidence > 0.5) {
-            return result.selector;
-          }
-        } catch (error) {
-          console.warn('Intelligent selector generation failed, using fallback:', error);
-        }
-        
-        // Fallback to improved basic generation
-        return generateImprovedFallbackSelector(element);
-      }
-      
-      // Improved fallback selector generation
-      function generateImprovedFallbackSelector(element) {
-        if (!element) return null;
-        
-        // 1. Prioritize data attributes
-        const dataAttributes = ['data-testid', 'data-test', 'data-cy', 'data-product-id', 'data-id'];
-        for (const attr of dataAttributes) {
-          const value = element.getAttribute(attr);
-          if (value) return `[${attr}="${value}"]`;
-        }
-        
-        // 2. Use ID if available
-        if (element.id) return `#${element.id}`;
-        
-        // 3. Use semantic class combination
-        if (element.className) {
-          const classes = element.className.split(' ')
-            .filter(c => c.trim())
-            .filter(c => this.isSemanticClass(c))
-            .slice(0, 2); // Combine up to 2 semantic classes
-          
-          if (classes.length > 0) {
-            return '.' + classes.join('.');
-          }
-          
-          // Fallback to first class if no semantic classes
-          const firstClass = element.className.split(' ')[0].trim();
-          if (firstClass) return `.${firstClass}`;
-        }
-        
-        return element.tagName.toLowerCase();
-      }
-      
-      // Check if class is semantic
-      function isSemanticClass(className) {
-        const semanticKeywords = [
-          'product', 'title', 'price', 'image', 'button', 'link', 'card', 'item',
-          'container', 'wrapper', 'content', 'header', 'footer', 'nav'
-        ];
-        return semanticKeywords.some(keyword => 
-          className.toLowerCase().includes(keyword.toLowerCase())
-        );
-      }
-
       return {
         total_found: products.length,
         products: products,
         working_selector: products.length > 0 ? 
-          await generateReliableSelector(document.querySelector(
-            productSelectors.find(sel => document.querySelectorAll(sel).length > 0)
-          ), 'product.container', document) : null
+          productSelectors.find(sel => document.querySelectorAll(sel).length > 0) : null
       };
     });
   }
@@ -784,14 +723,35 @@ class ConcurrentExplorer {
         toggles: []
       };
 
+      // Helper function for generating selectors in this context
+      function generateBasicSelectorForElement(element) {
+        if (!element) return null;
+        if (element.id) return `#${element.id}`;
+        if (element.className) {
+          const classes = element.className.split(' ').filter(c => c.trim());
+          if (classes.length > 0) return `.${classes[0]}`;
+        }
+        return element.tagName.toLowerCase();
+      }
+
+      // Helper function to classify button purpose
+      function classifyButtonPurpose(button) {
+        const text = button.textContent.toLowerCase();
+        if (text.includes('cart') || text.includes('add to bag')) return 'add_to_cart';
+        if (text.includes('buy') || text.includes('purchase')) return 'purchase';
+        if (text.includes('search')) return 'search';
+        if (text.includes('filter')) return 'filter';
+        return 'general';
+      }
+
       // Map buttons
       const buttons = document.querySelectorAll('button, .btn, [role="button"]');
       buttons.forEach((button, index) => {
         if (index < 10 && button.textContent.trim()) {
           interactions.buttons.push({
             text: button.textContent.trim(),
-            selector: await generateReliableSelector(button, 'interaction.button', document),
-            purpose: this.classifyButtonPurpose(button)
+            selector: generateBasicSelectorForElement(button),
+            purpose: classifyButtonPurpose(button)
           });
         }
       });
@@ -803,25 +763,15 @@ class ConcurrentExplorer {
           interactions.forms.push({
             action: form.action,
             method: form.method,
-            selector: await generateReliableSelector(form, 'form.container', document),
+            selector: generateBasicSelectorForElement(form),
             inputs: Array.from(form.querySelectorAll('input, select, textarea')).map(input => ({
               name: input.name,
               type: input.type,
-              selector: await generateReliableSelector(input, 'form.input', document)
+              selector: generateBasicSelectorForElement(input)
             }))
           });
         }
       });
-
-
-      function classifyButtonPurpose(button) {
-        const text = button.textContent.toLowerCase();
-        if (text.includes('add to cart') || text.includes('buy')) return 'purchase';
-        if (text.includes('filter') || text.includes('apply')) return 'filtering';
-        if (text.includes('search')) return 'search';
-        if (text.includes('menu')) return 'navigation';
-        return 'general';
-      }
 
       return interactions;
     });
