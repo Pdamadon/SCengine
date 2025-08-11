@@ -140,9 +140,43 @@ class GlasswingScraper {
         
         const productLinks = Array.from(productLinksMap.values()).slice(0, 20);
         
-        // Navigation elements
-        const nextPageLink = document.querySelector('a[rel="next"], .pagination a[href*="page="]');
-        const prevPageLink = document.querySelector('a[rel="prev"], .pagination a[href*="page="][href*="page=1"]');
+        // Navigation elements - Look for pagination links
+        let nextPageLink = null;
+        let prevPageLink = null;
+        
+        // Find all page links
+        const pageLinks = Array.from(document.querySelectorAll('a[href*="page="]'));
+        
+        // Look for "next" link specifically
+        nextPageLink = pageLinks.find(link => 
+          link.textContent.trim().toLowerCase() === 'next' ||
+          link.textContent.trim().toLowerCase() === 'Next' ||
+          link.textContent.trim() === '→' ||
+          link.getAttribute('aria-label')?.toLowerCase().includes('next')
+        );
+        
+        // Look for "prev" or "previous" link
+        prevPageLink = pageLinks.find(link => 
+          link.textContent.trim().toLowerCase() === 'prev' ||
+          link.textContent.trim().toLowerCase() === 'previous' ||
+          link.textContent.trim().toLowerCase() === 'Previous' ||
+          link.textContent.trim() === '←' ||
+          link.getAttribute('aria-label')?.toLowerCase().includes('prev')
+        );
+        
+        // If no explicit next/prev, use numeric logic
+        if (!nextPageLink && pageLinks.length > 0) {
+          // Get current page from URL
+          const currentUrl = new URL(window.location.href);
+          const currentPage = parseInt(currentUrl.searchParams.get('page') || '1');
+          
+          // Look for next page number
+          nextPageLink = pageLinks.find(link => {
+            const linkUrl = new URL(link.href);
+            const linkPage = parseInt(linkUrl.searchParams.get('page') || '1');
+            return linkPage === currentPage + 1;
+          });
+        }
         
         return {
           url: window.location.href,
@@ -220,9 +254,62 @@ class GlasswingScraper {
           const title = document.querySelector('h1, .product-single__title, .product__title');
           const price = document.querySelector('.money, .price, .product-single__price');
           
+          // Extract product description/details
+          const extractDescription = () => {
+            // Common selectors for product descriptions
+            const descriptionSelectors = [
+              '.product-single__description',
+              '.product__description', 
+              '.product-description',
+              '.product-details',
+              '.product-content',
+              '.rte',
+              '.product-single__content .rte',
+              '[class*="description"]',
+              '[class*="detail"]'
+            ];
+            
+            let description = null;
+            let descriptionHtml = null;
+            
+            // Try each selector until we find content
+            for (const selector of descriptionSelectors) {
+              const element = document.querySelector(selector);
+              if (element && element.textContent.trim()) {
+                description = element.textContent.trim();
+                descriptionHtml = element.innerHTML.trim();
+                break;
+              }
+            }
+            
+            // Fallback: Look for any content-rich div near product info
+            if (!description) {
+              const contentDivs = document.querySelectorAll('div p, .product-single div, .product-form ~ div');
+              for (const div of contentDivs) {
+                const text = div.textContent.trim();
+                if (text.length > 50 && !text.includes('$') && !text.match(/size|color|quantity/i)) {
+                  description = text;
+                  descriptionHtml = div.innerHTML.trim();
+                  break;
+                }
+              }
+            }
+            
+            return {
+              text: description,
+              html: descriptionHtml,
+              length: description ? description.length : 0
+            };
+          };
+          
+          const descriptionData = extractDescription();
+          
           return {
             title: title ? title.textContent.trim() : null,
             price: price ? price.textContent.trim() : null,
+            description: descriptionData.text,
+            descriptionHtml: descriptionData.html,
+            descriptionLength: descriptionData.length,
             url: window.location.href
           };
         };
@@ -385,6 +472,113 @@ class GlasswingScraper {
         totalProductsFound: categoryData.productLinks.length,
         detailedProductPages: productAnalysis.length,
         successfulScrapes: productAnalysis.filter(p => !p.error).length
+      }
+    };
+  }
+
+  async scrapeCompleteCollection(categoryUrl = '/collections/clothing-collection', maxProducts = null) {
+    this.logger.info(`Starting complete collection scrape for: ${categoryUrl}`);
+    
+    const allProductLinks = [];
+    const allCategoryData = [];
+    const productAnalysis = [];
+    let currentPage = categoryUrl;
+    let pageCount = 0;
+    let totalProductsFound = 0;
+
+    // Step 1: Paginate through all pages to collect all product links
+    while (currentPage && pageCount < 200) { // Expanded safety limit for comprehensive scraping
+      pageCount++;
+      this.logger.info(`Scraping page ${pageCount}: ${currentPage}`);
+      
+      try {
+        const categoryData = await this.scrapeCategoryPage(currentPage);
+        allCategoryData.push(categoryData);
+        
+        // Add unique product links
+        const newLinks = categoryData.productLinks.filter(link => 
+          !allProductLinks.some(existing => existing.element.href === link.element.href)
+        );
+        
+        allProductLinks.push(...newLinks);
+        totalProductsFound += newLinks.length;
+        
+        this.logger.info(`Page ${pageCount}: Found ${newLinks.length} new products (total: ${allProductLinks.length})`);
+        
+        // Check for next page
+        if (categoryData.navigation?.nextPage?.element?.href) {
+          currentPage = categoryData.navigation.nextPage.element.href;
+        } else {
+          this.logger.info('No more pages found');
+          break;
+        }
+        
+        // Apply maxProducts limit if specified
+        if (maxProducts && allProductLinks.length >= maxProducts) {
+          this.logger.info(`Reached maxProducts limit of ${maxProducts}`);
+          break;
+        }
+        
+        // Delay between pages
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+      } catch (error) {
+        this.logger.error(`Error scraping page ${pageCount}: ${error.message}`);
+        break;
+      }
+    }
+
+    // Step 2: Limit product links if maxProducts specified
+    const productLinksToScrape = maxProducts 
+      ? allProductLinks.slice(0, maxProducts)
+      : allProductLinks;
+
+    this.logger.info(`Found ${allProductLinks.length} total products across ${pageCount} pages`);
+    this.logger.info(`Processing ${productLinksToScrape.length} products...`);
+
+    // Step 3: Scrape individual product pages
+    for (let i = 0; i < productLinksToScrape.length; i++) {
+      const productLink = productLinksToScrape[i];
+      
+      if (!productLink.element.href) continue;
+      
+      this.logger.info(`Analyzing product ${i + 1}/${productLinksToScrape.length}: ${productLink.element.href}`);
+      
+      try {
+        const productData = await this.scrapeProductPage(productLink.element.href);
+        productAnalysis.push(productData);
+      } catch (error) {
+        this.logger.error(`Error scraping product ${productLink.element.href}:`, error.message);
+        productAnalysis.push({ 
+          url: productLink.element.href, 
+          error: error.message 
+        });
+      }
+
+      // Progress logging every 10 products
+      if ((i + 1) % 10 === 0 || i === productLinksToScrape.length - 1) {
+        const successful = productAnalysis.filter(p => !p.error).length;
+        this.logger.info(`Progress: ${i + 1}/${productLinksToScrape.length} products (${successful} successful)`);
+      }
+    }
+
+    return {
+      site: this.domain,
+      timestamp: new Date().toISOString(),
+      collection: categoryUrl,
+      paginationData: {
+        pagesScraped: pageCount,
+        totalProductLinksFound: allProductLinks.length,
+        productsProcessed: productLinksToScrape.length
+      },
+      categoryAnalysis: allCategoryData[0], // First page for compatibility
+      allCategoryPages: allCategoryData,
+      productAnalysis: productAnalysis,
+      summary: {
+        totalProductsFound: allProductLinks.length,
+        detailedProductPages: productAnalysis.length,
+        successfulScrapes: productAnalysis.filter(p => !p.error).length,
+        successRate: productAnalysis.length > 0 ? (productAnalysis.filter(p => !p.error).length / productAnalysis.length * 100).toFixed(1) : 0
       }
     };
   }

@@ -18,12 +18,12 @@ class ScrapingAPI {
     // Glasswing focused scraping endpoint
     router.post('/scrape-glasswing', async (req, res) => {
       try {
-        const { maxProducts = 5 } = req.body;
+        const { maxProducts = 5, collection = '/collections/clothing-collection' } = req.body;
         
-        this.logger.info(`Starting focused Glasswing scrape for ${maxProducts} products`);
+        this.logger.info(`Starting focused Glasswing scrape for ${maxProducts} products from ${collection}`);
         
         const results = await this.glasswingScraper.scrapeFirstProducts(
-          '/collections/clothing-collection', 
+          collection, 
           maxProducts
         );
         
@@ -45,7 +45,7 @@ class ScrapingAPI {
     // Scrape and populate world model
     router.post('/scrape-and-populate', async (req, res) => {
       try {
-        const { site = 'glasswing', maxProducts = 10 } = req.body;
+        const { site = 'glasswing', maxProducts = 10, collection = '/collections/clothing-collection' } = req.body;
         
         if (site !== 'glasswing') {
           return res.status(400).json({ 
@@ -54,11 +54,11 @@ class ScrapingAPI {
           });
         }
 
-        this.logger.info(`Starting scrape and populate for ${site} with ${maxProducts} products`);
+        this.logger.info(`Starting scrape and populate for ${site} with ${maxProducts} products from ${collection}`);
         
         // Step 1: Scrape the site
         const scraperResults = await this.glasswingScraper.scrapeFirstProducts(
-          '/collections/clothing-collection', 
+          collection, 
           maxProducts
         );
         
