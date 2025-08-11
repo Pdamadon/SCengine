@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const GlasswingScraper = require('./src/scrapers/GlasswingScraper');
+const GlasswingScraper = require('../../src/scrapers/GlasswingScraper');
 
 // Simple logger for testing
 const logger = {

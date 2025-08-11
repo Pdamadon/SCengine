@@ -1,5 +1,5 @@
 const winston = require('winston');
-const SiteIntelligence = require('./src/intelligence/SiteIntelligence');
+const SiteIntelligence = require('../../src/intelligence/SiteIntelligence');
 
 const logger = winston.createLogger({
   level: 'info',

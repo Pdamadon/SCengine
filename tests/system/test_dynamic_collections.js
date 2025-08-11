@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const GlasswingScraper = require('./src/scrapers/GlasswingScraper');
-const WorldModelPopulator = require('./src/services/WorldModelPopulator');
+const GlasswingScraper = require('../../src/scrapers/GlasswingScraper');
+const WorldModelPopulator = require('../../src/services/WorldModelPopulator');
 
 // Simple logger for testing
 const logger = {

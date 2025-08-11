@@ -1,4 +1,4 @@
-const AIShoppingScraper = require('./src/index');
+const AIShoppingScraper = require('../../src/index');
 
 async function testEnhancedFunctionality() {
   console.log('🧪 Enhanced AI Shopping Scraper Test\n');

@@ -56,7 +56,7 @@ class FullSiteParallelScraper {
     // Step 1: Discover all product URLs from main collection
     logger.info('📡 Phase 1: Discovering all product URLs...');
     const discoveryScript = `
-const GlasswingScraper = require('./src/scrapers/GlasswingScraper');
+const GlasswingScraper = require('../../src/scrapers/GlasswingScraper');
 
 const logger = {
   info: (...args) => console.log('[DISCOVERY]', ...args),
@@ -246,7 +246,7 @@ discoverAllProducts();
     const startTime = Date.now();
     
     const batchScript = `
-const GlasswingScraper = require('./src/scrapers/GlasswingScraper');
+const GlasswingScraper = require('../../src/scrapers/GlasswingScraper');
 
 const logger = {
   info: (...args) => {},
