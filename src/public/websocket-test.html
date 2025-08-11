@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Shopping Scraper - Real-time Dashboard</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.connected { background: #d1edff; color: #0969da; }
+        .status.disconnected { background: #ffeaea; color: #cf222e; }
+        .status.running { background: #dafbe1; color: #1f883d; }
+        .status.completed { background: #e7f3ff; color: #0969da; }
+        .status.failed { background: #ffeaea; color: #cf222e; }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0969da, #54aeff);
+            transition: width 0.3s ease;
+        }
+        .job-item {
+            border: 1px solid #eee;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .job-item.active {
+            border-color: #0969da;
+            background: #f6f8fa;
+        }
+        .log {
+            background: #f6f8fa;
+            border: 1px solid #d1d9e0;
+            border-radius: 6px;
+            padding: 16px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            margin: 2px 0;
+            padding: 2px 0;
+        }
+        .log-entry.info { color: #0969da; }
+        .log-entry.success { color: #1f883d; }
+        .log-entry.error { color: #cf222e; }
+        .log-entry.warning { color: #bf8700; }
+        .btn {
+            background: #0969da;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn:hover { background: #0860ca; }
+        .btn:disabled { 
+            background: #8c959f; 
+            cursor: not-allowed; 
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+        .clickable {
+            cursor: pointer;
+            color: #0969da;
+            text-decoration: underline;
+        }
+        .clickable:hover {
+            color: #0860ca;
+        }
+        .job-browser-controls {
+            margin-bottom: 15px;
+        }
+        .job-browser-controls .btn {
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .job-list-item {
+            border: 1px solid #d1d9e0;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .job-list-item:hover {
+            background: #f6f8fa;
+            border-color: #0969da;
+        }
+        .job-list-item.expanded {
+            background: #fff8e1;
+            border-color: #0969da;
+        }
+        .job-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .job-id {
+            font-family: monospace;
+            font-size: 14px;
+            color: #656d76;
+        }
+        .job-details {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #d1d9e0;
+        }
+        .job-details.expanded {
+            display: block;
+        }
+        .job-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .job-meta-item {
+            background: #f6f8fa;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .job-meta-label {
+            font-weight: bold;
+            color: #656d76;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #656d76;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI Shopping Scraper - Real-time Dashboard</h1>
+            <p>Monitor scraping jobs and queue status in real-time</p>
+            <div>
+                Connection: <span id="connection-status" class="status disconnected">Disconnected</span>
+                <span style="margin-left: 20px;">Server Time: <span id="server-time">--:--:--</span></span>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h3>📊 Queue Statistics</h3>
+                <div id="queue-stats">
+                    <p>Waiting: <strong id="jobs-waiting" class="clickable" onclick="showJobsByStatus('waiting')">0</strong></p>
+                    <p>Active: <strong id="jobs-active" class="clickable" onclick="showJobsByStatus('active')">0</strong></p>
+                    <p>Completed: <strong id="jobs-completed" class="clickable" onclick="showJobsByStatus('completed')">0</strong></p>
+                    <p>Failed: <strong id="jobs-failed" class="clickable" onclick="showJobsByStatus('failed')">0</strong></p>
+                </div>
+                <button id="subscribe-queue-btn" class="btn" onclick="subscribeToQueue()">
+                    Subscribe to Queue Stats
+                </button>
+                <button class="btn" onclick="refreshJobsList()" style="background: #28a745; margin-left: 10px;">
+                    Refresh Jobs
+                </button>
+            </div>
+
+            <div class="card">
+                <h3>🔍 Job Monitoring</h3>
+                <input type="text" id="job-id-input" placeholder="Enter Job ID to monitor" 
+                       style="width: 200px; padding: 8px; margin-right: 10px; border: 1px solid #d1d9e0; border-radius: 4px;">
+                <button class="btn" onclick="subscribeToJob()">Monitor Job</button>
+                <button class="btn" onclick="unsubscribeFromJob()" style="background: #cf222e;">Stop Monitoring</button>
+                <div id="monitored-jobs"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📋 Job Browser</h3>
+            <div class="job-browser-controls">
+                <button class="btn" onclick="showJobsByStatus('all')" id="show-all-btn">All Jobs</button>
+                <button class="btn" onclick="showJobsByStatus('waiting')" id="show-waiting-btn">Waiting</button>
+                <button class="btn" onclick="showJobsByStatus('active')" id="show-active-btn">Active</button>
+                <button class="btn" onclick="showJobsByStatus('completed')" id="show-completed-btn">Completed</button>
+                <button class="btn" onclick="showJobsByStatus('failed')" id="show-failed-btn">Failed</button>
+            </div>
+            <div id="jobs-list-container">
+                <p>Click "All Jobs" or a status above to browse jobs.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📈 Active Jobs</h3>
+            <div id="active-jobs">
+                <p>No active jobs currently being monitored.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📝 Event Log</h3>
+            <button class="btn" onclick="clearLog()" style="background: #6f7681; margin-bottom: 10px;">
+                Clear Log
+            </button>
+            <div id="event-log" class="log">
+                <div class="log-entry info">[INFO] WebSocket client loaded. Click 'Subscribe to Queue Stats' to connect.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let socket = null;
+        let monitoredJobs = new Set();
+        let currentJobId = null;
+        
+        function addLogEntry(message, type = 'info') {
+            const log = document.getElementById('event-log');
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${timestamp}] ${message}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+            
+            // Keep only last 100 entries
+            const entries = log.querySelectorAll('.log-entry');
+            if (entries.length > 100) {
+                entries[0].remove();
+            }
+        }
+        
+        function clearLog() {
+            document.getElementById('event-log').innerHTML = 
+                '<div class="log-entry info">[INFO] Log cleared.</div>';
+        }
+        
+        function connectWebSocket() {
+            if (socket && socket.connected) {
+                addLogEntry('Already connected to WebSocket server', 'warning');
+                return;
+            }
+            
+            addLogEntry('Connecting to WebSocket server...', 'info');
+            
+            socket = io('/', {
+                transports: ['websocket', 'polling'],
+                timeout: 20000,
+            });
+            
+            socket.on('connect', () => {
+                document.getElementById('connection-status').textContent = 'Connected';
+                document.getElementById('connection-status').className = 'status connected';
+                addLogEntry('Connected to WebSocket server', 'success');
+            });
+            
+            socket.on('disconnect', (reason) => {
+                document.getElementById('connection-status').textContent = 'Disconnected';
+                document.getElementById('connection-status').className = 'status disconnected';
+                addLogEntry(`Disconnected from WebSocket server: ${reason}`, 'error');
+            });
+            
+            socket.on('connection_established', (data) => {
+                addLogEntry(`Connection established. Socket ID: ${data.socketId}`, 'success');
+                document.getElementById('server-time').textContent = 
+                    new Date(data.serverTime).toLocaleTimeString();
+            });
+            
+            socket.on('job_progress', (data) => {
+                addLogEntry(`Job ${data.jobId} progress: ${data.progress}% - ${data.message || 'Processing...'}`, 'info');
+                updateJobProgress(data.jobId, data.progress, data.message, data.details);
+            });
+            
+            socket.on('job_status_change', (data) => {
+                addLogEntry(`Job ${data.jobId} status changed: ${data.previousStatus} → ${data.status}`, 'info');
+                updateJobStatus(data.jobId, data.status, data);
+            });
+            
+            socket.on('job_completed', (data) => {
+                addLogEntry(`Job ${data.jobId} completed! Duration: ${Math.round(data.duration)}ms`, 'success');
+                markJobCompleted(data.jobId, data);
+            });
+            
+            socket.on('queue_stats', (data) => {
+                updateQueueStats(data.data);
+            });
+            
+            socket.on('error', (error) => {
+                addLogEntry(`Error: ${error.message || error}`, 'error');
+            });
+        }
+        
+        function subscribeToQueue() {
+            if (!socket || !socket.connected) {
+                connectWebSocket();
+                setTimeout(() => subscribeToQueue(), 1000);
+                return;
+            }
+            
+            socket.emit('subscribe_queue_stats');
+            addLogEntry('Subscribed to queue statistics', 'info');
+        }
+        
+        function subscribeToJob() {
+            const jobIdInput = document.getElementById('job-id-input');
+            const jobId = jobIdInput.value.trim();
+            
+            if (!jobId) {
+                addLogEntry('Please enter a job ID to monitor', 'warning');
+                return;
+            }
+            
+            if (!socket || !socket.connected) {
+                connectWebSocket();
+                setTimeout(() => subscribeToJob(), 1000);
+                return;
+            }
+            
+            socket.emit('subscribe_job', { jobId: jobId });
+            monitoredJobs.add(jobId);
+            currentJobId = jobId;
+            addLogEntry(`Started monitoring job: ${jobId}`, 'info');
+            
+            // Add job to UI
+            addJobToUI(jobId);
+            
+            jobIdInput.value = '';
+        }
+        
+        function unsubscribeFromJob() {
+            if (!currentJobId) {
+                addLogEntry('No job currently being monitored', 'warning');
+                return;
+            }
+            
+            if (socket && socket.connected) {
+                socket.emit('unsubscribe_job', { jobId: currentJobId });
+            }
+            
+            monitoredJobs.delete(currentJobId);
+            removeJobFromUI(currentJobId);
+            addLogEntry(`Stopped monitoring job: ${currentJobId}`, 'info');
+            currentJobId = null;
+        }
+        
+        function addJobToUI(jobId) {
+            const container = document.getElementById('active-jobs');
+            if (document.getElementById(`job-${jobId}`)) return; // Already exists
+            
+            const jobElement = document.createElement('div');
+            jobElement.id = `job-${jobId}`;
+            jobElement.className = 'job-item active';
+            jobElement.innerHTML = `
+                <div style="display: flex; justify-content: between; align-items: center;">
+                    <h4>Job: ${jobId}</h4>
+                    <span class="status running">Running</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+                <p class="job-message">Waiting for updates...</p>
+                <p class="job-details" style="font-size: 12px; color: #666;"></p>
+            `;
+            
+            container.innerHTML = ''; // Clear "no jobs" message
+            container.appendChild(jobElement);
+        }
+        
+        function removeJobFromUI(jobId) {
+            const jobElement = document.getElementById(`job-${jobId}`);
+            if (jobElement) {
+                jobElement.remove();
+            }
+            
+            const container = document.getElementById('active-jobs');
+            if (container.children.length === 0) {
+                container.innerHTML = '<p>No active jobs currently being monitored.</p>';
+            }
+        }
+        
+        function updateJobProgress(jobId, progress, message, details) {
+            const jobElement = document.getElementById(`job-${jobId}`);
+            if (!jobElement) return;
+            
+            const progressFill = jobElement.querySelector('.progress-fill');
+            const messageElement = jobElement.querySelector('.job-message');
+            const detailsElement = jobElement.querySelector('.job-details');
+            
+            progressFill.style.width = `${progress}%`;
+            messageElement.textContent = message || `Progress: ${progress}%`;
+            
+            if (details && Object.keys(details).length > 0) {
+                detailsElement.textContent = `Details: ${JSON.stringify(details)}`;
+            }
+        }
+        
+        function updateJobStatus(jobId, status, data) {
+            const jobElement = document.getElementById(`job-${jobId}`);
+            if (!jobElement) return;
+            
+            const statusElement = jobElement.querySelector('.status');
+            statusElement.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            statusElement.className = `status ${status}`;
+            
+            if (status === 'failed') {
+                jobElement.className = 'job-item';
+                const messageElement = jobElement.querySelector('.job-message');
+                messageElement.textContent = `Error: ${data.error || 'Unknown error'}`;
+            }
+        }
+        
+        function markJobCompleted(jobId, data) {
+            const jobElement = document.getElementById(`job-${jobId}`);
+            if (!jobElement) return;
+            
+            jobElement.className = 'job-item';
+            const progressFill = jobElement.querySelector('.progress-fill');
+            const messageElement = jobElement.querySelector('.job-message');
+            const statusElement = jobElement.querySelector('.status');
+            
+            progressFill.style.width = '100%';
+            statusElement.textContent = 'Completed';
+            statusElement.className = 'status completed';
+            messageElement.textContent = `Completed in ${Math.round(data.duration)}ms`;
+            
+            if (data.results && data.results.summary) {
+                const detailsElement = jobElement.querySelector('.job-details');
+                detailsElement.textContent = 
+                    `Items: ${data.results.summary.total_items}, Categories: ${data.results.summary.categories_found}`;
+            }
+        }
+        
+        function updateQueueStats(stats) {
+            if (stats.counts) {
+                document.getElementById('jobs-waiting').textContent = stats.counts.waiting || 0;
+                document.getElementById('jobs-active').textContent = stats.counts.active || 0;
+                document.getElementById('jobs-completed').textContent = stats.counts.completed || 0;
+                document.getElementById('jobs-failed').textContent = stats.counts.failed || 0;
+            }
+        }
+        
+        // Job browsing functionality
+        let allJobs = [];
+        let currentFilter = 'all';
+        
+        async function refreshJobsList() {
+            try {
+                addLogEntry('Refreshing jobs list...', 'info');
+                const response = await fetch('/api/v1/scraping/jobs');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                // Handle the actual API response format
+                if (data.jobs) {
+                    allJobs = data.jobs;
+                    addLogEntry(`Loaded ${allJobs.length} jobs from server`, 'success');
+                    console.log('Jobs loaded:', allJobs);
+                    showJobsByStatus(currentFilter);
+                } else {
+                    addLogEntry(`Error loading jobs: Invalid response format`, 'error');
+                    console.error('API Response:', data);
+                }
+            } catch (error) {
+                addLogEntry(`Failed to load jobs: ${error.message}`, 'error');
+                console.error('Fetch error:', error);
+            }
+        }
+        
+        function showJobsByStatus(status) {
+            currentFilter = status;
+            const container = document.getElementById('jobs-list-container');
+            
+            // Update button states
+            document.querySelectorAll('.job-browser-controls .btn').forEach(btn => {
+                btn.style.background = '#0969da';
+            });
+            const activeBtn = document.getElementById(`show-${status}-btn`);
+            if (activeBtn) {
+                activeBtn.style.background = '#0860ca';
+            }
+            
+            if (!allJobs.length) {
+                container.innerHTML = '<div class="loading">Loading jobs... Click "Refresh Jobs" to load data.</div>';
+                return;
+            }
+            
+            // Filter jobs
+            let filteredJobs = allJobs;
+            if (status !== 'all') {
+                filteredJobs = allJobs.filter(job => job.status === status);
+            }
+            
+            if (filteredJobs.length === 0) {
+                container.innerHTML = `<p>No ${status === 'all' ? '' : status} jobs found.</p>`;
+                return;
+            }
+            
+            // Sort by creation time (newest first)
+            filteredJobs.sort((a, b) => new Date(b.submitted_at || b.created_at) - new Date(a.submitted_at || a.created_at));
+            
+            // Render jobs
+            container.innerHTML = filteredJobs.map(job => renderJobItem(job)).join('');
+        }
+        
+        function renderJobItem(job) {
+            const createdAt = new Date(job.submitted_at || job.created_at).toLocaleString();
+            const updatedAt = new Date(job.updated_at || job.submitted_at).toLocaleString();
+            const duration = job.completed_at ? 
+                Math.round((new Date(job.completed_at) - new Date(job.started_at || job.submitted_at || job.created_at)) / 1000) : 
+                'N/A';
+            
+            return `
+                <div class="job-list-item" onclick="toggleJobDetails('${job.job_id}')">
+                    <div class="job-header">
+                        <div>
+                            <strong>${job.scraping_type || 'Unknown'}</strong> - 
+                            <span class="job-id">${job.job_id}</span>
+                        </div>
+                        <span class="status ${job.status}">${job.status}</span>
+                    </div>
+                    <div>
+                        <strong>Target:</strong> ${job.target_url || 'N/A'}
+                    </div>
+                    <div>
+                        <strong>Created:</strong> ${createdAt} | 
+                        <strong>Priority:</strong> ${job.priority || 'normal'} |
+                        <strong>Progress:</strong> ${job.progress || 0}%
+                    </div>
+                    
+                    <div class="job-details" id="details-${job.job_id}">
+                        <div class="job-meta">
+                            <div class="job-meta-item">
+                                <div class="job-meta-label">Status Details</div>
+                                <div>Status: ${job.status}</div>
+                                <div>Progress: ${job.progress || 0}%</div>
+                                <div>Queue Position: ${job.queue_position || 'N/A'}</div>
+                            </div>
+                            <div class="job-meta-item">
+                                <div class="job-meta-label">Timing</div>
+                                <div>Created: ${createdAt}</div>
+                                <div>Updated: ${updatedAt}</div>
+                                <div>Duration: ${duration}s</div>
+                            </div>
+                            <div class="job-meta-item">
+                                <div class="job-meta-label">Configuration</div>
+                                <div>Type: ${job.scraping_type || 'N/A'}</div>
+                                <div>Max Pages: ${job.max_pages || 'N/A'}</div>
+                                <div>Extract Images: ${job.extract_images ? 'Yes' : 'No'}</div>
+                            </div>
+                            <div class="job-meta-item">
+                                <div class="job-meta-label">Results</div>
+                                <div>Items Scraped: ${job.results_summary?.total_items || 'N/A'}</div>
+                                <div>Categories Found: ${job.results_summary?.categories_found || 'N/A'}</div>
+                                <div>Data Quality: ${job.results_summary?.data_quality_score || 'N/A'}</div>
+                            </div>
+                        </div>
+                        ${job.error_details ? `
+                            <div class="job-meta-item" style="background: #ffeaea; margin-top: 10px;">
+                                <div class="job-meta-label" style="color: #cf222e;">Error Details</div>
+                                <div style="font-family: monospace; font-size: 12px;">${job.error_details}</div>
+                            </div>
+                        ` : ''}
+                        <div style="margin-top: 15px;">
+                            <button class="btn" onclick="monitorJobById('${job.job_id}')" style="margin-right: 10px;">
+                                Monitor This Job
+                            </button>
+                            <button class="btn" onclick="viewJobResults('${job.job_id}')" style="background: #28a745;">
+                                View Results
+                            </button>
+                            ${job.status === 'queued' || job.status === 'running' ? `
+                                <button class="btn" onclick="cancelJob('${job.job_id}')" style="background: #cf222e; margin-left: 10px;">
+                                    Cancel Job
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function toggleJobDetails(jobId) {
+            const details = document.getElementById(`details-${jobId}`);
+            const item = details.closest('.job-list-item');
+            
+            if (details.classList.contains('expanded')) {
+                details.classList.remove('expanded');
+                item.classList.remove('expanded');
+            } else {
+                // Close all other expanded items
+                document.querySelectorAll('.job-details.expanded').forEach(el => {
+                    el.classList.remove('expanded');
+                    el.closest('.job-list-item').classList.remove('expanded');
+                });
+                
+                details.classList.add('expanded');
+                item.classList.add('expanded');
+            }
+        }
+        
+        function monitorJobById(jobId) {
+            document.getElementById('job-id-input').value = jobId;
+            subscribeToJob();
+        }
+        
+        async function viewJobResults(jobId) {
+            try {
+                const response = await fetch(`/api/v1/scraping/jobs/${jobId}/results`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.results) {
+                    const totalItems = data.results.total_items || data.results.data?.length || 0;
+                    addLogEntry(`Job ${jobId} results: ${totalItems} items scraped`, 'success');
+                    console.log('Job results:', data.results);
+                } else {
+                    addLogEntry(`No results found for job ${jobId}`, 'warning');
+                }
+            } catch (error) {
+                addLogEntry(`Failed to load results for job ${jobId}: ${error.message}`, 'error');
+            }
+        }
+        
+        async function cancelJob(jobId) {
+            if (!confirm(`Are you sure you want to cancel job ${jobId}?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/v1/scraping/jobs/${jobId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                // Check if cancellation was successful (job cancelled or success field)
+                if (response.status === 200 || data.cancelled || data.success) {
+                    addLogEntry(`Job ${jobId} cancelled successfully`, 'success');
+                    refreshJobsList();
+                } else {
+                    addLogEntry(`Failed to cancel job ${jobId}: ${data.message || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                addLogEntry(`Error cancelling job ${jobId}: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-connect on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Don't auto-connect, let user decide
+            addLogEntry('Dashboard loaded. Use buttons above to connect and monitor.', 'info');
+            
+            // Auto-load jobs list
+            setTimeout(() => {
+                refreshJobsList();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

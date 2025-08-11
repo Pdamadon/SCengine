@@ -6,15 +6,17 @@
 
 const Bull = require('bull');
 const Redis = require('ioredis');
+const EventEmitter = require('events');
 const { logger } = require('../utils/logger');
 const { metrics } = require('../utils/metrics');
 
-class QueueManager {
+class QueueManager extends EventEmitter {
   constructor() {
+    super();
     this.queues = new Map();
     this.redisClient = null;
     this.isInitialized = false;
-    
+
     // Queue configuration
     this.queueConfig = {
       redis: {
@@ -43,7 +45,7 @@ class QueueManager {
     // Priority levels configuration
     this.priorityLevels = {
       urgent: 1,
-      high: 2, 
+      high: 2,
       normal: 3,
       low: 4,
     };
@@ -55,10 +57,10 @@ class QueueManager {
   async initialize() {
     try {
       logger.info('QueueManager: Initializing Redis connection...');
-      
+
       // Create Redis connection with better error handling
       this.redisClient = new Redis(this.queueConfig.redis);
-      
+
       // Wait for connection to be ready
       await new Promise((resolve, reject) => {
         const timeout = setTimeout(() => {
@@ -69,7 +71,7 @@ class QueueManager {
           clearTimeout(timeout);
           resolve();
         });
-        
+
         this.redisClient.on('error', (error) => {
           clearTimeout(timeout);
           reject(error);
@@ -110,7 +112,7 @@ class QueueManager {
         error: error.message,
         stack: error.stack,
       });
-      
+
       metrics.trackError('QueueInitializationError', 'queue_manager');
       throw error;
     }
@@ -129,12 +131,12 @@ class QueueManager {
     };
 
     const queue = new Bull(queueName, mergedOptions);
-    
+
     // Set up event listeners
     this.setupQueueEventListeners(queue, queueName);
-    
+
     this.queues.set(queueName, queue);
-    
+
     logger.info(`QueueManager: Created queue '${queueName}'`);
     return queue;
   }
@@ -149,10 +151,10 @@ class QueueManager {
       }
 
       const queue = this.getQueue(queueName);
-      
+
       // Determine priority based on job data
       const priority = this.determinePriority(jobData.priority);
-      
+
       const jobOptions = {
         priority: priority,
         delay: options.delay || 0,
@@ -200,7 +202,7 @@ class QueueManager {
         jobType: jobType,
         error: error.message,
       });
-      
+
       metrics.trackError('JobAddError', 'queue_manager');
       throw error;
     }
@@ -213,7 +215,7 @@ class QueueManager {
     try {
       const queue = this.getQueue(queueName);
       const job = await queue.getJob(jobId);
-      
+
       if (!job) {
         return { success: false, reason: 'not_found' };
       }
@@ -221,15 +223,15 @@ class QueueManager {
       // Check if job can be removed
       const jobState = await job.getState();
       if (!['waiting', 'delayed', 'active'].includes(jobState)) {
-        return { 
-          success: false, 
+        return {
+          success: false,
           reason: 'cannot_remove',
-          currentState: jobState 
+          currentState: jobState,
         };
       }
 
       await job.remove();
-      
+
       logger.info('QueueManager: Job removed from queue', {
         queue: queueName,
         jobId: jobId,
@@ -257,7 +259,7 @@ class QueueManager {
         jobId: jobId,
         error: error.message,
       });
-      
+
       metrics.trackError('JobRemovalError', 'queue_manager');
       throw error;
     }
@@ -270,7 +272,7 @@ class QueueManager {
     try {
       const queue = this.getQueue(queueName);
       const job = await queue.getJob(jobId);
-      
+
       if (!job) {
         return null;
       }
@@ -278,7 +280,7 @@ class QueueManager {
       const state = await job.getState();
       const progress = job.progress();
       const opts = job.opts;
-      
+
       return {
         jobId: job.id,
         state: state,
@@ -298,7 +300,7 @@ class QueueManager {
         jobId: jobId,
         error: error.message,
       });
-      
+
       throw error;
     }
   }
@@ -309,7 +311,7 @@ class QueueManager {
   async getQueueStats(queueName) {
     try {
       const queue = this.getQueue(queueName);
-      
+
       const [waiting, active, completed, failed, delayed] = await Promise.all([
         queue.getWaiting(),
         queue.getActive(),
@@ -335,7 +337,7 @@ class QueueManager {
         queue: queueName,
         error: error.message,
       });
-      
+
       throw error;
     }
   }
@@ -345,7 +347,7 @@ class QueueManager {
    */
   async getAllQueueStats() {
     const stats = {};
-    
+
     for (const [queueName] of this.queues) {
       try {
         stats[queueName] = await this.getQueueStats(queueName);
@@ -377,10 +379,10 @@ class QueueManager {
    */
   async cleanQueue(queueName, grace = 5000) {
     const queue = this.getQueue(queueName);
-    
+
     const cleaned = await queue.clean(grace, 'completed', 100);
     await queue.clean(grace * 2, 'failed', 50);
-    
+
     logger.info(`QueueManager: Cleaned ${cleaned.length} old jobs from queue '${queueName}'`);
     return cleaned.length;
   }
@@ -404,6 +406,16 @@ class QueueManager {
       metrics.observeHistogram('queue_job_duration', job.finishedOn - job.processedOn, {
         queue: queueName,
       });
+
+      // Emit WebSocket event for job completion
+      this.emit('job_completed', {
+        jobId: job.data.job_id || job.id,
+        queueName: queueName,
+        duration: job.finishedOn - job.processedOn,
+        result: result,
+        status: 'completed',
+        timestamp: new Date(),
+      });
     });
 
     queue.on('failed', (job, err) => {
@@ -419,6 +431,17 @@ class QueueManager {
         queue: queueName,
         attempt: job.attemptsMade.toString(),
       });
+
+      // Emit WebSocket event for job failure
+      this.emit('job_failed', {
+        jobId: job.data.job_id || job.id,
+        queueName: queueName,
+        attempt: job.attemptsMade,
+        maxAttempts: job.opts.attempts,
+        error: err.message,
+        status: 'failed',
+        timestamp: new Date(),
+      });
     });
 
     queue.on('stalled', (job) => {
@@ -432,11 +455,43 @@ class QueueManager {
       });
     });
 
+    queue.on('active', (job) => {
+      logger.info('QueueManager: Job started', {
+        queue: queueName,
+        jobId: job.id,
+      });
+
+      // Emit WebSocket event for job start
+      this.emit('job_started', {
+        jobId: job.data.job_id || job.id,
+        queueName: queueName,
+        status: 'running',
+        timestamp: new Date(),
+      });
+    });
+
     queue.on('progress', (job, progress) => {
+      // Handle both numeric progress and object progress data
+      const progressValue = typeof progress === 'object' ? progress.progress : progress;
+      const progressMessage = typeof progress === 'object' ? progress.message : '';
+      const progressDetails = typeof progress === 'object' ? progress.details : {};
+
       logger.debug('QueueManager: Job progress update', {
         queue: queueName,
         jobId: job.id,
-        progress: progress,
+        progress: progressValue,
+        message: progressMessage,
+      });
+
+      // Emit WebSocket event for job progress
+      this.emit('job_progress', {
+        jobId: job.data.job_id || job.id,
+        queueName: queueName,
+        progress: progressValue,
+        message: progressMessage,
+        details: progressDetails,
+        status: 'running',
+        timestamp: typeof progress === 'object' ? progress.timestamp : new Date(),
       });
     });
   }
@@ -450,13 +505,13 @@ class QueueManager {
       for (const [queueName] of this.queues) {
         try {
           const stats = await this.getQueueStats(queueName);
-          
+
           // Update gauge metrics
           metrics.setGauge('queue_jobs_waiting', stats.counts.waiting, { queue: queueName });
           metrics.setGauge('queue_jobs_active', stats.counts.active, { queue: queueName });
           metrics.setGauge('queue_jobs_completed', stats.counts.completed, { queue: queueName });
           metrics.setGauge('queue_jobs_failed', stats.counts.failed, { queue: queueName });
-          
+
         } catch (error) {
           logger.error('QueueManager: Failed to collect metrics for queue', {
             queue: queueName,
@@ -486,7 +541,7 @@ class QueueManager {
     try {
       const queue = this.getQueue(queueName);
       const waitingJobs = await queue.getWaiting();
-      
+
       const position = waitingJobs.findIndex(job => job.id === jobId);
       return position >= 0 ? position + 1 : null;
     } catch (error) {
@@ -503,7 +558,7 @@ class QueueManager {
     // Simple estimation: higher priority = less wait time
     const baseTimes = {
       1: 30000,   // urgent: 30 seconds
-      2: 120000,  // high: 2 minutes  
+      2: 120000,  // high: 2 minutes
       3: 300000,  // normal: 5 minutes
       4: 900000,  // low: 15 minutes
     };
@@ -516,7 +571,7 @@ class QueueManager {
    */
   async shutdown() {
     logger.info('QueueManager: Shutting down...');
-    
+
     for (const [queueName, queue] of this.queues) {
       try {
         await queue.close();
@@ -547,7 +602,7 @@ class QueueManager {
 
     try {
       await this.redisClient.ping();
-      
+
       const queueChecks = {};
       for (const [queueName, queue] of this.queues) {
         try {
@@ -563,7 +618,7 @@ class QueueManager {
         redis: 'connected',
         queues: queueChecks,
       };
-      
+
     } catch (error) {
       return {
         healthy: false,

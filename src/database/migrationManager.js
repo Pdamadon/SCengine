@@ -34,7 +34,7 @@ class MigrationManager {
       await this.connect();
       await this.ensureMigrationsCollection();
       await this.ensureMigrationsDirectory();
-      
+
       // Initialize migration metrics
       this.initializeMetrics();
 
@@ -61,7 +61,7 @@ class MigrationManager {
       metrics.createCounter('database_migrations_applied', 'Number of database migrations applied', ['version']);
       metrics.createCounter('database_migrations_rolled_back', 'Number of database migrations rolled back', ['version']);
       metrics.createGauge('database_migration_lock_active', 'Whether database migration lock is active', []);
-      
+
       logger.debug('Migration metrics initialized');
     } catch (error) {
       logger.warn('Failed to initialize migration metrics', { error: error.message });

@@ -32,42 +32,42 @@ class ScrapingJobService {
       priority: jobData.priority || 'normal',
       status: 'queued',
       progress: 0,
-      
+
       // Request details
       correlation_id: jobData.correlation_id,
       submitted_by: jobData.submitted_by || 'anonymous',
       submitted_at: submittedAt,
       client_ip: jobData.client_ip,
       user_agent: jobData.user_agent,
-      
+
       // Configuration
       max_pages: jobData.max_pages || 100,
       respect_robots_txt: jobData.respect_robots_txt !== false,
       rate_limit_delay_ms: jobData.rate_limit_delay_ms || 1000,
       timeout_ms: jobData.timeout_ms || 30000,
-      
+
       // Target options
       category_filters: jobData.category_filters || [],
       product_filters: jobData.product_filters || [],
       custom_selectors: jobData.custom_selectors || {},
-      
+
       // Processing options
       extract_images: jobData.extract_images || false,
       extract_reviews: jobData.extract_reviews || false,
       extract_pricing_history: jobData.extract_pricing_history || false,
-      
+
       // Timestamps
       created_at: submittedAt,
       updated_at: submittedAt,
       started_at: null,
       completed_at: null,
-      
+
       // Results tracking
       results_summary: null,
       error_details: null,
       retry_count: 0,
       max_retries: 3,
-      
+
       // Estimated metrics
       estimated_duration_ms: this.estimateJobDuration(jobData),
       estimated_completion: null,
@@ -75,7 +75,7 @@ class ScrapingJobService {
 
     // Set estimated completion time
     jobRecord.estimated_completion = new Date(
-      submittedAt.getTime() + jobRecord.estimated_duration_ms
+      submittedAt.getTime() + jobRecord.estimated_duration_ms,
     );
 
     try {
@@ -142,7 +142,7 @@ class ScrapingJobService {
         const elapsedMs = Date.now() - job.started_at.getTime();
         const progressPercent = Math.min(
           Math.round((elapsedMs / job.estimated_duration_ms) * 100),
-          95 // Cap at 95% until completion
+          95, // Cap at 95% until completion
         );
         job.progress = Math.max(job.progress, progressPercent);
       }
@@ -262,7 +262,7 @@ class ScrapingJobService {
             updated_at: new Date(),
             error_details: 'Job cancelled by user request',
           },
-        }
+        },
       );
 
       // Remove from queue if still queued
@@ -307,19 +307,19 @@ class ScrapingJobService {
 
       // Build MongoDB query from filters
       const query = {};
-      
+
       if (filters.status) {
         query.status = filters.status;
       }
-      
+
       if (filters.scraping_type) {
         query.scraping_type = filters.scraping_type;
       }
-      
+
       if (filters.submitted_after) {
         query.submitted_at = { $gte: new Date(filters.submitted_after) };
       }
-      
+
       if (filters.submitted_before) {
         if (query.submitted_at) {
           query.submitted_at.$lte = new Date(filters.submitted_before);
@@ -434,7 +434,7 @@ class ScrapingJobService {
             type: 'exponential',
             delay: 5000,
           },
-        }
+        },
       );
 
       logger.info('JOB_ADDED_TO_QUEUE', {
@@ -522,11 +522,11 @@ class ScrapingJobService {
     const headers = Object.keys(data[0]);
     const csvRows = [
       headers.join(','),
-      ...data.map(row => 
+      ...data.map(row =>
         headers.map(header => {
           const value = row[header];
           return typeof value === 'string' ? `"${value.replace(/"/g, '""')}"` : value;
-        }).join(',')
+        }).join(','),
       ),
     ];
 
@@ -555,7 +555,7 @@ class ScrapingJobService {
     if (typeof unsafe !== 'string') {
       return unsafe;
     }
-    
+
     return unsafe.replace(/[<>&'"]/g, (c) => {
       switch (c) {
         case '<': return '&lt;';

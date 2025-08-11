@@ -33,7 +33,7 @@ class WorkerProcess {
     this.mongoClient = null;
     this.worker = null;
     this.isShuttingDown = false;
-    
+
     // Configuration from environment
     this.config = {
       concurrency: parseInt(process.env.WORKER_CONCURRENCY) || 3,
@@ -56,7 +56,7 @@ class WorkerProcess {
           serverSelectionTimeoutMS: 5000,
           socketTimeoutMS: 45000,
         });
-        
+
         await this.mongoClient.connect();
         await this.mongoClient.db('ai_shopping_scraper').command({ ping: 1 });
         logger.info('WorkerProcess: MongoDB connected successfully');

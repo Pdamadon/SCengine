@@ -17,7 +17,7 @@ const router = express.Router();
 router.get('/queues', async (req, res) => {
   try {
     const stats = await queueManager.getAllQueueStats();
-    
+
     res.json({
       success: true,
       queues: stats,
@@ -43,7 +43,7 @@ router.get('/queues/:queueName', async (req, res) => {
   try {
     const { queueName } = req.params;
     const stats = await queueManager.getQueueStats(queueName);
-    
+
     res.json({
       success: true,
       queue: stats,
@@ -77,7 +77,7 @@ router.get('/queues/:queueName/jobs/:jobId', async (req, res) => {
   try {
     const { queueName, jobId } = req.params;
     const jobStatus = await queueManager.getJobStatus(queueName, jobId);
-    
+
     if (!jobStatus) {
       return res.status(404).json({
         error: 'Job not found in queue',
@@ -85,7 +85,7 @@ router.get('/queues/:queueName/jobs/:jobId', async (req, res) => {
         jobId: jobId,
       });
     }
-    
+
     res.json({
       success: true,
       job: jobStatus,
@@ -113,9 +113,9 @@ router.post('/queues/:queueName/pause', async (req, res) => {
   try {
     const { queueName } = req.params;
     await queueManager.pauseQueue(queueName);
-    
+
     logger.info('QueueManagement: Queue paused', { queueName });
-    
+
     res.json({
       success: true,
       message: `Queue '${queueName}' has been paused`,
@@ -150,9 +150,9 @@ router.post('/queues/:queueName/resume', async (req, res) => {
   try {
     const { queueName } = req.params;
     await queueManager.resumeQueue(queueName);
-    
+
     logger.info('QueueManagement: Queue resumed', { queueName });
-    
+
     res.json({
       success: true,
       message: `Queue '${queueName}' has been resumed`,
@@ -187,15 +187,15 @@ router.post('/queues/:queueName/clean', async (req, res) => {
   try {
     const { queueName } = req.params;
     const { grace = 5000 } = req.body;
-    
+
     const cleanedCount = await queueManager.cleanQueue(queueName, grace);
-    
-    logger.info('QueueManagement: Queue cleaned', { 
+
+    logger.info('QueueManagement: Queue cleaned', {
       queueName,
       cleanedCount,
-      grace 
+      grace,
     });
-    
+
     res.json({
       success: true,
       message: `Cleaned ${cleanedCount} old jobs from queue '${queueName}'`,
@@ -230,9 +230,9 @@ router.post('/queues/:queueName/clean', async (req, res) => {
 router.get('/health', async (req, res) => {
   try {
     const healthStatus = await queueManager.healthCheck();
-    
+
     const statusCode = healthStatus.healthy ? 200 : 503;
-    
+
     res.status(statusCode).json({
       service: 'queue-management',
       ...healthStatus,
@@ -260,14 +260,14 @@ router.get('/metrics', async (req, res) => {
   try {
     const queueStats = await queueManager.getAllQueueStats();
     const systemMetrics = metrics.getSummary();
-    
+
     // Calculate aggregate metrics
     let totalJobs = 0;
     let totalWaiting = 0;
     let totalActive = 0;
     let totalCompleted = 0;
     let totalFailed = 0;
-    
+
     for (const [queueName, stats] of Object.entries(queueStats)) {
       if (stats.counts) {
         totalWaiting += stats.counts.waiting;
@@ -312,7 +312,7 @@ router.get('/dashboard', async (req, res) => {
   try {
     const queueStats = await queueManager.getAllQueueStats();
     const healthStatus = await queueManager.healthCheck();
-    
+
     // Format data for dashboard display
     const dashboardData = {
       overview: {

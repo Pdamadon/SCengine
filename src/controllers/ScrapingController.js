@@ -54,7 +54,7 @@ class ScrapingController {
         });
 
         metrics.incrementCounter('scraping_rate_limit_hits', { ip: req.ip });
-        
+
         return res.status(429).json({
           error: 'Rate limit exceeded',
           limit: rateLimitCheck.limit,
@@ -288,7 +288,7 @@ class ScrapingController {
       if (!cancelResult.success) {
         const statusCode = cancelResult.reason === 'not_found' ? 404 : 400;
         metrics.trackHttpRequest('DELETE', '/api/v1/scraping/jobs/:id', statusCode, performance.now() - startTime);
-        
+
         return res.status(statusCode).json({
           error: 'Cannot cancel job',
           reason: cancelResult.reason,
@@ -400,7 +400,7 @@ class ScrapingController {
    */
   validateSubmissionRequest(body) {
     const errors = [];
-    
+
     if (!body.target_url) {
       errors.push('target_url is required');
     } else if (!this.isValidUrl(body.target_url)) {

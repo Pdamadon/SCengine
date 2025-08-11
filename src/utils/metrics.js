@@ -39,6 +39,15 @@ class MetricsCollector {
     this.createCounter('scraping_results_downloaded', 'Total scraping results downloaded', ['format', 'status']);
     this.createGauge('scraping_jobs_queue_size', 'Number of jobs in queue', ['priority']);
 
+    // Security and validation metrics
+    this.createCounter('security_violations', 'Security violations detected', ['type']);
+    this.createCounter('validation_failures', 'Request validation failures', ['type']);
+    this.createCounter('validation_success', 'Successful request validations', ['type']);
+    this.createCounter('rate_limit_exceeded', 'Rate limit violations', ['type']);
+    this.createCounter('suspicious_requests', 'Suspicious requests detected', ['type']);
+    this.createCounter('suspicious_ips', 'Suspicious IPs blocked', ['type']);
+    this.createCounter('unauthorized_admin_access', 'Unauthorized admin access attempts');
+
     // Database metrics
     this.createCounter('database_operations_total', 'Total database operations', ['operation', 'collection']);
     this.createHistogram('database_operation_duration_ms', 'Database operation duration in milliseconds', ['operation', 'collection']);
@@ -60,7 +69,7 @@ class MetricsCollector {
     this.createGauge('queue_size', 'Number of items in queue', ['queue_name']);
     this.createCounter('queue_processed_total', 'Total queue items processed', ['queue_name', 'status']);
     this.createHistogram('queue_processing_duration_ms', 'Queue item processing duration', ['queue_name']);
-    
+
     // Extended queue metrics
     this.createCounter('queue_jobs_added', 'Total jobs added to queue', ['queue', 'type', 'priority']);
     this.createCounter('queue_jobs_removed', 'Total jobs removed from queue', ['queue', 'reason']);
@@ -69,10 +78,19 @@ class MetricsCollector {
     this.createCounter('queue_jobs_stalled', 'Total jobs stalled in queue', ['queue']);
     this.createGauge('queue_jobs_waiting', 'Jobs waiting in queue', ['queue']);
     this.createGauge('queue_jobs_active', 'Jobs active in queue', ['queue']);
+    this.createGauge('queue_jobs_completed', 'Jobs completed in queue', ['queue']);
+    this.createGauge('queue_jobs_failed', 'Jobs failed in queue', ['queue']);
     this.createHistogram('queue_job_duration', 'Job processing duration in queue', ['queue']);
-    
+
     // Worker metrics
     this.createGauge('scraping_worker_active_jobs', 'Active scraping jobs in worker');
+
+    // WebSocket metrics
+    this.createGauge('websocket_connections_active', 'Active WebSocket connections');
+    this.createGauge('websocket_job_subscriptions', 'WebSocket job subscriptions');
+    this.createCounter('websocket_messages_sent_total', 'Total WebSocket messages sent');
+    this.createCounter('websocket_messages_received_total', 'Total WebSocket messages received');
+    this.createCounter('websocket_connections_total', 'Total WebSocket connection attempts', ['status']);
 
     // Start collecting system metrics
     this.startSystemMetricsCollection();
