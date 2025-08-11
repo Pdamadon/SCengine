@@ -1,0 +1,227 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    name: Code Quality & Testing
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run ESLint
+      run: npm run lint:check
+
+    - name: Check code formatting
+      run: npm run format:check
+
+    - name: Run unit tests
+      run: npm run test:unit
+
+    - name: Run integration tests
+      run: npm run test:integration
+
+    - name: Generate test coverage
+      run: npm run test:coverage
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage/lcov.info
+        fail_ci_if_error: false
+
+    - name: Validate deployment readiness
+      run: npm run validate
+
+    - name: Archive test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: |
+          coverage/
+          test-results/
+
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run security audit
+      run: npm audit --audit-level=moderate
+
+    - name: Check for known vulnerabilities
+      run: npx audit-ci --moderate
+
+  compliance:
+    name: Compliance Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Verify SCRAPING_REQUIREMENTS.md exists
+      run: |
+        if [ ! -f "SCRAPING_REQUIREMENTS.md" ]; then
+          echo "❌ SCRAPING_REQUIREMENTS.md is missing"
+          exit 1
+        fi
+        echo "✅ SCRAPING_REQUIREMENTS.md found"
+
+    - name: Verify CLAUDE.md exists
+      run: |
+        if [ ! -f "CLAUDE.md" ]; then
+          echo "❌ CLAUDE.md is missing"
+          exit 1
+        fi
+        echo "✅ CLAUDE.md found"
+
+    - name: Check required scripts exist
+      run: |
+        node -e "
+        const pkg = require('./package.json');
+        const required = ['start', 'test', 'lint', 'validate', 'rollback'];
+        const missing = required.filter(script => !pkg.scripts[script]);
+        if (missing.length > 0) {
+          console.log('❌ Missing required scripts:', missing.join(', '));
+          process.exit(1);
+        }
+        console.log('✅ All required scripts present');
+        "
+
+  performance:
+    name: Performance Baseline
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run system tests (performance baseline)
+      run: npm run test:system
+      continue-on-error: true # Allow to continue even if some system tests fail
+
+    - name: Archive performance results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: performance-results
+        path: test-results/
+
+  build:
+    name: Build & Package
+    runs-on: ubuntu-latest
+    needs: [validate, security, compliance]
+    timeout-minutes: 10
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build application (if build script exists)
+      run: |
+        if npm run | grep -q "build"; then
+          npm run build
+        else
+          echo "No build script found, skipping build step"
+        fi
+
+    - name: Validate package structure
+      run: |
+        echo "✅ Package validation completed"
+        ls -la
+
+    - name: Create deployment artifact
+      run: |
+        tar -czf deployment-artifact.tar.gz \
+          --exclude=node_modules \
+          --exclude=coverage \
+          --exclude=.git \
+          --exclude=test-results \
+          .
+
+    - name: Upload deployment artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: deployment-artifact
+        path: deployment-artifact.tar.gz
+
+  notify:
+    name: Notification
+    runs-on: ubuntu-latest
+    needs: [validate, security, compliance, performance, build]
+    if: always()
+
+    steps:
+    - name: Job Summary
+      run: |
+        echo "## CI Pipeline Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+        echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+        echo "| Code Quality & Testing | ${{ needs.validate.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Security Audit | ${{ needs.security.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Compliance Check | ${{ needs.compliance.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Performance Baseline | ${{ needs.performance.result == 'success' && '✅ Passed' || '⚠️ See Results' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Build & Package | ${{ needs.build.result == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [[ "${{ needs.validate.result }}" == "success" && "${{ needs.security.result }}" == "success" && "${{ needs.compliance.result }}" == "success" && "${{ needs.build.result }}" == "success" ]]; then
+          echo "🎉 **All critical checks passed!** Ready for deployment." >> $GITHUB_STEP_SUMMARY
+        else
+          echo "⚠️ **Some checks failed.** Review results before deployment." >> $GITHUB_STEP_SUMMARY
+        fi

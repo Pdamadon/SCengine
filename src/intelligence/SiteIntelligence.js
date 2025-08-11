@@ -20,7 +20,7 @@ class SiteIntelligence {
   async buildComprehensiveSiteIntelligence(url, options = {}) {
     const domain = new URL(url).hostname;
     const startTime = Date.now();
-    
+
     this.logger.info(`🧠 Building comprehensive site intelligence for ${domain}`);
 
     try {
@@ -38,23 +38,23 @@ class SiteIntelligence {
       // Phase 2: Concurrent deep exploration
       this.logger.info(`🔄 Phase 2: Concurrent section exploration (${navigationIntelligence.main_sections.length} sections)`);
       const explorationResults = await this.concurrentExplorer.exploreAllSections(
-        url, 
-        navigationIntelligence, 
+        url,
+        navigationIntelligence,
         {
           maxConcurrent: options.maxConcurrent || 4,
-          maxSubcategories: options.maxSubcategories || 3
-        }
+          maxSubcategories: options.maxSubcategories || 3,
+        },
       );
 
       // Phase 3: Compile comprehensive intelligence
       const comprehensiveIntelligence = await this.compileIntelligence(
-        domain, 
-        navigationIntelligence, 
-        explorationResults
+        domain,
+        navigationIntelligence,
+        explorationResults,
       );
 
       const duration = Date.now() - startTime;
-      this.logger.info(`🎉 Site intelligence completed for ${domain} in ${Math.round(duration/1000)}s`);
+      this.logger.info(`🎉 Site intelligence completed for ${domain} in ${Math.round(duration / 1000)}s`);
       this.logger.info(`📊 Intelligence Summary: ${comprehensiveIntelligence.summary.sections_mapped} sections, ${comprehensiveIntelligence.summary.products_discovered} products, ${comprehensiveIntelligence.summary.selectors_identified} working selectors`);
 
       return comprehensiveIntelligence;
@@ -77,22 +77,22 @@ class SiteIntelligence {
         dropdown_menus: Object.keys(navigationIntelligence.dropdown_menus).length,
         sidebar_navigation: navigationIntelligence.sidebar_navigation.length,
         breadcrumb_patterns: navigationIntelligence.breadcrumb_patterns.length,
-        clickable_elements: navigationIntelligence.clickable_elements.length
+        clickable_elements: navigationIntelligence.clickable_elements.length,
       },
       exploration: {
         sections_explored: explorationResults.sections_explored,
         total_products_found: explorationResults.exploration_summary.total_products_found,
         page_types_discovered: explorationResults.exploration_summary.page_types_discovered,
-        working_selectors: explorationResults.exploration_summary.working_selectors
+        working_selectors: explorationResults.exploration_summary.working_selectors,
       },
       selectors: {
         library_size: Object.keys(explorationResults.selectors).length,
         success_rate: explorationResults.selectors.success_rate,
         reliability_scores: explorationResults.selectors.reliability_scores,
-        categories: Object.keys(explorationResults.selectors).filter(key => 
-          typeof explorationResults.selectors[key] === 'object' && 
-          explorationResults.selectors[key] !== null
-        )
+        categories: Object.keys(explorationResults.selectors).filter(key =>
+          typeof explorationResults.selectors[key] === 'object' &&
+          explorationResults.selectors[key] !== null,
+        ),
       },
       url_patterns: explorationResults.urlPatterns,
       capabilities: await this.assessSiteCapabilities(navigationIntelligence, explorationResults),
@@ -100,8 +100,8 @@ class SiteIntelligence {
         sections_mapped: navigationIntelligence.main_sections.length,
         products_discovered: explorationResults.exploration_summary.total_products_found,
         selectors_identified: explorationResults.exploration_summary.working_selectors.length,
-        intelligence_score: this.calculateIntelligenceScore(navigationIntelligence, explorationResults)
-      }
+        intelligence_score: this.calculateIntelligenceScore(navigationIntelligence, explorationResults),
+      },
     };
 
     return intelligence;
@@ -116,11 +116,11 @@ class SiteIntelligence {
       can_check_availability: this.hasWorkingSelectors(explorationResults.selectors, 'availability'),
       can_use_filters: this.hasWorkingSelectors(explorationResults.selectors, 'filters'),
       can_handle_pagination: this.hasWorkingSelectors(explorationResults.selectors, 'pagination'),
-      supports_search: navigationIntelligence.clickable_elements.some(el => 
-        el.page_purpose === 'search'
+      supports_search: navigationIntelligence.clickable_elements.some(el =>
+        el.page_purpose === 'search',
       ),
       has_dropdown_navigation: Object.keys(navigationIntelligence.dropdown_menus).length > 0,
-      mobile_responsive: this.assessMobileResponsiveness(navigationIntelligence)
+      mobile_responsive: this.assessMobileResponsiveness(navigationIntelligence),
     };
 
     // Calculate overall capability score
@@ -131,21 +131,21 @@ class SiteIntelligence {
   }
 
   hasWorkingSelectors(selectors, category) {
-    return selectors[category] && 
+    return selectors[category] &&
            typeof selectors[category] === 'object' &&
            Object.keys(selectors[category]).length > 0;
   }
 
   assessMobileResponsiveness(navigationIntelligence) {
-    return navigationIntelligence.clickable_elements.some(el => 
-      el.text.toLowerCase().includes('menu') && 
-      el.classes.includes('mobile')
+    return navigationIntelligence.clickable_elements.some(el =>
+      el.text.toLowerCase().includes('menu') &&
+      el.classes.includes('mobile'),
     );
   }
 
   calculateIntelligenceScore(navigationIntelligence, explorationResults) {
     let score = 0;
-    let maxScore = 100;
+    const maxScore = 100;
 
     // Navigation coverage (30 points)
     const navSections = navigationIntelligence.main_sections.length;
@@ -160,8 +160,8 @@ class SiteIntelligence {
     score += selectorScore;
 
     // Feature coverage (20 points)
-    const selectorCategories = Object.keys(explorationResults.selectors).filter(key => 
-      typeof explorationResults.selectors[key] === 'object' && explorationResults.selectors[key] !== null
+    const selectorCategories = Object.keys(explorationResults.selectors).filter(key =>
+      typeof explorationResults.selectors[key] === 'object' && explorationResults.selectors[key] !== null,
     ).length;
     score += Math.min(selectorCategories * 2.5, 20);
 
@@ -172,7 +172,7 @@ class SiteIntelligence {
   async quickPriceCheck(productUrl) {
     try {
       const priceData = await this.worldModel.getQuickPriceCheck(productUrl);
-      
+
       if (priceData.cached) {
         return priceData;
       }
@@ -180,17 +180,17 @@ class SiteIntelligence {
       if (priceData.needs_scraping) {
         // Use cached selectors for targeted scraping
         const quickResult = await this.performQuickScrape(productUrl, priceData.selectors);
-        
+
         // Cache the result
         await this.worldModel.storeProductIntelligence(productUrl, quickResult);
-        
+
         return {
           url: productUrl,
           price: quickResult.price,
           availability: quickResult.availability,
           variants: quickResult.variants,
           cached: false,
-          last_updated: new Date().toISOString()
+          last_updated: new Date().toISOString(),
         };
       }
 
@@ -203,7 +203,7 @@ class SiteIntelligence {
   async performQuickScrape(productUrl, selectors) {
     const browser = await require('playwright').chromium.launch({
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
 
     const page = await browser.newPage();
@@ -217,7 +217,7 @@ class SiteIntelligence {
           price: null,
           availability: null,
           variants: [],
-          extraction_success: {}
+          extraction_success: {},
         };
 
         // Extract price
@@ -248,7 +248,7 @@ class SiteIntelligence {
                 data.variants.push({
                   name: option.textContent.trim(),
                   value: option.value,
-                  available: !option.disabled
+                  available: !option.disabled,
                 });
               }
             });

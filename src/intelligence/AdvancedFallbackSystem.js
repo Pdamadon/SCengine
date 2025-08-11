@@ -5,7 +5,7 @@
 class AdvancedFallbackSystem {
   constructor(logger = null) {
     this.logger = logger;
-    
+
     // Performance tracking for fallback generation
     this.performanceMetrics = {
       totalFallbacksGenerated: 0,
@@ -16,17 +16,17 @@ class AdvancedFallbackSystem {
         'structural': 0,
         'platform-specific': 0,
         'content-based': 0,
-        'adaptive-pattern': 0
-      }
+        'adaptive-pattern': 0,
+      },
     };
-    
+
     // Learning system for continuous improvement
     this.learningData = {
       successfulPatterns: new Map(),
       failedPatterns: new Map(),
-      contextSuccessRates: new Map()
+      contextSuccessRates: new Map(),
     };
-    
+
     // Platform-specific fallback patterns
     this.platformPatterns = {
       shopify: {
@@ -35,7 +35,7 @@ class AdvancedFallbackSystem {
         productPrice: ['.price', '.price__current', '.money', '.price-item--regular'],
         productImage: ['.product__media img', '.card__media img', '.grid-product__image'],
         addToCart: ['[name="add"]', '.btn--add-to-cart', '.product-form__cart-submit'],
-        navigation: ['.site-nav', '.main-nav', '.navigation', '.header__navigation']
+        navigation: ['.site-nav', '.main-nav', '.navigation', '.header__navigation'],
       },
       woocommerce: {
         productContainer: ['.product', '.woocommerce-LoopProduct-link', '.product-small'],
@@ -43,7 +43,7 @@ class AdvancedFallbackSystem {
         productPrice: ['.price', '.woocommerce-Price-amount', '.amount'],
         productImage: ['.wp-post-image', '.product-small img', '.woocommerce-LoopProduct-link img'],
         addToCart: ['.add_to_cart_button', '.single_add_to_cart_button', '.button.product_type_simple'],
-        navigation: ['.woocommerce-breadcrumb', '.product-categories', '.widget_product_categories']
+        navigation: ['.woocommerce-breadcrumb', '.product-categories', '.widget_product_categories'],
       },
       magento: {
         productContainer: ['.product-item', '.product-item-info', '.product-item-details'],
@@ -51,7 +51,7 @@ class AdvancedFallbackSystem {
         productPrice: ['.price-box', '.price', '.regular-price'],
         productImage: ['.product-image-photo', '.product-item-photo img'],
         addToCart: ['#product-addtocart-button', '.action.tocart', '.btn-cart'],
-        navigation: ['.breadcrumbs', '.navigation', '.category-menu']
+        navigation: ['.breadcrumbs', '.navigation', '.category-menu'],
       },
       generic: {
         productContainer: ['.product', '.item', '.card', '.grid-item', '[data-product]'],
@@ -59,8 +59,8 @@ class AdvancedFallbackSystem {
         productPrice: ['.price', '.cost', '.amount', '.money', '.pricing'],
         productImage: ['img', '.image', '.photo', '.picture'],
         addToCart: ['button[type="submit"]', '.add-cart', '.buy-now', '.purchase'],
-        navigation: ['nav', '.nav', '.navigation', '.menu', '.breadcrumb']
-      }
+        navigation: ['nav', '.nav', '.navigation', '.menu', '.breadcrumb'],
+      },
     };
 
     // Visual similarity patterns for element matching
@@ -68,38 +68,38 @@ class AdvancedFallbackSystem {
       size: {
         large: { minWidth: 200, minHeight: 40 },
         medium: { minWidth: 100, minHeight: 20 },
-        small: { minWidth: 50, minHeight: 10 }
+        small: { minWidth: 50, minHeight: 10 },
       },
       position: {
         header: { maxTop: 150 },
         sidebar: { maxLeft: 300 },
-        footer: { minBottomFromViewport: 100 }
+        footer: { minBottomFromViewport: 100 },
       },
       styling: {
         primary: ['primary', 'main', 'important', 'featured'],
         secondary: ['secondary', 'sub', 'alternate'],
-        accent: ['accent', 'highlight', 'special']
-      }
+        accent: ['accent', 'highlight', 'special'],
+      },
     };
 
     // Content-based patterns for semantic matching
     this.contentPatterns = {
       pricing: {
         patterns: [/\$[\d,]+\.?\d*/, /£[\d,]+\.?\d*/, /€[\d,]+\.?\d*/, /[\d,]+\.?\d*\s*(USD|EUR|GBP|CAD)/, /Price:?\s*[\d,]+/i],
-        indicators: ['price', 'cost', 'amount', 'total', 'money', '$', '€', '£']
+        indicators: ['price', 'cost', 'amount', 'total', 'money', '$', '€', '£'],
       },
       titles: {
         patterns: [/^[A-Z]/, /\b[A-Z][a-z]+(\s+[A-Z][a-z]+)*\b/],
-        indicators: ['title', 'name', 'heading', 'product', 'item']
+        indicators: ['title', 'name', 'heading', 'product', 'item'],
       },
       buttons: {
         patterns: [/add to cart/i, /buy now/i, /purchase/i, /add to bag/i, /shop now/i],
-        indicators: ['button', 'btn', 'action', 'submit', 'add', 'buy', 'purchase']
+        indicators: ['button', 'btn', 'action', 'submit', 'add', 'buy', 'purchase'],
       },
       navigation: {
         patterns: [/home/i, /shop/i, /category/i, /products/i, /about/i, /contact/i],
-        indicators: ['nav', 'menu', 'link', 'breadcrumb', 'tab']
-      }
+        indicators: ['nav', 'menu', 'link', 'breadcrumb', 'tab'],
+      },
     };
 
     // Structural relationship patterns
@@ -109,21 +109,21 @@ class AdvancedFallbackSystem {
           '.product + .product',
           '.item + .item',
           '.card + .card',
-          '.grid-item + .grid-item'
+          '.grid-item + .grid-item',
         ],
         parentSelectors: [
           '.products > *',
           '.grid > *',
           '.listing > *',
-          '.collection > *'
+          '.collection > *',
         ],
         childSelectors: [
           '* > .title',
           '* > .price',
           '* > .image',
-          '* > .button'
-        ]
-      }
+          '* > .button',
+        ],
+      },
     };
   }
 
@@ -142,41 +142,41 @@ class AdvancedFallbackSystem {
     }
 
     const fallbackCandidates = [];
-    
+
     try {
       // 1. Visual similarity fallbacks
       const visualFallbacks = await this.generateVisualSimilarityFallbacks(
-        originalElement, context, document, options
+        originalElement, context, document, options,
       );
       fallbackCandidates.push(...visualFallbacks);
 
       // 2. Structural relationship fallbacks
       const structuralFallbacks = await this.generateStructuralFallbacks(
-        originalElement, context, document, options
+        originalElement, context, document, options,
       );
       fallbackCandidates.push(...structuralFallbacks);
 
       // 3. Platform-specific fallbacks
       const platformFallbacks = await this.generatePlatformFallbacks(
-        context, document, options
+        context, document, options,
       );
       fallbackCandidates.push(...platformFallbacks);
 
       // 4. Content-based fallbacks
       const contentFallbacks = await this.generateContentBasedFallbacks(
-        originalElement, context, document, options
+        originalElement, context, document, options,
       );
       fallbackCandidates.push(...contentFallbacks);
 
       // 5. Generic fallbacks as last resort
       const genericFallbacks = await this.generateGenericFallbacks(
-        originalElement, context, document, options
+        originalElement, context, document, options,
       );
       fallbackCandidates.push(...genericFallbacks);
 
       // Score and sort candidates
       const scoredCandidates = await this.scoreFallbackCandidates(
-        fallbackCandidates, originalElement, context, document
+        fallbackCandidates, originalElement, context, document,
       );
 
       return this.deduplicateAndLimit(scoredCandidates, options.maxFallbacks || 10);
@@ -204,8 +204,8 @@ class AdvancedFallbackSystem {
     const allElements = document.querySelectorAll('*');
     const similarElements = [];
 
-    for (let element of allElements) {
-      if (element === originalElement) continue;
+    for (const element of allElements) {
+      if (element === originalElement) {continue;}
 
       const rect = element.getBoundingClientRect();
       const style = window.getComputedStyle(element);
@@ -226,7 +226,7 @@ class AdvancedFallbackSystem {
         similarElements.push({
           element,
           similarity: overallSimilarity,
-          selector: this.generateElementSelector(element)
+          selector: this.generateElementSelector(element),
         });
       }
     }
@@ -240,7 +240,7 @@ class AdvancedFallbackSystem {
           selector: item.selector,
           confidence: item.similarity * 0.7, // Visual similarity has good confidence
           strategy: 'visual-similarity',
-          details: { similarity: item.similarity }
+          details: { similarity: item.similarity },
         });
       });
 
@@ -271,7 +271,7 @@ class AdvancedFallbackSystem {
             selector,
             confidence: 0.6,
             strategy: 'sibling-based',
-            details: { siblingIndex: index, originalIndex: siblingIndex }
+            details: { siblingIndex: index, originalIndex: siblingIndex },
           });
         }
       });
@@ -282,13 +282,13 @@ class AdvancedFallbackSystem {
       while (parent && depth < 3) {
         const parentSelector = this.generateElementSelector(parent);
         const contextualSelector = this.generateContextualChildSelector(parent, context);
-        
+
         if (contextualSelector) {
           fallbacks.push({
             selector: `${parentSelector} ${contextualSelector}`,
             confidence: 0.5 - (depth * 0.1),
             strategy: 'parent-based',
-            details: { depth, parentTag: parent.tagName }
+            details: { depth, parentTag: parent.tagName },
           });
         }
 
@@ -307,7 +307,7 @@ class AdvancedFallbackSystem {
               selector,
               confidence: 0.4 - (depth * 0.05),
               strategy: 'ancestor-descendant',
-              details: { ancestorClass: cls, depth }
+              details: { ancestorClass: cls, depth },
             });
           }
         });
@@ -340,7 +340,7 @@ class AdvancedFallbackSystem {
         selector: pattern,
         confidence: 0.7 - (index * 0.1), // Earlier patterns have higher confidence
         strategy: 'platform-specific',
-        details: { platform: detectedPlatform, pattern }
+        details: { platform: detectedPlatform, pattern },
       });
     });
 
@@ -365,35 +365,35 @@ class AdvancedFallbackSystem {
     }
 
     const patterns = this.contentPatterns[contextType];
-    
+
     // Find elements with similar content patterns
     const allElements = document.querySelectorAll('*');
-    for (let element of allElements) {
-      if (element === originalElement) continue;
+    for (const element of allElements) {
+      if (element === originalElement) {continue;}
 
       const elementText = element.textContent?.trim();
-      if (!elementText) continue;
+      if (!elementText) {continue;}
 
       // Check if content matches expected patterns
       const patternMatches = patterns.patterns.some(pattern => pattern.test(elementText));
-      const indicatorMatches = patterns.indicators.some(indicator => 
-        elementText.toLowerCase().includes(indicator) || 
-        element.className.toLowerCase().includes(indicator)
+      const indicatorMatches = patterns.indicators.some(indicator =>
+        elementText.toLowerCase().includes(indicator) ||
+        element.className.toLowerCase().includes(indicator),
       );
 
       if (patternMatches || indicatorMatches) {
         const selector = this.generateElementSelector(element);
         const similarity = this.calculateTextSimilarity(originalText, elementText);
-        
+
         fallbacks.push({
           selector,
           confidence: 0.5 + (similarity * 0.3),
           strategy: 'content-based',
-          details: { 
+          details: {
             textSimilarity: similarity,
             patternMatch: patternMatches,
-            indicatorMatch: indicatorMatches
-          }
+            indicatorMatch: indicatorMatches,
+          },
         });
       }
     }
@@ -418,7 +418,7 @@ class AdvancedFallbackSystem {
       selector: tagName,
       confidence: 0.2,
       strategy: 'generic-tag',
-      details: { tag: tagName }
+      details: { tag: tagName },
     });
 
     // Role-based fallbacks
@@ -428,7 +428,7 @@ class AdvancedFallbackSystem {
         selector: `[role="${role}"]`,
         confidence: 0.3,
         strategy: 'generic-role',
-        details: { role }
+        details: { role },
       });
     }
 
@@ -439,7 +439,7 @@ class AdvancedFallbackSystem {
         selector: `input[type="${type}"]`,
         confidence: 0.4,
         strategy: 'generic-input-type',
-        details: { inputType: type }
+        details: { inputType: type },
       });
     }
 
@@ -457,10 +457,10 @@ class AdvancedFallbackSystem {
   async scoreFallbackCandidates(candidates, originalElement, context, document) {
     const scoredCandidates = [];
 
-    for (let candidate of candidates) {
+    for (const candidate of candidates) {
       try {
         const elements = document.querySelectorAll(candidate.selector);
-        
+
         // Base score from generation strategy
         let score = candidate.confidence;
 
@@ -476,9 +476,9 @@ class AdvancedFallbackSystem {
         // Bonus for elements that are visible
         let visibleCount = 0;
         elements.forEach(el => {
-          if (this.isElementVisible(el)) visibleCount++;
+          if (this.isElementVisible(el)) {visibleCount++;}
         });
-        
+
         if (visibleCount > 0) {
           score += (visibleCount / elements.length) * 0.1;
         }
@@ -511,9 +511,9 @@ class AdvancedFallbackSystem {
    * @returns {number} Similarity score (0-1)
    */
   calculateSimilarity(value1, value2) {
-    if (value1 === 0 && value2 === 0) return 1;
-    if (value1 === 0 || value2 === 0) return 0;
-    
+    if (value1 === 0 && value2 === 0) {return 1;}
+    if (value1 === 0 || value2 === 0) {return 0;}
+
     const larger = Math.max(value1, value2);
     const smaller = Math.min(value1, value2);
     return smaller / larger;
@@ -557,14 +557,14 @@ class AdvancedFallbackSystem {
    * @returns {number} Text similarity score (0-1)
    */
   calculateTextSimilarity(text1, text2) {
-    if (!text1 || !text2) return 0;
-    
+    if (!text1 || !text2) {return 0;}
+
     const words1 = text1.toLowerCase().split(/\s+/);
     const words2 = text2.toLowerCase().split(/\s+/);
-    
+
     const commonWords = words1.filter(word => words2.includes(word));
     const totalUniqueWords = new Set([...words1, ...words2]).size;
-    
+
     return totalUniqueWords > 0 ? commonWords.length / totalUniqueWords : 0;
   }
 
@@ -574,15 +574,15 @@ class AdvancedFallbackSystem {
    * @returns {string} Basic selector
    */
   generateElementSelector(element) {
-    if (element.id) return `#${element.id}`;
-    
+    if (element.id) {return `#${element.id}`;}
+
     if (element.className) {
       const classes = element.className.split(' ').filter(c => c.trim());
       if (classes.length > 0) {
         return `.${classes[0]}`;
       }
     }
-    
+
     return element.tagName.toLowerCase();
   }
 
@@ -595,12 +595,12 @@ class AdvancedFallbackSystem {
   generateRelativeSelector(targetElement, referenceElement) {
     const targetSelector = this.generateElementSelector(targetElement);
     const referenceSelector = this.generateElementSelector(referenceElement);
-    
+
     // If same parent, use sibling selector
     if (targetElement.parentElement === referenceElement.parentElement) {
       return `${referenceSelector} ~ ${targetElement.tagName.toLowerCase()}`;
     }
-    
+
     return targetSelector;
   }
 
@@ -612,15 +612,15 @@ class AdvancedFallbackSystem {
    */
   generateContextualChildSelector(parent, context) {
     const contextType = context.split('.')[1];
-    
+
     const contextSelectors = {
       title: 'h1, h2, h3, h4, h5, h6, .title, .name',
       price: '.price, .cost, .money, .amount',
       image: 'img, .image, .photo',
       button: 'button, .btn, .button',
-      link: 'a, .link'
+      link: 'a, .link',
     };
-    
+
     return contextSelectors[contextType] || '*';
   }
 
@@ -634,13 +634,13 @@ class AdvancedFallbackSystem {
     const ancestors = [];
     let current = element.parentElement;
     let depth = 0;
-    
+
     while (current && depth < maxDepth) {
       ancestors.push(current);
       current = current.parentElement;
       depth++;
     }
-    
+
     return ancestors;
   }
 
@@ -652,11 +652,11 @@ class AdvancedFallbackSystem {
   isSemanticClass(className) {
     const semanticKeywords = [
       'product', 'title', 'price', 'image', 'button', 'container', 'wrapper',
-      'content', 'header', 'footer', 'navigation', 'menu', 'card', 'item'
+      'content', 'header', 'footer', 'navigation', 'menu', 'card', 'item',
     ];
-    
-    return semanticKeywords.some(keyword => 
-      className.toLowerCase().includes(keyword)
+
+    return semanticKeywords.some(keyword =>
+      className.toLowerCase().includes(keyword),
     );
   }
 
@@ -669,7 +669,7 @@ class AdvancedFallbackSystem {
     const platformIndicators = {
       shopify: ['.shopify-section', 'meta[content*="Shopify"]', '[data-shopify]'],
       woocommerce: ['.woocommerce', 'body.woocommerce', '.wc-block'],
-      magento: ['.catalog-product-view', 'body.catalog-product-view', '.minicart-wrapper']
+      magento: ['.catalog-product-view', 'body.catalog-product-view', '.minicart-wrapper'],
     };
 
     for (const [platform, selectors] of Object.entries(platformIndicators)) {
@@ -691,10 +691,10 @@ class AdvancedFallbackSystem {
   isElementVisible(element) {
     const rect = element.getBoundingClientRect();
     const style = window.getComputedStyle(element);
-    
-    return rect.width > 0 && 
-           rect.height > 0 && 
-           style.display !== 'none' && 
+
+    return rect.width > 0 &&
+           rect.height > 0 &&
+           style.display !== 'none' &&
            style.visibility !== 'hidden' &&
            parseFloat(style.opacity) > 0;
   }
@@ -706,19 +706,19 @@ class AdvancedFallbackSystem {
    * @returns {boolean} Whether element is appropriate
    */
   isContextAppropriate(element, context) {
-    if (!element || !context) return false;
-    
+    if (!element || !context) {return false;}
+
     const contextType = context.split('.')[1];
     const tagName = element.tagName.toLowerCase();
-    
+
     const appropriateTags = {
       title: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'div', 'p'],
       price: ['span', 'div', 'p', 'strong', 'em'],
       image: ['img'],
       button: ['button', 'a', 'input'],
-      link: ['a', 'button']
+      link: ['a', 'button'],
     };
-    
+
     return appropriateTags[contextType]?.includes(tagName) || false;
   }
 
@@ -731,16 +731,16 @@ class AdvancedFallbackSystem {
   deduplicateAndLimit(candidates, maxResults = 10) {
     const seen = new Set();
     const unique = [];
-    
-    for (let candidate of candidates) {
+
+    for (const candidate of candidates) {
       if (!seen.has(candidate.selector)) {
         seen.add(candidate.selector);
         unique.push(candidate);
-        
-        if (unique.length >= maxResults) break;
+
+        if (unique.length >= maxResults) {break;}
       }
     }
-    
+
     return unique;
   }
 
@@ -753,18 +753,18 @@ class AdvancedFallbackSystem {
    */
   async generateAdaptiveFallbacks(previousAttempts, context, document) {
     const adaptiveFallbacks = [];
-    
+
     // Analyze successful patterns from previous attempts
     const successfulPatterns = previousAttempts
       .filter(attempt => attempt.success)
       .map(attempt => this.extractPattern(attempt.selector));
-    
+
     // Generate new candidates based on successful patterns
     successfulPatterns.forEach(pattern => {
       const candidates = this.generateFromPattern(pattern, context, document);
       adaptiveFallbacks.push(...candidates);
     });
-    
+
     return adaptiveFallbacks;
   }
 
@@ -780,7 +780,7 @@ class AdvancedFallbackSystem {
       hasAttribute: selector.includes('['),
       hasDescendant: selector.includes(' '),
       hasChild: selector.includes('>'),
-      complexity: selector.split(/[\s>~+]/).length
+      complexity: selector.split(/[\s>~+]/).length,
     };
   }
 
@@ -794,17 +794,17 @@ class AdvancedFallbackSystem {
   generateFromPattern(pattern, context, document) {
     // This is a simplified implementation - in practice, this would be more sophisticated
     const candidates = [];
-    
+
     if (pattern.hasClass) {
       const contextType = context.split('.')[1];
       candidates.push({
         selector: `.${contextType}`,
         confidence: 0.5,
         strategy: 'adaptive-pattern',
-        details: { pattern: 'class-based' }
+        details: { pattern: 'class-based' },
       });
     }
-    
+
     return candidates;
   }
 
@@ -820,26 +820,26 @@ class AdvancedFallbackSystem {
     const scoredCandidates = [];
     const contextSuccessRates = this.learningData.contextSuccessRates.get(context) || new Map();
 
-    for (let candidate of candidates) {
+    for (const candidate of candidates) {
       try {
         const elements = document.querySelectorAll(candidate.selector);
-        
+
         // Base score from generation strategy
         let score = candidate.confidence;
 
         // ML-enhanced scoring
-        
+
         // 1. Historical success rate for this selector pattern
         const pattern = this.extractPattern(candidate.selector);
         const historicalSuccessRate = this.getHistoricalSuccessRate(pattern, context);
         if (historicalSuccessRate > 0) {
           score *= (0.7 + (historicalSuccessRate * 0.3)); // Blend with historical data
         }
-        
+
         // 2. Context-specific success rates
         const contextRate = contextSuccessRates.get(candidate.strategy) || 0.5;
         score *= (0.8 + (contextRate * 0.2));
-        
+
         // 3. Element count optimization
         if (elements.length === 0) {
           score = 0;
@@ -856,7 +856,7 @@ class AdvancedFallbackSystem {
         // 4. Advanced visibility and interactability scoring
         let visibleCount = 0;
         let interactableCount = 0;
-        
+
         elements.forEach(el => {
           if (this.isElementVisible(el)) {
             visibleCount++;
@@ -865,11 +865,11 @@ class AdvancedFallbackSystem {
             }
           }
         });
-        
+
         if (visibleCount > 0) {
           const visibilityRatio = visibleCount / elements.length;
           score += visibilityRatio * 0.15;
-          
+
           // Bonus for interactable elements in interactive contexts
           if (this.isInteractiveContext(context) && interactableCount > 0) {
             const interactabilityRatio = interactableCount / elements.length;
@@ -879,7 +879,7 @@ class AdvancedFallbackSystem {
 
         // 5. Semantic appropriateness
         const semanticScore = this.calculateSemanticAppropriatenessScore(
-          elements[0], context, candidate.strategy
+          elements[0], context, candidate.strategy,
         );
         score += semanticScore * 0.1;
 
@@ -890,7 +890,7 @@ class AdvancedFallbackSystem {
         candidate.mlInsights = {
           historicalSuccessRate,
           contextSuccessRate: contextRate,
-          semanticScore
+          semanticScore,
         };
 
         scoredCandidates.push(candidate);
@@ -914,10 +914,10 @@ class AdvancedFallbackSystem {
    */
   getHistoricalSuccessRate(pattern, context) {
     const successfulPatterns = this.learningData.successfulPatterns.get(context) || [];
-    const matchingPattern = successfulPatterns.find(p => 
-      this.calculatePatternSimilarity(pattern, this.extractPattern(p.selector)) > 0.8
+    const matchingPattern = successfulPatterns.find(p =>
+      this.calculatePatternSimilarity(pattern, this.extractPattern(p.selector)) > 0.8,
     );
-    
+
     return matchingPattern ? matchingPattern.successRate : 0;
   }
 
@@ -929,43 +929,43 @@ class AdvancedFallbackSystem {
    * @returns {number} Appropriateness score (0-1)
    */
   calculateSemanticAppropriatenessScore(element, context, strategy) {
-    if (!element || !context) return 0.5;
-    
+    if (!element || !context) {return 0.5;}
+
     const contextType = context.split('.')[1];
     const tagName = element.tagName.toLowerCase();
     const className = element.className.toLowerCase();
     const textContent = element.textContent?.trim().toLowerCase();
-    
+
     let score = 0.5; // Base score
-    
+
     // Tag name appropriateness
     const appropriateTags = {
       title: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'div', 'p', 'a'],
       price: ['span', 'div', 'p', 'strong', 'em'],
       image: ['img'],
       button: ['button', 'a', 'input'],
-      link: ['a']
+      link: ['a'],
     };
-    
+
     if (appropriateTags[contextType]?.includes(tagName)) {
       score += 0.3;
     }
-    
+
     // Class name semantic relevance
     const semanticKeywords = {
       title: ['title', 'name', 'heading', 'product'],
       price: ['price', 'cost', 'money', 'amount'],
       image: ['image', 'img', 'photo', 'picture'],
       button: ['button', 'btn', 'add', 'buy', 'cart'],
-      link: ['link', 'url', 'anchor']
+      link: ['link', 'url', 'anchor'],
     };
-    
+
     const keywords = semanticKeywords[contextType] || [];
     const matchingKeywords = keywords.filter(keyword => className.includes(keyword));
     if (matchingKeywords.length > 0) {
       score += Math.min(0.3, matchingKeywords.length * 0.1);
     }
-    
+
     // Text content relevance for certain contexts
     if (contextType === 'button' && textContent) {
       const buttonKeywords = ['add to cart', 'buy', 'purchase', 'add to bag', 'checkout'];
@@ -973,7 +973,7 @@ class AdvancedFallbackSystem {
         score += 0.2;
       }
     }
-    
+
     return Math.max(0, Math.min(1, score));
   }
 
@@ -985,17 +985,17 @@ class AdvancedFallbackSystem {
   isElementInteractable(element) {
     const style = window.getComputedStyle(element);
     const tagName = element.tagName.toLowerCase();
-    
+
     // Basic interactability checks
-    if (element.disabled || style.pointerEvents === 'none') return false;
-    
+    if (element.disabled || style.pointerEvents === 'none') {return false;}
+
     // Interactive elements
     const interactiveTags = ['button', 'a', 'input', 'select', 'textarea'];
-    if (interactiveTags.includes(tagName)) return true;
-    
+    if (interactiveTags.includes(tagName)) {return true;}
+
     // Elements with click handlers or role
-    if (element.onclick || element.getAttribute('role') === 'button') return true;
-    
+    if (element.onclick || element.getAttribute('role') === 'button') {return true;}
+
     return false;
   }
 
@@ -1018,10 +1018,10 @@ class AdvancedFallbackSystem {
     if (!this.learningData.successfulPatterns.has(context)) {
       this.learningData.successfulPatterns.set(context, []);
     }
-    
+
     const patterns = this.learningData.successfulPatterns.get(context);
     const existingPattern = patterns.find(p => p.selector === selector);
-    
+
     if (existingPattern) {
       existingPattern.count++;
       existingPattern.lastUsed = Date.now();
@@ -1032,16 +1032,16 @@ class AdvancedFallbackSystem {
         count: 1,
         successRate: 0.8, // Initial success rate
         firstUsed: Date.now(),
-        lastUsed: Date.now()
+        lastUsed: Date.now(),
       });
     }
-    
+
     // Keep only top performing patterns
     if (patterns.length > 20) {
       patterns.sort((a, b) => b.successRate - a.successRate);
       this.learningData.successfulPatterns.set(context, patterns.slice(0, 15));
     }
-    
+
     // Update performance metrics
     this.performanceMetrics.successfulFallbacks++;
   }
@@ -1053,10 +1053,10 @@ class AdvancedFallbackSystem {
    */
   updatePerformanceMetrics(generationTime, candidateCount) {
     this.performanceMetrics.totalFallbacksGenerated += candidateCount;
-    
+
     // Update average generation time
     const totalCalls = this.performanceMetrics.successfulFallbacks + 1;
-    this.performanceMetrics.averageGenerationTime = 
+    this.performanceMetrics.averageGenerationTime =
       (this.performanceMetrics.averageGenerationTime * (totalCalls - 1) + generationTime) / totalCalls;
   }
 
@@ -1067,15 +1067,15 @@ class AdvancedFallbackSystem {
   getPerformanceInsights() {
     const totalSuccess = this.performanceMetrics.successfulFallbacks;
     const totalGenerated = this.performanceMetrics.totalFallbacksGenerated;
-    
+
     return {
       ...this.performanceMetrics,
       overallSuccessRate: totalGenerated > 0 ? totalSuccess / totalGenerated : 0,
       averageGenerationTime: this.performanceMetrics.averageGenerationTime,
       learningDataSize: {
         successfulPatterns: Array.from(this.learningData.successfulPatterns.values()).reduce((sum, patterns) => sum + patterns.length, 0),
-        failedPatterns: Array.from(this.learningData.failedPatterns.values()).reduce((sum, patterns) => sum + patterns.length, 0)
-      }
+        failedPatterns: Array.from(this.learningData.failedPatterns.values()).reduce((sum, patterns) => sum + patterns.length, 0),
+      },
     };
   }
 }

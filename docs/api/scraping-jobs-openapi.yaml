@@ -1,0 +1,691 @@
+openapi: 3.0.3
+info:
+  title: AI Shopping Scraper - Jobs API
+  description: |
+    RESTful API for managing scraping jobs in the AI Shopping Scraper system.
+    
+    This API allows you to:
+    - Submit scraping jobs for e-commerce sites
+    - Track job status and progress in real-time
+    - Retrieve structured results in multiple formats
+    - Manage job queues with priority handling
+    
+    ## Authentication
+    Currently supports anonymous access. Authentication will be added in Phase 2.5.
+    
+    ## Rate Limiting
+    - 100 requests per hour per IP address
+    - 1000 requests per hour for authenticated users
+    
+    ## Job Types
+    - **full_site**: Complete site crawling with category discovery
+    - **category**: Targeted category page scraping
+    - **product**: Individual product data extraction
+    - **search**: Search results scraping
+    
+    ## Compliance
+    - Respects robots.txt by default
+    - Implements rate limiting per SCRAPING_REQUIREMENTS.md
+    - Provides audit trails and correlation tracking
+    
+  version: 1.0.0
+  contact:
+    name: AI Shopping Scraper Team
+    url: https://github.com/Pdamadon/codesight-scraping-ai-generation
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3000/api/v1/scraping
+    description: Development server
+  - url: https://api.aishopping.scraper.com/v1/scraping
+    description: Production server
+
+paths:
+  /jobs:
+    post:
+      summary: Submit a new scraping job
+      description: |
+        Create a new scraping job and add it to the processing queue.
+        The job will be processed according to its priority and current queue status.
+      tags:
+        - Scraping Jobs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScrapingJobRequest'
+            examples:
+              full_site_example:
+                summary: Full site scraping
+                value:
+                  target_url: "https://example-shop.com"
+                  scraping_type: "full_site"
+                  priority: "normal"
+                  max_pages: 100
+                  respect_robots_txt: true
+                  extract_images: true
+              category_example:
+                summary: Category scraping
+                value:
+                  target_url: "https://example-shop.com/clothing"
+                  scraping_type: "category"
+                  priority: "high"
+                  max_pages: 50
+                  category_filters: ["mens", "womens"]
+                  extract_reviews: true
+      responses:
+        '201':
+          description: Job submitted successfully
+          headers:
+            X-Correlation-ID:
+              description: Unique request identifier for tracking
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScrapingJobResponse'
+        '400':
+          description: Invalid request payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    
+    get:
+      summary: List scraping jobs
+      description: |
+        Retrieve a paginated list of scraping jobs with optional filtering.
+        Results are ordered by submission time (newest first).
+      tags:
+        - Scraping Jobs
+      parameters:
+        - name: status
+          in: query
+          description: Filter by job status
+          schema:
+            type: string
+            enum: [queued, running, completed, failed, cancelled]
+        - name: type
+          in: query
+          description: Filter by scraping type
+          schema:
+            type: string
+            enum: [full_site, category, product, search]
+        - name: submitted_after
+          in: query
+          description: Filter jobs submitted after this date (ISO 8601)
+          schema:
+            type: string
+            format: date-time
+        - name: submitted_before
+          in: query
+          description: Filter jobs submitted before this date (ISO 8601)
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          description: Page number (starts from 1)
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          description: Number of jobs per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: List of jobs retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobListResponse'
+        '400':
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /jobs/{jobId}/status:
+    get:
+      summary: Get job status
+      description: |
+        Retrieve the current status and progress of a specific job.
+        Includes real-time progress updates and estimated completion time.
+      tags:
+        - Scraping Jobs
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          description: Unique job identifier
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Job status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobStatusResponse'
+        '404':
+          description: Job not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /jobs/{jobId}/results:
+    get:
+      summary: Get job results
+      description: |
+        Retrieve the results of a completed scraping job.
+        Results can be returned in JSON, CSV, or XML format.
+        Only available for jobs with status 'completed'.
+      tags:
+        - Scraping Jobs
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          description: Unique job identifier
+          schema:
+            type: string
+            format: uuid
+        - name: format
+          in: query
+          description: Response format
+          schema:
+            type: string
+            enum: [json, csv, xml]
+            default: json
+      responses:
+        '200':
+          description: Job results retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobResultsResponse'
+            text/csv:
+              schema:
+                type: string
+              example: |
+                title,price,url,category
+                "Example Product","$29.99","https://example.com/product1","clothing"
+            application/xml:
+              schema:
+                type: string
+              example: |
+                <?xml version="1.0" encoding="UTF-8"?>
+                <results>
+                  <item>
+                    <title>Example Product</title>
+                    <price>$29.99</price>
+                    <url>https://example.com/product1</url>
+                    <category>clothing</category>
+                  </item>
+                </results>
+        '404':
+          description: Job not found or results not available
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /jobs/{jobId}:
+    delete:
+      summary: Cancel a scraping job
+      description: |
+        Cancel a queued or running scraping job.
+        Completed or failed jobs cannot be cancelled.
+      tags:
+        - Scraping Jobs
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          description: Unique job identifier
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Job cancelled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobCancellationResponse'
+        '404':
+          description: Job not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Job cannot be cancelled (already completed/failed)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /health:
+    get:
+      summary: Health check
+      description: Check the health status of the scraping jobs API
+      tags:
+        - System
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "healthy"
+                  service:
+                    type: string
+                    example: "scraping-jobs-api"
+                  timestamp:
+                    type: string
+                    format: date-time
+                  version:
+                    type: string
+                    example: "1.0.0"
+
+  /info:
+    get:
+      summary: API information
+      description: Get information about the scraping jobs API
+      tags:
+        - System
+      responses:
+        '200':
+          description: API information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: "AI Shopping Scraper API"
+                  version:
+                    type: string
+                    example: "1.0.0"
+                  description:
+                    type: string
+                  endpoints:
+                    type: object
+                  documentation:
+                    type: string
+                  openapi_spec:
+                    type: string
+
+components:
+  schemas:
+    ScrapingJobRequest:
+      type: object
+      required:
+        - target_url
+        - scraping_type
+      properties:
+        target_url:
+          type: string
+          format: uri
+          description: URL of the target website to scrape
+          example: "https://example-shop.com"
+        scraping_type:
+          type: string
+          enum: [full_site, category, product, search]
+          description: Type of scraping operation to perform
+          example: "category"
+        priority:
+          type: string
+          enum: [low, normal, high, urgent]
+          default: normal
+          description: Job priority in the processing queue
+        max_pages:
+          type: integer
+          minimum: 1
+          maximum: 1000
+          default: 100
+          description: Maximum number of pages to scrape
+        respect_robots_txt:
+          type: boolean
+          default: true
+          description: Whether to respect the site's robots.txt file
+        rate_limit_delay_ms:
+          type: integer
+          minimum: 0
+          maximum: 30000
+          default: 1000
+          description: Delay between requests in milliseconds
+        timeout_ms:
+          type: integer
+          minimum: 5000
+          maximum: 120000
+          default: 30000
+          description: Request timeout in milliseconds
+        category_filters:
+          type: array
+          items:
+            type: string
+          description: Filter products by specific categories
+          example: ["mens", "womens", "kids"]
+        product_filters:
+          type: array
+          items:
+            type: string
+          description: Filter products by specific attributes
+        custom_selectors:
+          type: object
+          description: Custom CSS selectors for data extraction
+          additionalProperties:
+            type: string
+        extract_images:
+          type: boolean
+          default: false
+          description: Whether to extract and download product images
+        extract_reviews:
+          type: boolean
+          default: false
+          description: Whether to extract product reviews and ratings
+        extract_pricing_history:
+          type: boolean
+          default: false
+          description: Whether to track pricing changes over time
+
+    ScrapingJobResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        job_id:
+          type: string
+          format: uuid
+          description: Unique identifier for the created job
+        status:
+          type: string
+          enum: [queued]
+          description: Initial job status
+          example: "queued"
+        estimated_completion:
+          type: string
+          format: date-time
+          description: Estimated completion time
+        queue_position:
+          type: integer
+          description: Current position in the processing queue
+          example: 3
+        correlation_id:
+          type: string
+          description: Request correlation ID for tracking
+        links:
+          type: object
+          properties:
+            status:
+              type: string
+              description: URL to check job status
+            cancel:
+              type: string
+              description: URL to cancel the job
+
+    JobStatusResponse:
+      type: object
+      properties:
+        job_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [queued, running, completed, failed, cancelled]
+          example: "running"
+        progress:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Job completion percentage
+          example: 45
+        created_at:
+          type: string
+          format: date-time
+        started_at:
+          type: string
+          format: date-time
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        estimated_completion:
+          type: string
+          format: date-time
+          nullable: true
+        results_summary:
+          type: object
+          nullable: true
+          properties:
+            total_items:
+              type: integer
+            categories_found:
+              type: integer
+            pages_processed:
+              type: integer
+        error_details:
+          type: string
+          nullable: true
+          description: Error message if job failed
+        correlation_id:
+          type: string
+        links:
+          type: object
+          properties:
+            results:
+              type: string
+              nullable: true
+            cancel:
+              type: string
+              nullable: true
+
+    JobResultsResponse:
+      type: object
+      properties:
+        job_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [completed]
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              title:
+                type: string
+              price:
+                type: string
+              url:
+                type: string
+              category:
+                type: string
+              description:
+                type: string
+              images:
+                type: array
+                items:
+                  type: string
+              availability:
+                type: string
+              rating:
+                type: number
+        metadata:
+          type: object
+          properties:
+            total_items:
+              type: integer
+            categories_found:
+              type: integer
+            processing_time_ms:
+              type: integer
+            data_quality_score:
+              type: number
+              minimum: 0
+              maximum: 1
+        correlation_id:
+          type: string
+
+    JobListResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            type: object
+            properties:
+              job_id:
+                type: string
+                format: uuid
+              target_url:
+                type: string
+              scraping_type:
+                type: string
+              status:
+                type: string
+              progress:
+                type: integer
+              priority:
+                type: string
+              submitted_at:
+                type: string
+                format: date-time
+              started_at:
+                type: string
+                format: date-time
+                nullable: true
+              completed_at:
+                type: string
+                format: date-time
+                nullable: true
+              estimated_completion:
+                type: string
+                format: date-time
+                nullable: true
+              results_summary:
+                type: object
+                nullable: true
+        pagination:
+          type: object
+          properties:
+            page:
+              type: integer
+            limit:
+              type: integer
+            total_jobs:
+              type: integer
+            total_pages:
+              type: integer
+            has_next:
+              type: boolean
+            has_prev:
+              type: boolean
+        correlation_id:
+          type: string
+
+    JobCancellationResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        job_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [cancelled]
+        correlation_id:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        details:
+          type: array
+          items:
+            type: object
+          description: Detailed error information
+        correlation_id:
+          type: string
+          description: Request correlation ID
+
+    RateLimitResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Rate limit exceeded"
+        limit:
+          type: integer
+          description: Rate limit (requests per hour)
+        reset_time:
+          type: string
+          format: date-time
+          description: When the rate limit resets
+        correlation_id:
+          type: string
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for authentication (Phase 2.5)
+
+  responses:
+    UnauthorizedError:
+      description: Authentication information is missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+tags:
+  - name: Scraping Jobs
+    description: Operations for managing scraping jobs
+  - name: System
+    description: System information and health checks
+
+externalDocs:
+  description: Find more info about AI Shopping Scraper
+  url: https://github.com/Pdamadon/codesight-scraping-ai-generation

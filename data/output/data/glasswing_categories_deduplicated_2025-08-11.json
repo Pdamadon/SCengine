@@ -1,0 +1,3408 @@
+{
+  "metadata": {
+    "site": "glasswingshop.com",
+    "deduplication_date": "2025-08-11T16:17:48.683Z",
+    "original_category_count": 181,
+    "final_canonical_count": 140,
+    "deduplication_method": "Smart deduplication preserving multi-category relationships",
+    "version": "1.0"
+  },
+  "deduplication_stats": {
+    "original_count": 181,
+    "duplicate_urls_removed": 41,
+    "cross_category_conflicts_resolved": 0,
+    "multi_category_relationships_preserved": 3,
+    "final_canonical_count": 140
+  },
+  "canonical_categories": [
+    {
+      "name": "All Clothing",
+      "url": "https://glasswingshop.com/collections/clothing-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "product_category",
+      "subcategory_hints": [
+        "clothing"
+      ],
+      "estimated_products": 200,
+      "source_type": "product_categories",
+      "canonical_id": "product_categories_all-clothing"
+    },
+    {
+      "name": "All Shoes",
+      "url": "https://glasswingshop.com/collections/shoe-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "product_category",
+      "subcategory_hints": [],
+      "estimated_products": 200,
+      "source_type": "product_categories",
+      "canonical_id": "product_categories_all-shoes"
+    },
+    {
+      "name": "Clothing",
+      "url": "https://glasswingshop.com/collections/mens-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "product_category",
+      "subcategory_hints": [
+        "mens"
+      ],
+      "estimated_products": 80,
+      "source_type": "product_categories",
+      "canonical_id": "product_categories_clothing"
+    },
+    {
+      "name": "Shoes",
+      "url": "https://glasswingshop.com/collections/mens-shoes",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "product_category",
+      "subcategory_hints": [
+        "mens",
+        "shoes"
+      ],
+      "estimated_products": 50,
+      "source_type": "product_categories",
+      "canonical_id": "product_categories_shoes"
+    },
+    {
+      "name": "Accessories",
+      "url": "https://glasswingshop.com/collections/mens-accessories",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "product_category",
+      "subcategory_hints": [
+        "mens",
+        "accessories"
+      ],
+      "estimated_products": 30,
+      "source_type": "product_categories",
+      "canonical_id": "product_categories_accessories"
+    },
+    {
+      "name": "Clothing",
+      "url": "https://glasswingshop.com/collections/womens-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "product_category",
+      "subcategory_hints": [
+        "womens"
+      ],
+      "estimated_products": 80,
+      "source_type": "product_categories",
+      "canonical_id": "product_categories_clothing"
+    },
+    {
+      "name": "Shoes",
+      "url": "https://glasswingshop.com/collections/womens-shoes",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "product_category",
+      "subcategory_hints": [
+        "womens",
+        "shoes"
+      ],
+      "estimated_products": 50,
+      "source_type": "product_categories",
+      "canonical_id": "product_categories_shoes"
+    },
+    {
+      "name": "Jewelry",
+      "url": "https://glasswingshop.com/collections/jewelry",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "product_category",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "product_categories",
+      "canonical_id": "product_categories_jewelry"
+    },
+    {
+      "name": "Accessories",
+      "url": "https://glasswingshop.com/collections/accessories-for-her",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "product_category",
+      "subcategory_hints": [
+        "accessories"
+      ],
+      "estimated_products": 30,
+      "source_type": "product_categories",
+      "canonical_id": "product_categories_accessories"
+    },
+    {
+      "name": "7115 by Szeki",
+      "url": "https://glasswingshop.com/collections/7115-by-szeki-1",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_7115-by-szeki"
+    },
+    {
+      "name": "Ayame Eyewear",
+      "url": "https://glasswingshop.com/collections/ayame-eyewear",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_ayame-eyewear",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Arpenteur",
+      "url": "https://glasswingshop.com/collections/arpenteur",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_arpenteur",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Black Crane",
+      "url": "https://glasswingshop.com/collections/black-crane",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_black-crane",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Brain Dead",
+      "url": "https://glasswingshop.com/collections/braindead",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_brain-dead"
+    },
+    {
+      "name": "Camiel Fortgens",
+      "url": "https://glasswingshop.com/collections/camiel-fortgens",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_camiel-fortgens"
+    },
+    {
+      "name": "Cawley",
+      "url": "https://glasswingshop.com/collections/cawley",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_cawley"
+    },
+    {
+      "name": "Colbo",
+      "url": "https://glasswingshop.com/collections/colbo",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_colbo"
+    },
+    {
+      "name": "Cordera",
+      "url": "https://glasswingshop.com/collections/monica-cordera",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_cordera"
+    },
+    {
+      "name": "Evan Kinori",
+      "url": "https://glasswingshop.com/collections/evan-kinori",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_evan-kinori"
+    },
+    {
+      "name": "Henrik Vibskov",
+      "url": "https://glasswingshop.com/collections/henrik-vibskov-1",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_henrik-vibskov"
+    },
+    {
+      "name": "History + Industry",
+      "url": "https://glasswingshop.com/collections/history-industry",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_history-industry",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Illesteva",
+      "url": "https://glasswingshop.com/collections/illesteva",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_illesteva",
+      "deduplication_notes": "Selected from 3 duplicates"
+    },
+    {
+      "name": "Kapital",
+      "url": "https://glasswingshop.com/collections/kapital",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_kapital"
+    },
+    {
+      "name": "Kara Yoo",
+      "url": "https://glasswingshop.com/collections/kara-yoo",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_kara-yoo",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "La Paz",
+      "url": "https://glasswingshop.com/collections/the-la-paz-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_la-paz",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Lauren Manoogian",
+      "url": "https://glasswingshop.com/collections/lauren-manoogian",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_lauren-manoogian",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Lownn",
+      "url": "https://glasswingshop.com/collections/lownn",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_lownn",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Mijeong Park",
+      "url": "https://glasswingshop.com/collections/mijeong-park",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_mijeong-park",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Petrosolaum",
+      "url": "https://glasswingshop.com/collections/petrosolaum",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_petrosolaum",
+      "deduplication_notes": "Selected from 3 duplicates"
+    },
+    {
+      "name": "Postalco",
+      "url": "https://glasswingshop.com/collections/postalco",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_postalco",
+      "deduplication_notes": "Selected from 3 duplicates"
+    },
+    {
+      "name": "Sillage",
+      "url": "https://glasswingshop.com/collections/sillage",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_sillage",
+      "deduplication_notes": "Selected from 3 duplicates"
+    },
+    {
+      "name": "Stutterheim",
+      "url": "https://glasswingshop.com/collections/stutterheim",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_stutterheim"
+    },
+    {
+      "name": "Universal Works",
+      "url": "https://glasswingshop.com/collections/universal-works",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_universal-works",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Yoko Sakamoto",
+      "url": "https://glasswingshop.com/collections/yoko-sakamoto-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_yoko-sakamoto"
+    },
+    {
+      "name": "Zii Ropa",
+      "url": "https://glasswingshop.com/collections/zii-ropa",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_zii-ropa",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Tacoma Fuji Records",
+      "url": "https://glasswingshop.com/collections/tacoma-fuji-records",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_tacoma-fuji-records",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Evan Kinori",
+      "url": "https://glasswingshop.com/collections/evan-kinori/EVAN-KINORI",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_evan-kinori"
+    },
+    {
+      "name": "7115 by Szeki",
+      "url": "https://glasswingshop.com/collections/7115-by-szeki",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_7115-by-szeki"
+    },
+    {
+      "name": "Agmes",
+      "url": "https://glasswingshop.com/collections/agmes",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_agmes"
+    },
+    {
+      "name": "ANOTHER FEATHER",
+      "url": "https://glasswingshop.com/collections/another-feather",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_another-feather"
+    },
+    {
+      "name": "Atelier Delphine",
+      "url": "https://glasswingshop.com/collections/atelier-delphine",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_atelier-delphine"
+    },
+    {
+      "name": "Henrik Vibskov",
+      "url": "https://glasswingshop.com/collections/henrik-vibskov",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_henrik-vibskov"
+    },
+    {
+      "name": "Jesse Kamm",
+      "url": "https://glasswingshop.com/collections/jesse-kamm",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_jesse-kamm",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "LOQ",
+      "url": "https://glasswingshop.com/collections/loq",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_loq"
+    },
+    {
+      "name": "MACHETE",
+      "url": "https://glasswingshop.com/collections/machete",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_machete"
+    },
+    {
+      "name": "Face",
+      "url": "https://glasswingshop.com/collections/face",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_face"
+    },
+    {
+      "name": "Bath & Body",
+      "url": "https://glasswingshop.com/collections/bath-1",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_bath-body"
+    },
+    {
+      "name": "Fragrance",
+      "url": "https://glasswingshop.com/collections/fragrance-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_fragrance"
+    },
+    {
+      "name": "Blackbird",
+      "url": "https://glasswingshop.com/collections/blackbird-apothecary",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_blackbird",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "BRAIN DEAD",
+      "url": "https://glasswingshop.com/collections/brain-dead-bath",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_brain-dead",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Corpus",
+      "url": "https://glasswingshop.com/collections/corpus",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_corpus",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "D.S. & Durga",
+      "url": "https://glasswingshop.com/collections/d-s-durga",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_ds-durga"
+    },
+    {
+      "name": "FRAMA",
+      "url": "https://glasswingshop.com/collections/frama",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_frama",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Haoma",
+      "url": "https://glasswingshop.com/collections/haoma-earth",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_haoma",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Iris Hantverk",
+      "url": "https://glasswingshop.com/collections/iris-hantverk-1",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_iris-hantverk",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Leif",
+      "url": "https://glasswingshop.com/collections/leif",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_leif",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Lightwell",
+      "url": "https://glasswingshop.com/collections/lightwell",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_lightwell",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Morihata",
+      "url": "https://glasswingshop.com/collections/morihata",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_morihata",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Na Nin",
+      "url": "https://glasswingshop.com/collections/na-nin",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_na-nin",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Parfums Quartana",
+      "url": "https://glasswingshop.com/collections/parfums-quartana",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_parfums-quartana"
+    },
+    {
+      "name": "Stora Skuggan",
+      "url": "https://glasswingshop.com/collections/stora-skuggan",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_stora-skuggan"
+    },
+    {
+      "name": "Wonder Valley",
+      "url": "https://glasswingshop.com/collections/wonder-valley",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_wonder-valley",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Bath & Body",
+      "url": "https://glasswingshop.com/collections/bath",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_bath-body"
+    },
+    {
+      "name": "Candles & Scent",
+      "url": "https://glasswingshop.com/collections/candles",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_candles-scent"
+    },
+    {
+      "name": "Ceramics",
+      "url": "https://glasswingshop.com/collections/handmade-ceramics",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_ceramics"
+    },
+    {
+      "name": "Florals",
+      "url": "https://glasswingshop.com/collections/current-floral-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_florals",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Plants",
+      "url": "https://glasswingshop.com/collections/plant-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_plants",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Pots",
+      "url": "https://glasswingshop.com/collections/plant-pots",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_pots",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Office",
+      "url": "https://glasswingshop.com/collections/office",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_office"
+    },
+    {
+      "name": "Tableware",
+      "url": "https://glasswingshop.com/collections/kitchen",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_tableware"
+    },
+    {
+      "name": "Aleph Geddis",
+      "url": "https://glasswingshop.com/collections/aleph-geddis",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_aleph-geddis"
+    },
+    {
+      "name": "Alex Roby Ceramics",
+      "url": "https://glasswingshop.com/collections/alex-roby-ceramics",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_alex-roby-ceramics"
+    },
+    {
+      "name": "Ayame Bullock",
+      "url": "https://glasswingshop.com/collections/ayame",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_ayame-bullock"
+    },
+    {
+      "name": "Daisuke Anayama",
+      "url": "https://glasswingshop.com/collections/daisuke-anayama",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_daisuke-anayama"
+    },
+    {
+      "name": "Daiyo",
+      "url": "https://glasswingshop.com/collections/daiyo",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_daiyo"
+    },
+    {
+      "name": "Deux Cranes",
+      "url": "https://glasswingshop.com/collections/deux-cranes",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_deux-cranes"
+    },
+    {
+      "name": "George Nakamura",
+      "url": "https://glasswingshop.com/collections/george-nakamura",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_george-nakamura"
+    },
+    {
+      "name": "Kettl",
+      "url": "https://glasswingshop.com/collections/kettl",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_kettl"
+    },
+    {
+      "name": "Kinto",
+      "url": "https://glasswingshop.com/collections/kinto",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_kinto"
+    },
+    {
+      "name": "Lamine Diouf",
+      "url": "https://glasswingshop.com/collections/lamine-diouf-weavings",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_lamine-diouf"
+    },
+    {
+      "name": "Takazawa Candle",
+      "url": "https://glasswingshop.com/collections/takazawa-candle",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_takazawa-candle"
+    },
+    {
+      "name": "The Quiet Botanist",
+      "url": "https://glasswingshop.com/collections/the-quiet-botanist",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_the-quiet-botanist"
+    },
+    {
+      "name": "Wilde House Paper",
+      "url": "https://glasswingshop.com/collections/wilde-house-paper",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_wilde-house-paper"
+    },
+    {
+      "name": "Yuriko Bullock",
+      "url": "https://glasswingshop.com/collections/yuriko-bullock",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "brands",
+      "canonical_id": "brands_yuriko-bullock"
+    },
+    {
+      "name": "Design Services",
+      "url": "https://glasswingshop.com/pages/plant-services-1",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 15,
+      "source_type": "brands",
+      "canonical_id": "brands_design-services"
+    },
+    {
+      "name": "People",
+      "url": "https://glasswingshop.com/blogs/friends",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 15,
+      "source_type": "brands",
+      "canonical_id": "brands_people"
+    },
+    {
+      "name": "Places",
+      "url": "https://glasswingshop.com/blogs/places",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 15,
+      "source_type": "brands",
+      "canonical_id": "brands_places"
+    },
+    {
+      "name": "Product",
+      "url": "https://glasswingshop.com/blogs/lookbook",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 15,
+      "source_type": "brands",
+      "canonical_id": "brands_product"
+    },
+    {
+      "name": "Events",
+      "url": "https://glasswingshop.com/blogs/events",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 15,
+      "source_type": "brands",
+      "canonical_id": "brands_events"
+    },
+    {
+      "name": "Instagram",
+      "url": "https://www.instagram.com/glasswingshop/",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "brand",
+      "subcategory_hints": [],
+      "estimated_products": 15,
+      "source_type": "brands",
+      "canonical_id": "brands_instagram"
+    },
+    {
+      "name": "Unisex",
+      "url": "https://glasswingshop.com/collections/unisex",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_unisex"
+    },
+    {
+      "name": "Engineered Garments",
+      "url": "https://glasswingshop.com/collections/engineered-garments",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_engineered-garments",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Lady White Co.",
+      "url": "https://glasswingshop.com/collections/lady-white-mens",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_lady-white-co",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Sale",
+      "url": "https://glasswingshop.com/collections/mens-sale",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [
+        "mens",
+        "sale"
+      ],
+      "estimated_products": 100,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_sale"
+    },
+    {
+      "name": "Shop All",
+      "url": "https://glasswingshop.com/collections/shop-all-mens",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 200,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_shop-all"
+    },
+    {
+      "name": "7115 by Szeki",
+      "url": "https://glasswingshop.com/collections/7115-by-szeki-mens-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_7115-by-szeki"
+    },
+    {
+      "name": "Brain Dead",
+      "url": "https://glasswingshop.com/collections/brain-dead-mens-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_brain-dead"
+    },
+    {
+      "name": "Camiel Fortgens",
+      "url": "https://glasswingshop.com/collections/camiel-fortgens-mens-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_camiel-fortgens"
+    },
+    {
+      "name": "Colbo",
+      "url": "https://glasswingshop.com/collections/colbo-mens-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_colbo"
+    },
+    {
+      "name": "Henrik Vibskov",
+      "url": "https://glasswingshop.com/collections/henrik-vibskov-mens-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_henrik-vibskov"
+    },
+    {
+      "name": "Jan-Jan Van Essche",
+      "url": "https://glasswingshop.com/collections/jan-jan-van-essche/MENS",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_janjan-van-essche"
+    },
+    {
+      "name": "Kapital",
+      "url": "https://glasswingshop.com/collections/kapital-mens-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_kapital"
+    },
+    {
+      "name": "Merz b. Schwanen",
+      "url": "https://glasswingshop.com/collections/merz-b-schwanen-mens",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_merz-b-schwanen"
+    },
+    {
+      "name": "OrSlow",
+      "url": "https://glasswingshop.com/collections/orslow-mens-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_orslow"
+    },
+    {
+      "name": "Postalco",
+      "url": "https://glasswingshop.com/collections/postalco/mens",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [
+        "mens"
+      ],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_postalco"
+    },
+    {
+      "name": "Stutterheim",
+      "url": "https://glasswingshop.com/collections/stutterheim/MENS",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_stutterheim"
+    },
+    {
+      "name": "Yoko Sakamoto",
+      "url": "https://glasswingshop.com/collections/yoko-sakamoto-mens-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_yoko-sakamoto"
+    },
+    {
+      "name": "Sale",
+      "url": "https://glasswingshop.com/collections/women-s-sale",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [
+        "sale"
+      ],
+      "estimated_products": 100,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_sale"
+    },
+    {
+      "name": "Shop All",
+      "url": "https://glasswingshop.com/collections/shop-all-womens",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 200,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_shop-all"
+    },
+    {
+      "name": "Brain Dead",
+      "url": "https://glasswingshop.com/collections/brain-dead-womens-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_brain-dead"
+    },
+    {
+      "name": "Camiel Fortgens",
+      "url": "https://glasswingshop.com/collections/camiel-fortgens-womens-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_camiel-fortgens"
+    },
+    {
+      "name": "Cawley",
+      "url": "https://glasswingshop.com/collections/cawley-womens-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_cawley"
+    },
+    {
+      "name": "Colbo",
+      "url": "https://glasswingshop.com/collections/colbo-womens-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_colbo"
+    },
+    {
+      "name": "Cordera",
+      "url": "https://glasswingshop.com/collections/cordera-womens-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_cordera"
+    },
+    {
+      "name": "JAN-JAN VAN ESSCHE",
+      "url": "https://glasswingshop.com/collections/jan-jan-van-essche-womens-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_janjan-van-essche"
+    },
+    {
+      "name": "Kapital",
+      "url": "https://glasswingshop.com/collections/kapital-the-femme-collection/WOMENS",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_kapital"
+    },
+    {
+      "name": "MAN-TLE",
+      "url": "https://glasswingshop.com/collections/man-tle-womens",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_mantle"
+    },
+    {
+      "name": "Yoko Sakamoto",
+      "url": "https://glasswingshop.com/collections/yoko-sakamoto-womens-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "gender_demographic",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "gender_demographics",
+      "canonical_id": "gender_demographics_yoko-sakamoto"
+    },
+    {
+      "name": "All Sale",
+      "url": "https://glasswingshop.com/collections/sale",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "featured_collection",
+      "subcategory_hints": [
+        "sale"
+      ],
+      "estimated_products": 200,
+      "source_type": "featured_collections",
+      "canonical_id": "featured_collections_all-sale"
+    },
+    {
+      "name": "New Arrivals",
+      "url": "https://glasswingshop.com/collections/new-arrivals-for-him",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "featured_collection",
+      "subcategory_hints": [
+        "new_arrivals"
+      ],
+      "estimated_products": 40,
+      "source_type": "featured_collections",
+      "canonical_id": "featured_collections_new-arrivals"
+    },
+    {
+      "name": "New Arrivals",
+      "url": "https://glasswingshop.com/collections/new-arrivals-for-her",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "featured_collection",
+      "subcategory_hints": [
+        "new_arrivals"
+      ],
+      "estimated_products": 40,
+      "source_type": "featured_collections",
+      "canonical_id": "featured_collections_new-arrivals"
+    },
+    {
+      "name": "February Gift Guide",
+      "url": "https://glasswingshop.com/collections/february-gift-guide",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "featured_collection",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "featured_collections",
+      "canonical_id": "featured_collections_february-gift-guide"
+    },
+    {
+      "name": "Gift Sets",
+      "url": "https://glasswingshop.com/collections/gift-sets",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "featured_collection",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "featured_collections",
+      "canonical_id": "featured_collections_gift-sets"
+    },
+    {
+      "name": "Gift Cards",
+      "url": "https://glasswingshop.com/collections/gift-cards",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "featured_collection",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "featured_collections",
+      "canonical_id": "featured_collections_gift-cards"
+    },
+    {
+      "name": "Hernán Herdez",
+      "url": "https://glasswingshop.com/collections/hernan-herdez",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "other",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "other",
+      "canonical_id": "other_hernn-herdez",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Jacques Solovière",
+      "url": "https://glasswingshop.com/collections/jacques-soloviere",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "other",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "other",
+      "canonical_id": "other_jacques-solovire",
+      "deduplication_notes": "Selected from 3 duplicates"
+    },
+    {
+      "name": "Jan-Jan Van Essche",
+      "url": "https://glasswingshop.com/collections/jan-jan-van-essche-collection",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "other",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "other",
+      "canonical_id": "other_janjan-van-essche"
+    },
+    {
+      "name": "MAN-TLE",
+      "url": "https://glasswingshop.com/collections/man-tle-1",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "other",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "other",
+      "canonical_id": "other_mantle"
+    },
+    {
+      "name": "Merz b Schwanen",
+      "url": "https://glasswingshop.com/collections/merz-b-schwanen",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "other",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "other",
+      "canonical_id": "other_merz-b-schwanen"
+    },
+    {
+      "name": "O-Project",
+      "url": "https://glasswingshop.com/collections/o-project-1",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "other",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "other",
+      "canonical_id": "other_oproject"
+    },
+    {
+      "name": "orSlow",
+      "url": "https://glasswingshop.com/collections/orslow",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "other",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "other",
+      "canonical_id": "other_orslow"
+    },
+    {
+      "name": "MAN-TLE",
+      "url": "https://glasswingshop.com/collections/man-tle",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "other",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "other",
+      "canonical_id": "other_mantle"
+    },
+    {
+      "name": "O Project",
+      "url": "https://glasswingshop.com/collections/o-project",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "other",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "other",
+      "canonical_id": "other_o-project"
+    },
+    {
+      "name": "Merz b. Schwanen",
+      "url": "https://glasswingshop.com/collections/merz-b-schwanen-1",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "other",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "other",
+      "canonical_id": "other_merz-b-schwanen"
+    },
+    {
+      "name": "orSlow",
+      "url": "https://glasswingshop.com/collections/orslow-1",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "other",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "other",
+      "canonical_id": "other_orslow"
+    },
+    {
+      "name": "J. Hannah",
+      "url": "https://glasswingshop.com/collections/j-hannah-polish",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "other",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "other",
+      "canonical_id": "other_j-hannah"
+    },
+    {
+      "name": "Mad et Lin",
+      "url": "https://glasswingshop.com/collections/mad-et-len",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "other",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "other",
+      "canonical_id": "other_mad-et-lin",
+      "deduplication_notes": "Selected from 2 duplicates"
+    },
+    {
+      "name": "Jojo Corväiá",
+      "url": "https://glasswingshop.com/collections/jojo-corv-i",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+      "element_type": "a",
+      "category_type": "other",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "other",
+      "canonical_id": "other_jojo-corvi"
+    },
+    {
+      "name": "shop all",
+      "url": "https://glasswingshop.com/collections/plants-garden",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "other",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "other",
+      "canonical_id": "other_shop-all"
+    },
+    {
+      "name": "workshops",
+      "url": "https://glasswingshop.com/collections/workshops",
+      "has_dropdown": false,
+      "selector": "li.dropdown-toggle > div.dropdown-content > ul > li > a",
+      "element_type": "a",
+      "category_type": "other",
+      "subcategory_hints": [],
+      "estimated_products": 25,
+      "source_type": "other",
+      "canonical_id": "other_workshops"
+    }
+  ],
+  "multi_category_relationships": [
+    {
+      "name": "7115 by szeki",
+      "relationship_type": "brand_gender",
+      "primary_category": {
+        "name": "7115 by Szeki",
+        "url": "https://glasswingshop.com/collections/7115-by-szeki-1",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands"
+      },
+      "categories": [
+        {
+          "type": "brands",
+          "item": {
+            "name": "7115 by Szeki",
+            "url": "https://glasswingshop.com/collections/7115-by-szeki-1",
+            "has_dropdown": false,
+            "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+            "element_type": "a",
+            "category_type": "brand",
+            "subcategory_hints": [],
+            "estimated_products": 25,
+            "source_type": "brands"
+          },
+          "role": "primary"
+        },
+        {
+          "type": "gender_demographics",
+          "item": {
+            "name": "7115 by Szeki",
+            "url": "https://glasswingshop.com/collections/7115-by-szeki-mens-collection",
+            "has_dropdown": false,
+            "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+            "element_type": "a",
+            "category_type": "gender_demographic",
+            "subcategory_hints": [],
+            "estimated_products": 25,
+            "source_type": "gender_demographics"
+          },
+          "role": "secondary"
+        }
+      ],
+      "justification": "Brand with legitimate gender-specific collections"
+    },
+    {
+      "name": "brain dead",
+      "relationship_type": "brand_gender",
+      "primary_category": {
+        "name": "Brain Dead",
+        "url": "https://glasswingshop.com/collections/braindead",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands"
+      },
+      "categories": [
+        {
+          "type": "brands",
+          "item": {
+            "name": "Brain Dead",
+            "url": "https://glasswingshop.com/collections/braindead",
+            "has_dropdown": false,
+            "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+            "element_type": "a",
+            "category_type": "brand",
+            "subcategory_hints": [],
+            "estimated_products": 25,
+            "source_type": "brands"
+          },
+          "role": "primary"
+        },
+        {
+          "type": "gender_demographics",
+          "item": {
+            "name": "Brain Dead",
+            "url": "https://glasswingshop.com/collections/brain-dead-mens-collection",
+            "has_dropdown": false,
+            "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+            "element_type": "a",
+            "category_type": "gender_demographic",
+            "subcategory_hints": [],
+            "estimated_products": 25,
+            "source_type": "gender_demographics"
+          },
+          "role": "secondary"
+        },
+        {
+          "type": "gender_demographics",
+          "item": {
+            "name": "Brain Dead",
+            "url": "https://glasswingshop.com/collections/brain-dead-womens-collection",
+            "has_dropdown": false,
+            "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+            "element_type": "a",
+            "category_type": "gender_demographic",
+            "subcategory_hints": [],
+            "estimated_products": 25,
+            "source_type": "gender_demographics"
+          },
+          "role": "secondary"
+        }
+      ],
+      "justification": "Brand with legitimate gender-specific collections"
+    },
+    {
+      "name": "kapital",
+      "relationship_type": "brand_gender",
+      "primary_category": {
+        "name": "Kapital",
+        "url": "https://glasswingshop.com/collections/kapital",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands"
+      },
+      "categories": [
+        {
+          "type": "brands",
+          "item": {
+            "name": "Kapital",
+            "url": "https://glasswingshop.com/collections/kapital",
+            "has_dropdown": false,
+            "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+            "element_type": "a",
+            "category_type": "brand",
+            "subcategory_hints": [],
+            "estimated_products": 25,
+            "source_type": "brands"
+          },
+          "role": "primary"
+        },
+        {
+          "type": "gender_demographics",
+          "item": {
+            "name": "Kapital",
+            "url": "https://glasswingshop.com/collections/kapital-mens-collection",
+            "has_dropdown": false,
+            "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+            "element_type": "a",
+            "category_type": "gender_demographic",
+            "subcategory_hints": [],
+            "estimated_products": 25,
+            "source_type": "gender_demographics"
+          },
+          "role": "secondary"
+        },
+        {
+          "type": "gender_demographics",
+          "item": {
+            "name": "Kapital",
+            "url": "https://glasswingshop.com/collections/kapital-the-femme-collection/WOMENS",
+            "has_dropdown": false,
+            "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+            "element_type": "a",
+            "category_type": "gender_demographic",
+            "subcategory_hints": [],
+            "estimated_products": 25,
+            "source_type": "gender_demographics"
+          },
+          "role": "secondary"
+        }
+      ],
+      "justification": "Brand with legitimate gender-specific collections"
+    }
+  ],
+  "url_resolutions": [
+    {
+      "url": "https://glasswingshop.com/collections/ayame-eyewear",
+      "selected_category": {
+        "name": "Ayame Eyewear",
+        "url": "https://glasswingshop.com/collections/ayame-eyewear",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "ayame eyewear",
+        "normalized_url": "https://glasswingshop.com/collections/ayame-eyewear"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/arpenteur",
+      "selected_category": {
+        "name": "Arpenteur",
+        "url": "https://glasswingshop.com/collections/arpenteur",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "arpenteur",
+        "normalized_url": "https://glasswingshop.com/collections/arpenteur"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/black-crane",
+      "selected_category": {
+        "name": "Black Crane",
+        "url": "https://glasswingshop.com/collections/black-crane",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "black crane",
+        "normalized_url": "https://glasswingshop.com/collections/black-crane"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/history-industry",
+      "selected_category": {
+        "name": "History + Industry",
+        "url": "https://glasswingshop.com/collections/history-industry",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "history + industry",
+        "normalized_url": "https://glasswingshop.com/collections/history-industry"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/illesteva",
+      "selected_category": {
+        "name": "Illesteva",
+        "url": "https://glasswingshop.com/collections/illesteva",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "illesteva",
+        "normalized_url": "https://glasswingshop.com/collections/illesteva"
+      },
+      "eliminated_duplicates": 2
+    },
+    {
+      "url": "https://glasswingshop.com/collections/kara-yoo",
+      "selected_category": {
+        "name": "Kara Yoo",
+        "url": "https://glasswingshop.com/collections/kara-yoo",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "kara yoo",
+        "normalized_url": "https://glasswingshop.com/collections/kara-yoo"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/the-la-paz-collection",
+      "selected_category": {
+        "name": "La Paz",
+        "url": "https://glasswingshop.com/collections/the-la-paz-collection",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "la paz",
+        "normalized_url": "https://glasswingshop.com/collections/the-la-paz-collection"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/lauren-manoogian",
+      "selected_category": {
+        "name": "Lauren Manoogian",
+        "url": "https://glasswingshop.com/collections/lauren-manoogian",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "lauren manoogian",
+        "normalized_url": "https://glasswingshop.com/collections/lauren-manoogian"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/lownn",
+      "selected_category": {
+        "name": "Lownn",
+        "url": "https://glasswingshop.com/collections/lownn",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "lownn",
+        "normalized_url": "https://glasswingshop.com/collections/lownn"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/mijeong-park",
+      "selected_category": {
+        "name": "Mijeong Park",
+        "url": "https://glasswingshop.com/collections/mijeong-park",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "mijeong park",
+        "normalized_url": "https://glasswingshop.com/collections/mijeong-park"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/petrosolaum",
+      "selected_category": {
+        "name": "Petrosolaum",
+        "url": "https://glasswingshop.com/collections/petrosolaum",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "petrosolaum",
+        "normalized_url": "https://glasswingshop.com/collections/petrosolaum"
+      },
+      "eliminated_duplicates": 2
+    },
+    {
+      "url": "https://glasswingshop.com/collections/postalco",
+      "selected_category": {
+        "name": "Postalco",
+        "url": "https://glasswingshop.com/collections/postalco",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "postalco",
+        "normalized_url": "https://glasswingshop.com/collections/postalco"
+      },
+      "eliminated_duplicates": 2
+    },
+    {
+      "url": "https://glasswingshop.com/collections/sillage",
+      "selected_category": {
+        "name": "Sillage",
+        "url": "https://glasswingshop.com/collections/sillage",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "sillage",
+        "normalized_url": "https://glasswingshop.com/collections/sillage"
+      },
+      "eliminated_duplicates": 2
+    },
+    {
+      "url": "https://glasswingshop.com/collections/universal-works",
+      "selected_category": {
+        "name": "Universal Works",
+        "url": "https://glasswingshop.com/collections/universal-works",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "universal works",
+        "normalized_url": "https://glasswingshop.com/collections/universal-works"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/zii-ropa",
+      "selected_category": {
+        "name": "Zii Ropa",
+        "url": "https://glasswingshop.com/collections/zii-ropa",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "zii ropa",
+        "normalized_url": "https://glasswingshop.com/collections/zii-ropa"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/tacoma-fuji-records",
+      "selected_category": {
+        "name": "Tacoma Fuji Records",
+        "url": "https://glasswingshop.com/collections/tacoma-fuji-records",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "tacoma fuji records",
+        "normalized_url": "https://glasswingshop.com/collections/tacoma-fuji-records"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/jesse-kamm",
+      "selected_category": {
+        "name": "Jesse Kamm",
+        "url": "https://glasswingshop.com/collections/jesse-kamm",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "jesse kamm",
+        "normalized_url": "https://glasswingshop.com/collections/jesse-kamm"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/blackbird-apothecary",
+      "selected_category": {
+        "name": "Blackbird",
+        "url": "https://glasswingshop.com/collections/blackbird-apothecary",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "blackbird",
+        "normalized_url": "https://glasswingshop.com/collections/blackbird-apothecary"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/brain-dead-bath",
+      "selected_category": {
+        "name": "BRAIN DEAD",
+        "url": "https://glasswingshop.com/collections/brain-dead-bath",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "brain dead",
+        "normalized_url": "https://glasswingshop.com/collections/brain-dead-bath"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/corpus",
+      "selected_category": {
+        "name": "Corpus",
+        "url": "https://glasswingshop.com/collections/corpus",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "corpus",
+        "normalized_url": "https://glasswingshop.com/collections/corpus"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/frama",
+      "selected_category": {
+        "name": "FRAMA",
+        "url": "https://glasswingshop.com/collections/frama",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "frama",
+        "normalized_url": "https://glasswingshop.com/collections/frama"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/haoma-earth",
+      "selected_category": {
+        "name": "Haoma",
+        "url": "https://glasswingshop.com/collections/haoma-earth",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "haoma",
+        "normalized_url": "https://glasswingshop.com/collections/haoma-earth"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/iris-hantverk-1",
+      "selected_category": {
+        "name": "Iris Hantverk",
+        "url": "https://glasswingshop.com/collections/iris-hantverk-1",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "iris hantverk",
+        "normalized_url": "https://glasswingshop.com/collections/iris-hantverk-1"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/leif",
+      "selected_category": {
+        "name": "Leif",
+        "url": "https://glasswingshop.com/collections/leif",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "leif",
+        "normalized_url": "https://glasswingshop.com/collections/leif"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/lightwell",
+      "selected_category": {
+        "name": "Lightwell",
+        "url": "https://glasswingshop.com/collections/lightwell",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "lightwell",
+        "normalized_url": "https://glasswingshop.com/collections/lightwell"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/morihata",
+      "selected_category": {
+        "name": "Morihata",
+        "url": "https://glasswingshop.com/collections/morihata",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "morihata",
+        "normalized_url": "https://glasswingshop.com/collections/morihata"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/na-nin",
+      "selected_category": {
+        "name": "Na Nin",
+        "url": "https://glasswingshop.com/collections/na-nin",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "na nin",
+        "normalized_url": "https://glasswingshop.com/collections/na-nin"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/wonder-valley",
+      "selected_category": {
+        "name": "Wonder Valley",
+        "url": "https://glasswingshop.com/collections/wonder-valley",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "wonder valley",
+        "normalized_url": "https://glasswingshop.com/collections/wonder-valley"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/current-floral-collection",
+      "selected_category": {
+        "name": "Florals",
+        "url": "https://glasswingshop.com/collections/current-floral-collection",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "florals",
+        "normalized_url": "https://glasswingshop.com/collections/current-floral-collection"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/plant-collection",
+      "selected_category": {
+        "name": "Plants",
+        "url": "https://glasswingshop.com/collections/plant-collection",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "plants",
+        "normalized_url": "https://glasswingshop.com/collections/plant-collection"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/plant-pots",
+      "selected_category": {
+        "name": "Pots",
+        "url": "https://glasswingshop.com/collections/plant-pots",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "brand",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "brands",
+        "normalized_name": "pots",
+        "normalized_url": "https://glasswingshop.com/collections/plant-pots"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/engineered-garments",
+      "selected_category": {
+        "name": "Engineered Garments",
+        "url": "https://glasswingshop.com/collections/engineered-garments",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "gender_demographic",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "gender_demographics",
+        "normalized_name": "engineered garments",
+        "normalized_url": "https://glasswingshop.com/collections/engineered-garments"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/lady-white-mens",
+      "selected_category": {
+        "name": "Lady White Co.",
+        "url": "https://glasswingshop.com/collections/lady-white-mens",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "gender_demographic",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "gender_demographics",
+        "normalized_name": "lady white co.",
+        "normalized_url": "https://glasswingshop.com/collections/lady-white-mens"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/hernan-herdez",
+      "selected_category": {
+        "name": "Hernán Herdez",
+        "url": "https://glasswingshop.com/collections/hernan-herdez",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "other",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "other",
+        "normalized_name": "hernán herdez",
+        "normalized_url": "https://glasswingshop.com/collections/hernan-herdez"
+      },
+      "eliminated_duplicates": 1
+    },
+    {
+      "url": "https://glasswingshop.com/collections/jacques-soloviere",
+      "selected_category": {
+        "name": "Jacques Solovière",
+        "url": "https://glasswingshop.com/collections/jacques-soloviere",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "other",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "other",
+        "normalized_name": "jacques solovière",
+        "normalized_url": "https://glasswingshop.com/collections/jacques-soloviere"
+      },
+      "eliminated_duplicates": 2
+    },
+    {
+      "url": "https://glasswingshop.com/collections/mad-et-len",
+      "selected_category": {
+        "name": "Mad et Lin",
+        "url": "https://glasswingshop.com/collections/mad-et-len",
+        "has_dropdown": false,
+        "selector": "li.dropdown-toggle > div.dropdown-content > ul.lg:columns-2 > li > a",
+        "element_type": "a",
+        "category_type": "other",
+        "subcategory_hints": [],
+        "estimated_products": 25,
+        "source_type": "other",
+        "normalized_name": "mad et lin",
+        "normalized_url": "https://glasswingshop.com/collections/mad-et-len"
+      },
+      "eliminated_duplicates": 1
+    }
+  ],
+  "conflict_resolutions": [],
+  "category_hierarchy": {
+    "product_categories": [
+      {
+        "canonical_id": "product_categories_all-clothing",
+        "name": "All Clothing",
+        "url": "https://glasswingshop.com/collections/clothing-collection",
+        "estimated_products": 200
+      },
+      {
+        "canonical_id": "product_categories_all-shoes",
+        "name": "All Shoes",
+        "url": "https://glasswingshop.com/collections/shoe-collection",
+        "estimated_products": 200
+      },
+      {
+        "canonical_id": "product_categories_clothing",
+        "name": "Clothing",
+        "url": "https://glasswingshop.com/collections/mens-collection",
+        "estimated_products": 80
+      },
+      {
+        "canonical_id": "product_categories_shoes",
+        "name": "Shoes",
+        "url": "https://glasswingshop.com/collections/mens-shoes",
+        "estimated_products": 50
+      },
+      {
+        "canonical_id": "product_categories_accessories",
+        "name": "Accessories",
+        "url": "https://glasswingshop.com/collections/mens-accessories",
+        "estimated_products": 30
+      },
+      {
+        "canonical_id": "product_categories_clothing",
+        "name": "Clothing",
+        "url": "https://glasswingshop.com/collections/womens-collection",
+        "estimated_products": 80
+      },
+      {
+        "canonical_id": "product_categories_shoes",
+        "name": "Shoes",
+        "url": "https://glasswingshop.com/collections/womens-shoes",
+        "estimated_products": 50
+      },
+      {
+        "canonical_id": "product_categories_jewelry",
+        "name": "Jewelry",
+        "url": "https://glasswingshop.com/collections/jewelry",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "product_categories_accessories",
+        "name": "Accessories",
+        "url": "https://glasswingshop.com/collections/accessories-for-her",
+        "estimated_products": 30
+      }
+    ],
+    "brands": [
+      {
+        "canonical_id": "brands_7115-by-szeki",
+        "name": "7115 by Szeki",
+        "url": "https://glasswingshop.com/collections/7115-by-szeki-1",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_ayame-eyewear",
+        "name": "Ayame Eyewear",
+        "url": "https://glasswingshop.com/collections/ayame-eyewear",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_arpenteur",
+        "name": "Arpenteur",
+        "url": "https://glasswingshop.com/collections/arpenteur",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_black-crane",
+        "name": "Black Crane",
+        "url": "https://glasswingshop.com/collections/black-crane",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_brain-dead",
+        "name": "Brain Dead",
+        "url": "https://glasswingshop.com/collections/braindead",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_camiel-fortgens",
+        "name": "Camiel Fortgens",
+        "url": "https://glasswingshop.com/collections/camiel-fortgens",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_cawley",
+        "name": "Cawley",
+        "url": "https://glasswingshop.com/collections/cawley",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_colbo",
+        "name": "Colbo",
+        "url": "https://glasswingshop.com/collections/colbo",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_cordera",
+        "name": "Cordera",
+        "url": "https://glasswingshop.com/collections/monica-cordera",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_evan-kinori",
+        "name": "Evan Kinori",
+        "url": "https://glasswingshop.com/collections/evan-kinori",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_henrik-vibskov",
+        "name": "Henrik Vibskov",
+        "url": "https://glasswingshop.com/collections/henrik-vibskov-1",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_history-industry",
+        "name": "History + Industry",
+        "url": "https://glasswingshop.com/collections/history-industry",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_illesteva",
+        "name": "Illesteva",
+        "url": "https://glasswingshop.com/collections/illesteva",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_kapital",
+        "name": "Kapital",
+        "url": "https://glasswingshop.com/collections/kapital",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_kara-yoo",
+        "name": "Kara Yoo",
+        "url": "https://glasswingshop.com/collections/kara-yoo",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_la-paz",
+        "name": "La Paz",
+        "url": "https://glasswingshop.com/collections/the-la-paz-collection",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_lauren-manoogian",
+        "name": "Lauren Manoogian",
+        "url": "https://glasswingshop.com/collections/lauren-manoogian",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_lownn",
+        "name": "Lownn",
+        "url": "https://glasswingshop.com/collections/lownn",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_mijeong-park",
+        "name": "Mijeong Park",
+        "url": "https://glasswingshop.com/collections/mijeong-park",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_petrosolaum",
+        "name": "Petrosolaum",
+        "url": "https://glasswingshop.com/collections/petrosolaum",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_postalco",
+        "name": "Postalco",
+        "url": "https://glasswingshop.com/collections/postalco",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_sillage",
+        "name": "Sillage",
+        "url": "https://glasswingshop.com/collections/sillage",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_stutterheim",
+        "name": "Stutterheim",
+        "url": "https://glasswingshop.com/collections/stutterheim",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_universal-works",
+        "name": "Universal Works",
+        "url": "https://glasswingshop.com/collections/universal-works",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_yoko-sakamoto",
+        "name": "Yoko Sakamoto",
+        "url": "https://glasswingshop.com/collections/yoko-sakamoto-collection",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_zii-ropa",
+        "name": "Zii Ropa",
+        "url": "https://glasswingshop.com/collections/zii-ropa",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_tacoma-fuji-records",
+        "name": "Tacoma Fuji Records",
+        "url": "https://glasswingshop.com/collections/tacoma-fuji-records",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_evan-kinori",
+        "name": "Evan Kinori",
+        "url": "https://glasswingshop.com/collections/evan-kinori/EVAN-KINORI",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_7115-by-szeki",
+        "name": "7115 by Szeki",
+        "url": "https://glasswingshop.com/collections/7115-by-szeki",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_agmes",
+        "name": "Agmes",
+        "url": "https://glasswingshop.com/collections/agmes",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_another-feather",
+        "name": "ANOTHER FEATHER",
+        "url": "https://glasswingshop.com/collections/another-feather",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_atelier-delphine",
+        "name": "Atelier Delphine",
+        "url": "https://glasswingshop.com/collections/atelier-delphine",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_henrik-vibskov",
+        "name": "Henrik Vibskov",
+        "url": "https://glasswingshop.com/collections/henrik-vibskov",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_jesse-kamm",
+        "name": "Jesse Kamm",
+        "url": "https://glasswingshop.com/collections/jesse-kamm",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_loq",
+        "name": "LOQ",
+        "url": "https://glasswingshop.com/collections/loq",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_machete",
+        "name": "MACHETE",
+        "url": "https://glasswingshop.com/collections/machete",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_face",
+        "name": "Face",
+        "url": "https://glasswingshop.com/collections/face",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_bath-body",
+        "name": "Bath & Body",
+        "url": "https://glasswingshop.com/collections/bath-1",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_fragrance",
+        "name": "Fragrance",
+        "url": "https://glasswingshop.com/collections/fragrance-collection",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_blackbird",
+        "name": "Blackbird",
+        "url": "https://glasswingshop.com/collections/blackbird-apothecary",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_brain-dead",
+        "name": "BRAIN DEAD",
+        "url": "https://glasswingshop.com/collections/brain-dead-bath",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_corpus",
+        "name": "Corpus",
+        "url": "https://glasswingshop.com/collections/corpus",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_ds-durga",
+        "name": "D.S. & Durga",
+        "url": "https://glasswingshop.com/collections/d-s-durga",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_frama",
+        "name": "FRAMA",
+        "url": "https://glasswingshop.com/collections/frama",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_haoma",
+        "name": "Haoma",
+        "url": "https://glasswingshop.com/collections/haoma-earth",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_iris-hantverk",
+        "name": "Iris Hantverk",
+        "url": "https://glasswingshop.com/collections/iris-hantverk-1",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_leif",
+        "name": "Leif",
+        "url": "https://glasswingshop.com/collections/leif",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_lightwell",
+        "name": "Lightwell",
+        "url": "https://glasswingshop.com/collections/lightwell",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_morihata",
+        "name": "Morihata",
+        "url": "https://glasswingshop.com/collections/morihata",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_na-nin",
+        "name": "Na Nin",
+        "url": "https://glasswingshop.com/collections/na-nin",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_parfums-quartana",
+        "name": "Parfums Quartana",
+        "url": "https://glasswingshop.com/collections/parfums-quartana",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_stora-skuggan",
+        "name": "Stora Skuggan",
+        "url": "https://glasswingshop.com/collections/stora-skuggan",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_wonder-valley",
+        "name": "Wonder Valley",
+        "url": "https://glasswingshop.com/collections/wonder-valley",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_bath-body",
+        "name": "Bath & Body",
+        "url": "https://glasswingshop.com/collections/bath",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_candles-scent",
+        "name": "Candles & Scent",
+        "url": "https://glasswingshop.com/collections/candles",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_ceramics",
+        "name": "Ceramics",
+        "url": "https://glasswingshop.com/collections/handmade-ceramics",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_florals",
+        "name": "Florals",
+        "url": "https://glasswingshop.com/collections/current-floral-collection",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_plants",
+        "name": "Plants",
+        "url": "https://glasswingshop.com/collections/plant-collection",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_pots",
+        "name": "Pots",
+        "url": "https://glasswingshop.com/collections/plant-pots",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_office",
+        "name": "Office",
+        "url": "https://glasswingshop.com/collections/office",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_tableware",
+        "name": "Tableware",
+        "url": "https://glasswingshop.com/collections/kitchen",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_aleph-geddis",
+        "name": "Aleph Geddis",
+        "url": "https://glasswingshop.com/collections/aleph-geddis",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_alex-roby-ceramics",
+        "name": "Alex Roby Ceramics",
+        "url": "https://glasswingshop.com/collections/alex-roby-ceramics",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_ayame-bullock",
+        "name": "Ayame Bullock",
+        "url": "https://glasswingshop.com/collections/ayame",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_daisuke-anayama",
+        "name": "Daisuke Anayama",
+        "url": "https://glasswingshop.com/collections/daisuke-anayama",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_daiyo",
+        "name": "Daiyo",
+        "url": "https://glasswingshop.com/collections/daiyo",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_deux-cranes",
+        "name": "Deux Cranes",
+        "url": "https://glasswingshop.com/collections/deux-cranes",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_george-nakamura",
+        "name": "George Nakamura",
+        "url": "https://glasswingshop.com/collections/george-nakamura",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_kettl",
+        "name": "Kettl",
+        "url": "https://glasswingshop.com/collections/kettl",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_kinto",
+        "name": "Kinto",
+        "url": "https://glasswingshop.com/collections/kinto",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_lamine-diouf",
+        "name": "Lamine Diouf",
+        "url": "https://glasswingshop.com/collections/lamine-diouf-weavings",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_takazawa-candle",
+        "name": "Takazawa Candle",
+        "url": "https://glasswingshop.com/collections/takazawa-candle",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_the-quiet-botanist",
+        "name": "The Quiet Botanist",
+        "url": "https://glasswingshop.com/collections/the-quiet-botanist",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_wilde-house-paper",
+        "name": "Wilde House Paper",
+        "url": "https://glasswingshop.com/collections/wilde-house-paper",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_yuriko-bullock",
+        "name": "Yuriko Bullock",
+        "url": "https://glasswingshop.com/collections/yuriko-bullock",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "brands_design-services",
+        "name": "Design Services",
+        "url": "https://glasswingshop.com/pages/plant-services-1",
+        "estimated_products": 15
+      },
+      {
+        "canonical_id": "brands_people",
+        "name": "People",
+        "url": "https://glasswingshop.com/blogs/friends",
+        "estimated_products": 15
+      },
+      {
+        "canonical_id": "brands_places",
+        "name": "Places",
+        "url": "https://glasswingshop.com/blogs/places",
+        "estimated_products": 15
+      },
+      {
+        "canonical_id": "brands_product",
+        "name": "Product",
+        "url": "https://glasswingshop.com/blogs/lookbook",
+        "estimated_products": 15
+      },
+      {
+        "canonical_id": "brands_events",
+        "name": "Events",
+        "url": "https://glasswingshop.com/blogs/events",
+        "estimated_products": 15
+      },
+      {
+        "canonical_id": "brands_instagram",
+        "name": "Instagram",
+        "url": "https://www.instagram.com/glasswingshop/",
+        "estimated_products": 15
+      }
+    ],
+    "gender_demographics": [
+      {
+        "canonical_id": "gender_demographics_unisex",
+        "name": "Unisex",
+        "url": "https://glasswingshop.com/collections/unisex",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_engineered-garments",
+        "name": "Engineered Garments",
+        "url": "https://glasswingshop.com/collections/engineered-garments",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_lady-white-co",
+        "name": "Lady White Co.",
+        "url": "https://glasswingshop.com/collections/lady-white-mens",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_sale",
+        "name": "Sale",
+        "url": "https://glasswingshop.com/collections/mens-sale",
+        "estimated_products": 100
+      },
+      {
+        "canonical_id": "gender_demographics_shop-all",
+        "name": "Shop All",
+        "url": "https://glasswingshop.com/collections/shop-all-mens",
+        "estimated_products": 200
+      },
+      {
+        "canonical_id": "gender_demographics_7115-by-szeki",
+        "name": "7115 by Szeki",
+        "url": "https://glasswingshop.com/collections/7115-by-szeki-mens-collection",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_brain-dead",
+        "name": "Brain Dead",
+        "url": "https://glasswingshop.com/collections/brain-dead-mens-collection",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_camiel-fortgens",
+        "name": "Camiel Fortgens",
+        "url": "https://glasswingshop.com/collections/camiel-fortgens-mens-collection",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_colbo",
+        "name": "Colbo",
+        "url": "https://glasswingshop.com/collections/colbo-mens-collection",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_henrik-vibskov",
+        "name": "Henrik Vibskov",
+        "url": "https://glasswingshop.com/collections/henrik-vibskov-mens-collection",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_janjan-van-essche",
+        "name": "Jan-Jan Van Essche",
+        "url": "https://glasswingshop.com/collections/jan-jan-van-essche/MENS",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_kapital",
+        "name": "Kapital",
+        "url": "https://glasswingshop.com/collections/kapital-mens-collection",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_merz-b-schwanen",
+        "name": "Merz b. Schwanen",
+        "url": "https://glasswingshop.com/collections/merz-b-schwanen-mens",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_orslow",
+        "name": "OrSlow",
+        "url": "https://glasswingshop.com/collections/orslow-mens-collection",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_postalco",
+        "name": "Postalco",
+        "url": "https://glasswingshop.com/collections/postalco/mens",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_stutterheim",
+        "name": "Stutterheim",
+        "url": "https://glasswingshop.com/collections/stutterheim/MENS",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_yoko-sakamoto",
+        "name": "Yoko Sakamoto",
+        "url": "https://glasswingshop.com/collections/yoko-sakamoto-mens-collection",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_sale",
+        "name": "Sale",
+        "url": "https://glasswingshop.com/collections/women-s-sale",
+        "estimated_products": 100
+      },
+      {
+        "canonical_id": "gender_demographics_shop-all",
+        "name": "Shop All",
+        "url": "https://glasswingshop.com/collections/shop-all-womens",
+        "estimated_products": 200
+      },
+      {
+        "canonical_id": "gender_demographics_brain-dead",
+        "name": "Brain Dead",
+        "url": "https://glasswingshop.com/collections/brain-dead-womens-collection",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_camiel-fortgens",
+        "name": "Camiel Fortgens",
+        "url": "https://glasswingshop.com/collections/camiel-fortgens-womens-collection",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_cawley",
+        "name": "Cawley",
+        "url": "https://glasswingshop.com/collections/cawley-womens-collection",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_colbo",
+        "name": "Colbo",
+        "url": "https://glasswingshop.com/collections/colbo-womens-collection",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_cordera",
+        "name": "Cordera",
+        "url": "https://glasswingshop.com/collections/cordera-womens-collection",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_janjan-van-essche",
+        "name": "JAN-JAN VAN ESSCHE",
+        "url": "https://glasswingshop.com/collections/jan-jan-van-essche-womens-collection",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_kapital",
+        "name": "Kapital",
+        "url": "https://glasswingshop.com/collections/kapital-the-femme-collection/WOMENS",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_mantle",
+        "name": "MAN-TLE",
+        "url": "https://glasswingshop.com/collections/man-tle-womens",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "gender_demographics_yoko-sakamoto",
+        "name": "Yoko Sakamoto",
+        "url": "https://glasswingshop.com/collections/yoko-sakamoto-womens-collection",
+        "estimated_products": 25
+      }
+    ],
+    "featured_collections": [
+      {
+        "canonical_id": "featured_collections_all-sale",
+        "name": "All Sale",
+        "url": "https://glasswingshop.com/collections/sale",
+        "estimated_products": 200
+      },
+      {
+        "canonical_id": "featured_collections_new-arrivals",
+        "name": "New Arrivals",
+        "url": "https://glasswingshop.com/collections/new-arrivals-for-him",
+        "estimated_products": 40
+      },
+      {
+        "canonical_id": "featured_collections_new-arrivals",
+        "name": "New Arrivals",
+        "url": "https://glasswingshop.com/collections/new-arrivals-for-her",
+        "estimated_products": 40
+      },
+      {
+        "canonical_id": "featured_collections_february-gift-guide",
+        "name": "February Gift Guide",
+        "url": "https://glasswingshop.com/collections/february-gift-guide",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "featured_collections_gift-sets",
+        "name": "Gift Sets",
+        "url": "https://glasswingshop.com/collections/gift-sets",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "featured_collections_gift-cards",
+        "name": "Gift Cards",
+        "url": "https://glasswingshop.com/collections/gift-cards",
+        "estimated_products": 25
+      }
+    ],
+    "other": [
+      {
+        "canonical_id": "other_hernn-herdez",
+        "name": "Hernán Herdez",
+        "url": "https://glasswingshop.com/collections/hernan-herdez",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "other_jacques-solovire",
+        "name": "Jacques Solovière",
+        "url": "https://glasswingshop.com/collections/jacques-soloviere",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "other_janjan-van-essche",
+        "name": "Jan-Jan Van Essche",
+        "url": "https://glasswingshop.com/collections/jan-jan-van-essche-collection",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "other_mantle",
+        "name": "MAN-TLE",
+        "url": "https://glasswingshop.com/collections/man-tle-1",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "other_merz-b-schwanen",
+        "name": "Merz b Schwanen",
+        "url": "https://glasswingshop.com/collections/merz-b-schwanen",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "other_oproject",
+        "name": "O-Project",
+        "url": "https://glasswingshop.com/collections/o-project-1",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "other_orslow",
+        "name": "orSlow",
+        "url": "https://glasswingshop.com/collections/orslow",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "other_mantle",
+        "name": "MAN-TLE",
+        "url": "https://glasswingshop.com/collections/man-tle",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "other_o-project",
+        "name": "O Project",
+        "url": "https://glasswingshop.com/collections/o-project",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "other_merz-b-schwanen",
+        "name": "Merz b. Schwanen",
+        "url": "https://glasswingshop.com/collections/merz-b-schwanen-1",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "other_orslow",
+        "name": "orSlow",
+        "url": "https://glasswingshop.com/collections/orslow-1",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "other_j-hannah",
+        "name": "J. Hannah",
+        "url": "https://glasswingshop.com/collections/j-hannah-polish",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "other_mad-et-lin",
+        "name": "Mad et Lin",
+        "url": "https://glasswingshop.com/collections/mad-et-len",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "other_jojo-corvi",
+        "name": "Jojo Corväiá",
+        "url": "https://glasswingshop.com/collections/jojo-corv-i",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "other_shop-all",
+        "name": "shop all",
+        "url": "https://glasswingshop.com/collections/plants-garden",
+        "estimated_products": 25
+      },
+      {
+        "canonical_id": "other_workshops",
+        "name": "workshops",
+        "url": "https://glasswingshop.com/collections/workshops",
+        "estimated_products": 25
+      }
+    ]
+  }
+}

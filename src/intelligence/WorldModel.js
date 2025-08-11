@@ -20,16 +20,16 @@ class WorldModel {
       navigation_map: navigationMap,
       created_at: new Date().toISOString(),
       last_updated: new Date().toISOString(),
-      version: '1.0'
+      version: '1.0',
     };
 
     try {
       // Store in Redis with 7-day TTL (navigation changes less frequently)
       await this.cache.redis.setex(key, 7 * 24 * 60 * 60, JSON.stringify(intelligence));
-      
+
       // Also cache in memory for fast access
       this.siteIntelligence.set(domain, intelligence);
-      
+
       this.logger.info(`Stored navigation intelligence for ${domain}`);
       return true;
     } catch (error) {
@@ -48,7 +48,7 @@ class WorldModel {
       // Check Redis
       const key = `site_nav:${domain}`;
       const cached = await this.cache.redis.get(key);
-      
+
       if (cached) {
         const intelligence = JSON.parse(cached);
         this.siteIntelligence.set(domain, intelligence); // Cache in memory
@@ -75,11 +75,11 @@ class WorldModel {
         variants: selectors.variants || {},
         images: selectors.images || {},
         filters: selectors.filters || {},
-        pagination: selectors.pagination || {}
+        pagination: selectors.pagination || {},
       },
       reliability_scores: selectors.reliability_scores || {},
       tested_at: new Date().toISOString(),
-      success_rate: selectors.success_rate || 0.0
+      success_rate: selectors.success_rate || 0.0,
     };
 
     try {
@@ -97,7 +97,7 @@ class WorldModel {
     try {
       const key = `selectors:${domain}`;
       const cached = await this.cache.redis.get(key);
-      
+
       if (cached) {
         return JSON.parse(cached);
       }
@@ -118,10 +118,10 @@ class WorldModel {
         product_url: patterns.product_url || null,
         category_url: patterns.category_url || null,
         search_url: patterns.search_url || null,
-        collection_url: patterns.collection_url || null
+        collection_url: patterns.collection_url || null,
       },
       examples: patterns.examples || {},
-      discovered_at: new Date().toISOString()
+      discovered_at: new Date().toISOString(),
     };
 
     try {
@@ -138,7 +138,7 @@ class WorldModel {
     try {
       const key = `url_patterns:${domain}`;
       const cached = await this.cache.redis.get(key);
-      
+
       if (cached) {
         return JSON.parse(cached);
       }
@@ -160,7 +160,7 @@ class WorldModel {
       selectors_used: productData.selectors_used || {},
       extraction_success: productData.extraction_success || {},
       scraped_at: new Date().toISOString(),
-      expires_at: new Date(Date.now() + 60 * 60 * 1000).toISOString() // 1 hour TTL for product data
+      expires_at: new Date(Date.now() + 60 * 60 * 1000).toISOString(), // 1 hour TTL for product data
     };
 
     try {
@@ -177,10 +177,10 @@ class WorldModel {
     try {
       const key = `product:${Buffer.from(productUrl).toString('base64')}`;
       const cached = await this.cache.redis.get(key);
-      
+
       if (cached) {
         const intelligence = JSON.parse(cached);
-        
+
         // Check if data is still fresh
         const expiresAt = new Date(intelligence.expires_at);
         if (new Date() < expiresAt) {
@@ -200,7 +200,7 @@ class WorldModel {
     const [navigation, selectors, urlPatterns] = await Promise.all([
       this.getSiteNavigation(domain),
       this.getSelectorLibrary(domain),
-      this.getURLPatterns(domain)
+      this.getURLPatterns(domain),
     ]);
 
     return {
@@ -211,36 +211,36 @@ class WorldModel {
       navigation_sections: navigation?.navigation_map?.main_sections?.length || 0,
       selector_categories: selectors ? Object.keys(selectors.selectors).length : 0,
       last_updated: navigation?.last_updated || null,
-      intelligence_completeness: this.calculateIntelligenceCompleteness(navigation, selectors, urlPatterns)
+      intelligence_completeness: this.calculateIntelligenceCompleteness(navigation, selectors, urlPatterns),
     };
   }
 
   calculateIntelligenceCompleteness(navigation, selectors, urlPatterns) {
     let score = 0;
-    let maxScore = 10;
+    const maxScore = 10;
 
     // Navigation intelligence (40% of score)
     if (navigation) {
       score += 4;
-      if (navigation.navigation_map?.main_sections?.length > 0) score += 1;
-      if (navigation.navigation_map?.dropdown_menus) score += 1;
+      if (navigation.navigation_map?.main_sections?.length > 0) {score += 1;}
+      if (navigation.navigation_map?.dropdown_menus) {score += 1;}
     }
 
-    // Selector intelligence (40% of score)  
+    // Selector intelligence (40% of score)
     if (selectors) {
       score += 2;
       const selectorTypes = Object.keys(selectors.selectors);
-      if (selectorTypes.includes('product')) score += 1;
-      if (selectorTypes.includes('pricing')) score += 1;
-      if (selectorTypes.includes('availability')) score += 1;
-      if (selectors.success_rate > 0.8) score += 1;
+      if (selectorTypes.includes('product')) {score += 1;}
+      if (selectorTypes.includes('pricing')) {score += 1;}
+      if (selectorTypes.includes('availability')) {score += 1;}
+      if (selectors.success_rate > 0.8) {score += 1;}
     }
 
     // URL pattern intelligence (20% of score)
     if (urlPatterns) {
       score += 1;
-      if (urlPatterns.patterns.product_url) score += 0.5;
-      if (urlPatterns.patterns.category_url) score += 0.5;
+      if (urlPatterns.patterns.product_url) {score += 0.5;}
+      if (urlPatterns.patterns.category_url) {score += 0.5;}
     }
 
     return Math.round((score / maxScore) * 100);
@@ -249,7 +249,7 @@ class WorldModel {
   // Quick Price Check Using World Model
   async getQuickPriceCheck(productUrl) {
     const domain = new URL(productUrl).hostname;
-    
+
     // Get cached product data if available
     const productIntelligence = await this.getProductIntelligence(productUrl);
     if (productIntelligence) {
@@ -258,7 +258,7 @@ class WorldModel {
         price: productIntelligence.product_data.price,
         availability: productIntelligence.product_data.availability,
         cached: true,
-        last_updated: productIntelligence.scraped_at
+        last_updated: productIntelligence.scraped_at,
       };
     }
 
@@ -271,7 +271,7 @@ class WorldModel {
     return {
       needs_scraping: true,
       selectors: selectors.selectors,
-      domain
+      domain,
     };
   }
 

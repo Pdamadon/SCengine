@@ -5,26 +5,26 @@
 class SelectorValidator {
   constructor(logger = null) {
     this.logger = logger;
-    
+
     // Cache for validation results to improve performance
     this.validationCache = new Map();
     this.cacheTimeout = 30000; // 30 seconds
-    
+
     // Performance monitoring
     this.performanceMetrics = {
       totalValidations: 0,
       averageValidationTime: 0,
       cacheHitRate: 0,
       cacheHits: 0,
-      cacheMisses: 0
+      cacheMisses: 0,
     };
-    
+
     // Stability tracking for continuous improvement
     this.stabilityHistory = new Map();
-    
+
     // Real-time monitoring sessions
     this.activeMonitoringSessions = new Map();
-    
+
     // Element type expectations for different contexts
     this.contextExpectations = {
       'product.link': ['a', 'button'],
@@ -36,7 +36,7 @@ class SelectorValidator {
       'navigation.breadcrumb': ['nav', 'ol', 'ul', 'div'],
       'filters.dropdown': ['select', 'div', 'ul'],
       'pagination.controls': ['nav', 'div', 'ul'],
-      'forms.input': ['input', 'textarea', 'select']
+      'forms.input': ['input', 'textarea', 'select'],
     };
 
     // Minimum visibility thresholds
@@ -44,14 +44,14 @@ class SelectorValidator {
       minWidth: 1,
       minHeight: 1,
       minOpacity: 0.1,
-      maxZIndex: -999 // Elements below this z-index are considered hidden
+      maxZIndex: -999, // Elements below this z-index are considered hidden
     };
 
     // Stability indicators
     this.stabilityIndicators = {
       stable: ['id', 'data-testid', 'data-test', 'data-cy', 'data-component'],
       moderatelyStable: ['class', 'role', 'aria-label'],
-      unstable: ['nth-child', 'nth-of-type', 'first-child', 'last-child']
+      unstable: ['nth-child', 'nth-of-type', 'first-child', 'last-child'],
     };
   }
 
@@ -81,7 +81,7 @@ class SelectorValidator {
       issues: [],
       warnings: [],
       confidence: 0,
-      details: {}
+      details: {},
     };
 
     try {
@@ -112,7 +112,7 @@ class SelectorValidator {
       // 3. Visibility validation
       const visibilityResults = this.validateElementVisibility(elements);
       validationResult.details.visibility = visibilityResults;
-      
+
       if (visibilityResults.visibleCount === 0) {
         validationResult.issues.push('All matched elements are not visible');
         return this.cacheAndReturn(cacheKey, validationResult);
@@ -126,7 +126,7 @@ class SelectorValidator {
       if (expectedContext) {
         const contextResult = this.validateContextAppropriateness(elements, expectedContext);
         validationResult.details.context = contextResult;
-        
+
         if (!contextResult.isAppropriate) {
           validationResult.warnings.push(`Context mismatch: ${contextResult.reason}`);
         }
@@ -144,7 +144,7 @@ class SelectorValidator {
       if (this.isInteractiveContext(expectedContext)) {
         const interactabilityResult = this.validateInteractability(elements);
         validationResult.details.interactability = interactabilityResult;
-        
+
         if (interactabilityResult.interactableCount === 0) {
           validationResult.issues.push('No matched elements are interactable');
           return this.cacheAndReturn(cacheKey, validationResult);
@@ -153,7 +153,7 @@ class SelectorValidator {
 
       // Calculate overall confidence score
       validationResult.confidence = this.calculateConfidenceScore(validationResult);
-      
+
       // Determine if valid based on issues and confidence
       validationResult.isValid = validationResult.issues.length === 0 && validationResult.confidence > 0.5;
 
@@ -177,11 +177,11 @@ class SelectorValidator {
       document.querySelector(selector);
       return { isValid: true };
     } catch (error) {
-      return { 
-        isValid: false, 
-        error: error.message.includes('is not a valid selector') 
-          ? 'Invalid CSS selector syntax' 
-          : error.message 
+      return {
+        isValid: false,
+        error: error.message.includes('is not a valid selector')
+          ? 'Invalid CSS selector syntax'
+          : error.message,
       };
     }
   }
@@ -197,14 +197,14 @@ class SelectorValidator {
       visibleCount: 0,
       hiddenCount: 0,
       partiallyVisibleCount: 0,
-      elementDetails: []
+      elementDetails: [],
     };
 
     elements.forEach((element, index) => {
       const visibility = this.checkElementVisibility(element);
       results.elementDetails.push({
         index,
-        ...visibility
+        ...visibility,
       });
 
       if (visibility.isFullyVisible) {
@@ -227,7 +227,7 @@ class SelectorValidator {
   checkElementVisibility(element) {
     const rect = element.getBoundingClientRect();
     const style = window.getComputedStyle(element);
-    
+
     const visibility = {
       isFullyVisible: false,
       isPartiallyVisible: false,
@@ -235,15 +235,15 @@ class SelectorValidator {
         width: rect.width,
         height: rect.height,
         top: rect.top,
-        left: rect.left
+        left: rect.left,
       },
       style: {
         display: style.display,
         visibility: style.visibility,
         opacity: parseFloat(style.opacity) || 1,
-        zIndex: parseInt(style.zIndex) || 0
+        zIndex: parseInt(style.zIndex) || 0,
       },
-      reasons: []
+      reasons: [],
     };
 
     // Check basic visibility conditions
@@ -274,8 +274,8 @@ class SelectorValidator {
     }
 
     // Check if element is in viewport
-    const isInViewport = rect.top >= 0 && rect.left >= 0 && 
-                        rect.bottom <= window.innerHeight && 
+    const isInViewport = rect.top >= 0 && rect.left >= 0 &&
+                        rect.bottom <= window.innerHeight &&
                         rect.right <= window.innerWidth;
 
     if (!isInViewport) {
@@ -307,7 +307,7 @@ class SelectorValidator {
       actualTags: [],
       appropriateCount: 0,
       inappropriateCount: 0,
-      reason: null
+      reason: null,
     };
 
     if (expectedTags.length === 0) {
@@ -318,7 +318,7 @@ class SelectorValidator {
     elements.forEach(element => {
       const tagName = element.tagName.toLowerCase();
       results.actualTags.push(tagName);
-      
+
       if (expectedTags.includes(tagName)) {
         results.appropriateCount++;
       } else {
@@ -344,7 +344,7 @@ class SelectorValidator {
     const factors = {
       stable: 0,
       moderatelyStable: 0,
-      unstable: 0
+      unstable: 0,
     };
 
     // Check for stable indicators
@@ -372,15 +372,15 @@ class SelectorValidator {
     });
 
     // Additional stability factors
-    if (selector.includes('#')) score += 0.2; // ID selectors are stable
-    if (selector.includes('[data-')) score += 0.2; // Data attributes are stable
-    if (selector.includes('nth-child')) score -= 0.3; // Position-based selectors are unstable
-    if (selector.split('.').length > 4) score -= 0.1; // Too many classes can be unstable
+    if (selector.includes('#')) {score += 0.2;} // ID selectors are stable
+    if (selector.includes('[data-')) {score += 0.2;} // Data attributes are stable
+    if (selector.includes('nth-child')) {score -= 0.3;} // Position-based selectors are unstable
+    if (selector.split('.').length > 4) {score -= 0.1;} // Too many classes can be unstable
 
     return {
       score: Math.max(0, Math.min(1, score)),
       factors,
-      classification: score > 0.7 ? 'stable' : score > 0.4 ? 'moderate' : 'unstable'
+      classification: score > 0.7 ? 'stable' : score > 0.4 ? 'moderate' : 'unstable',
     };
   }
 
@@ -394,14 +394,14 @@ class SelectorValidator {
       totalCount: elements.length,
       interactableCount: 0,
       nonInteractableCount: 0,
-      elementDetails: []
+      elementDetails: [],
     };
 
     elements.forEach((element, index) => {
       const interactability = this.checkElementInteractability(element);
       results.elementDetails.push({
         index,
-        ...interactability
+        ...interactability,
       });
 
       if (interactability.isInteractable) {
@@ -422,7 +422,7 @@ class SelectorValidator {
   checkElementInteractability(element) {
     const result = {
       isInteractable: true,
-      blockers: []
+      blockers: [],
     };
 
     // Check if element is disabled
@@ -449,7 +449,7 @@ class SelectorValidator {
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     const elementAtPoint = document.elementFromPoint(centerX, centerY);
-    
+
     if (elementAtPoint && !element.contains(elementAtPoint) && elementAtPoint !== element) {
       result.blockers.push('element might be covered by another element');
       // Don't mark as non-interactable for this, just a warning
@@ -466,7 +466,7 @@ class SelectorValidator {
   isInteractiveContext(context) {
     const interactiveContexts = [
       'product.button', 'product.link', 'navigation.menu', 'filters.dropdown',
-      'pagination.controls', 'forms.input', 'forms.submit'
+      'pagination.controls', 'forms.input', 'forms.submit',
     ];
     return context && interactiveContexts.some(ctx => context.includes(ctx));
   }
@@ -490,7 +490,7 @@ class SelectorValidator {
       const visibility = validationResult.details.visibility;
       const visibilityRatio = visibility.visibleCount / visibility.totalCount;
       const partialVisibilityRatio = visibility.partiallyVisibleCount / visibility.totalCount;
-      
+
       // Full visibility gets full bonus, partial visibility gets reduced bonus
       score += (visibilityRatio * 0.25) + (partialVisibilityRatio * 0.1);
     }
@@ -499,7 +499,7 @@ class SelectorValidator {
     if (validationResult.details.stability) {
       const stabilityScore = validationResult.details.stability.score;
       score += stabilityScore * 0.25;
-      
+
       // Bonus for stable selectors (data attributes, IDs)
       if (validationResult.details.stability.classification === 'stable') {
         score += 0.1;
@@ -540,7 +540,7 @@ class SelectorValidator {
         'B': 0.03,
         'C': 0,
         'D': -0.02,
-        'F': -0.05
+        'F': -0.05,
       }[perfGrade] || 0;
       score += perfBonus;
     }
@@ -559,27 +559,27 @@ class SelectorValidator {
   async validateSelectorEnhanced(selector, document, expectedContext = null, options = {}) {
     // Run standard validation first
     const standardResult = await this.validateSelector(selector, document, expectedContext, options);
-    
+
     // Add performance validation if requested
     if (options.includePerformance) {
       standardResult.details.performance = await this.validateSelectorPerformance(selector, document, {
-        iterations: options.performanceIterations || 50
+        iterations: options.performanceIterations || 50,
       });
     }
-    
+
     // Add stability testing if requested
     if (options.includeStability) {
-      standardResult.details.stabilityTest = await this.testSelectorStability(selector, document, 
-        options.stabilityIterations || 3
+      standardResult.details.stabilityTest = await this.testSelectorStability(selector, document,
+        options.stabilityIterations || 3,
       );
     }
-    
+
     // Recalculate confidence with enhanced metrics
     standardResult.confidence = this.calculateConfidenceScore(standardResult);
-    
+
     // Add improvement suggestions
     standardResult.improvements = this.generateImprovementSuggestions(standardResult, selector, document);
-    
+
     return standardResult;
   }
 
@@ -592,54 +592,54 @@ class SelectorValidator {
    */
   generateImprovementSuggestions(validationResult, selector, document) {
     const suggestions = [];
-    
+
     // Suggest improvements based on validation results
     if (validationResult.details.matchCount > 5) {
       suggestions.push({
         type: 'specificity',
         priority: 'high',
         message: 'Selector matches too many elements',
-        suggestion: 'Add more specific parent selectors or additional class names'
+        suggestion: 'Add more specific parent selectors or additional class names',
       });
     }
-    
+
     if (validationResult.details.stability?.score < 0.5) {
       suggestions.push({
         type: 'stability',
         priority: 'high',
         message: 'Selector has low stability score',
-        suggestion: 'Consider using data attributes or more stable element identifiers'
+        suggestion: 'Consider using data attributes or more stable element identifiers',
       });
     }
-    
+
     if (validationResult.details.visibility?.visibleCount === 0) {
       suggestions.push({
         type: 'visibility',
         priority: 'critical',
         message: 'No matched elements are visible',
-        suggestion: 'Check for CSS display/visibility issues or scroll element into view'
+        suggestion: 'Check for CSS display/visibility issues or scroll element into view',
       });
     }
-    
+
     if (validationResult.details.context && !validationResult.details.context.isAppropriate) {
       suggestions.push({
         type: 'context',
         priority: 'medium',
         message: 'Element type does not match expected context',
-        suggestion: `Expected ${validationResult.details.context.expectedTags.join('|')} but found ${validationResult.details.context.actualTags.join('|')}`
+        suggestion: `Expected ${validationResult.details.context.expectedTags.join('|')} but found ${validationResult.details.context.actualTags.join('|')}`,
       });
     }
-    
+
     // Performance-based suggestions
     if (validationResult.details.performance?.performanceGrade === 'F') {
       suggestions.push({
         type: 'performance',
         priority: 'medium',
         message: 'Selector has poor performance characteristics',
-        suggestion: 'Simplify selector or add more specific parent context to reduce search scope'
+        suggestion: 'Simplify selector or add more specific parent context to reduce search scope',
       });
     }
-    
+
     return suggestions;
   }
 
@@ -655,7 +655,7 @@ class SelectorValidator {
       issues: message && !isValid ? [message] : [],
       warnings: [],
       confidence: isValid ? 0.8 : 0,
-      details: {}
+      details: {},
     };
     return result;
   }
@@ -670,12 +670,12 @@ class SelectorValidator {
     // Set expiration timestamp
     result._cacheExpiration = Date.now() + this.cacheTimeout;
     this.validationCache.set(cacheKey, result);
-    
+
     // Clean old cache entries periodically
     if (this.validationCache.size > 100) {
       this.cleanCache();
     }
-    
+
     return result;
   }
 
@@ -685,13 +685,13 @@ class SelectorValidator {
   cleanCache() {
     const now = Date.now();
     const keysToDelete = [];
-    
+
     for (const [key, value] of this.validationCache.entries()) {
       if (value._cacheExpiration && value._cacheExpiration < now) {
         keysToDelete.push(key);
       }
     }
-    
+
     keysToDelete.forEach(key => this.validationCache.delete(key));
   }
 
@@ -704,12 +704,12 @@ class SelectorValidator {
    * @returns {Object} Best selector with validation result
    */
   async findBestSelector(selectors, document, expectedContext = null, options = {}) {
-    const validationPromises = selectors.map(selector => 
-      this.validateSelector(selector, document, expectedContext, options)
+    const validationPromises = selectors.map(selector =>
+      this.validateSelector(selector, document, expectedContext, options),
     );
 
     const results = await Promise.all(validationPromises);
-    
+
     // Find the best valid selector
     const validResults = results.filter(result => result.isValid);
     if (validResults.length === 0) {
@@ -739,8 +739,8 @@ class SelectorValidator {
       elementConsistency: {
         sameElementCount: 0,
         differentElementCount: 0,
-        averageElementCount: 0
-      }
+        averageElementCount: 0,
+      },
     };
 
     const elementCounts = [];
@@ -750,17 +750,17 @@ class SelectorValidator {
       try {
         const elements = document.querySelectorAll(selector);
         const elementCount = elements.length;
-        
+
         if (elementCount > 0) {
           results.successCount++;
           elementCounts.push(elementCount);
-          
+
           // Store snapshot of elements for consistency checking
           const snapshot = Array.from(elements).map(el => ({
             tagName: el.tagName,
             className: el.className,
             textContent: el.textContent?.trim().substring(0, 50),
-            attributes: this.getRelevantAttributes(el)
+            attributes: this.getRelevantAttributes(el),
           }));
           elementSnapshots.push(snapshot);
         } else {
@@ -773,7 +773,7 @@ class SelectorValidator {
         results.issues.push(`Iteration ${i + 1}: ${error.message}`);
         elementCounts.push(0);
       }
-      
+
       // Simulate small delay between tests
       await new Promise(resolve => setTimeout(resolve, 100));
     }
@@ -781,12 +781,12 @@ class SelectorValidator {
     // Calculate stability metrics
     results.stabilityScore = results.successCount / iterations;
     results.elementConsistency.averageElementCount = elementCounts.reduce((sum, count) => sum + count, 0) / iterations;
-    
+
     // Check element count consistency
     const uniqueCounts = [...new Set(elementCounts)];
     results.elementConsistency.sameElementCount = uniqueCounts.length === 1 ? iterations : 0;
     results.elementConsistency.differentElementCount = iterations - results.elementConsistency.sameElementCount;
-    
+
     // Add consistency score to overall stability
     const consistencyBonus = results.elementConsistency.sameElementCount / iterations * 0.2;
     results.stabilityScore = Math.min(1.0, results.stabilityScore + consistencyBonus);
@@ -810,7 +810,7 @@ class SelectorValidator {
       mutationEvents: [],
       finalValidation: null,
       stabilityScore: 0,
-      recommendations: []
+      recommendations: [],
     };
 
     // Initial validation
@@ -828,7 +828,7 @@ class SelectorValidator {
                 timestamp: Date.now(),
                 type: mutation.type,
                 elementCount: elements.length,
-                isValid: elements.length > 0
+                isValid: elements.length > 0,
               });
             } catch (error) {
               results.mutationEvents.push({
@@ -836,7 +836,7 @@ class SelectorValidator {
                 type: mutation.type,
                 elementCount: 0,
                 isValid: false,
-                error: error.message
+                error: error.message,
               });
             }
           }
@@ -848,20 +848,20 @@ class SelectorValidator {
         childList: true,
         subtree: true,
         attributes: true,
-        attributeOldValue: true
+        attributeOldValue: true,
       });
 
       // Stop after specified duration
       setTimeout(async () => {
         observer.disconnect();
-        
+
         // Final validation
         results.finalValidation = await this.validateSelector(selector, document, options.context, options);
-        
+
         // Calculate real-time stability score
         const validMutationEvents = results.mutationEvents.filter(event => event.isValid);
         const totalMutationEvents = results.mutationEvents.length;
-        
+
         if (totalMutationEvents === 0) {
           results.stabilityScore = 1.0; // No mutations, perfectly stable
         } else {
@@ -870,7 +870,7 @@ class SelectorValidator {
 
         // Generate recommendations
         results.recommendations = this.generateStabilityRecommendations(results);
-        
+
         resolve(results);
       }, duration);
     });
@@ -893,17 +893,17 @@ class SelectorValidator {
       minTime: Infinity,
       maxTime: 0,
       errorCount: 0,
-      performanceGrade: 'A'
+      performanceGrade: 'A',
     };
 
     for (let i = 0; i < iterations; i++) {
       const startTime = performance.now();
-      
+
       try {
         document.querySelectorAll(selector);
         const endTime = performance.now();
         const executionTime = endTime - startTime;
-        
+
         results.executionTimes.push(executionTime);
         results.minTime = Math.min(results.minTime, executionTime);
         results.maxTime = Math.max(results.maxTime, executionTime);
@@ -916,7 +916,7 @@ class SelectorValidator {
 
     // Calculate performance metrics
     results.averageTime = results.executionTimes.reduce((sum, time) => sum + time, 0) / iterations;
-    
+
     // Assign performance grade
     if (results.averageTime < 1) {
       results.performanceGrade = 'A'; // Excellent
@@ -941,12 +941,12 @@ class SelectorValidator {
   getRelevantAttributes(element) {
     const relevantAttrs = {};
     const importantAttributes = ['id', 'class', 'data-testid', 'data-test', 'role', 'aria-label'];
-    
+
     importantAttributes.forEach(attr => {
       const value = element.getAttribute(attr);
-      if (value) relevantAttrs[attr] = value;
+      if (value) {relevantAttrs[attr] = value;}
     });
-    
+
     return relevantAttrs;
   }
 
@@ -957,37 +957,37 @@ class SelectorValidator {
    */
   generateStabilityRecommendations(validationResults) {
     const recommendations = [];
-    
+
     if (validationResults.stabilityScore < 0.8) {
       recommendations.push({
         type: 'stability',
         priority: 'high',
         message: 'Selector shows instability during DOM mutations. Consider using more stable identifiers.',
-        suggestion: 'Use data attributes or more specific class combinations'
+        suggestion: 'Use data attributes or more specific class combinations',
       });
     }
-    
+
     if (validationResults.mutationEvents.length > 10) {
       recommendations.push({
         type: 'mutation-sensitivity',
         priority: 'medium',
         message: 'Selector is sensitive to many DOM changes. Consider using parent-based selectors.',
-        suggestion: 'Try selecting stable parent containers with descendant selectors'
+        suggestion: 'Try selecting stable parent containers with descendant selectors',
       });
     }
-    
+
     const initialConfidence = validationResults.initialValidation?.confidence || 0;
     const finalConfidence = validationResults.finalValidation?.confidence || 0;
-    
+
     if (finalConfidence < initialConfidence - 0.2) {
       recommendations.push({
         type: 'degradation',
         priority: 'high',
         message: 'Selector confidence degraded significantly during monitoring period.',
-        suggestion: 'Review DOM changes and consider more resilient selector strategies'
+        suggestion: 'Review DOM changes and consider more resilient selector strategies',
       });
     }
-    
+
     return recommendations;
   }
 }

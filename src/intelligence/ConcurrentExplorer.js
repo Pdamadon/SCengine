@@ -9,7 +9,7 @@ class ConcurrentExplorer {
     this.worldModel = worldModel;
     this.browsers = [];
     this.explorationResults = new Map();
-    
+
     // Initialize intelligent selector system
     this.selectorGenerator = new IntelligentSelectorGenerator(logger);
     this.selectorValidator = new SelectorValidator(logger);
@@ -24,7 +24,7 @@ class ConcurrentExplorer {
     const domain = new URL(baseUrl).hostname;
     const maxConcurrent = options.maxConcurrent || 4;
     const sections = navigationIntelligence.main_sections || [];
-    
+
     this.logger.info(`Starting concurrent exploration of ${sections.length} sections with ${maxConcurrent} browsers`);
 
     // Filter sections to explore (exclude brands, focus on categories)
@@ -34,7 +34,7 @@ class ConcurrentExplorer {
 
     // Create batches for concurrent processing
     const batches = this.createBatches(sectionsToExplore, maxConcurrent);
-    
+
     for (const batch of batches) {
       await this.exploreBatch(baseUrl, batch, navigationIntelligence);
     }
@@ -49,7 +49,7 @@ class ConcurrentExplorer {
 
   shouldExploreSection(section) {
     const name = section.name.toLowerCase();
-    
+
     // Skip brand-focused sections
     const brandKeywords = ['brand', 'designer', 'about', 'contact', 'store locator'];
     if (brandKeywords.some(keyword => name.includes(keyword))) {
@@ -58,11 +58,11 @@ class ConcurrentExplorer {
 
     // Prioritize category sections
     const categoryKeywords = [
-      'men', 'women', 'unisex', 'clothing', 'shoes', 'accessories', 
-      'home', 'beauty', 'sale', 'new', 'featured', 'collection'
+      'men', 'women', 'unisex', 'clothing', 'shoes', 'accessories',
+      'home', 'beauty', 'sale', 'new', 'featured', 'collection',
     ];
-    
-    return categoryKeywords.some(keyword => name.includes(keyword)) || 
+
+    return categoryKeywords.some(keyword => name.includes(keyword)) ||
            section.has_dropdown; // Sections with dropdowns likely have subcategories
   }
 
@@ -75,13 +75,13 @@ class ConcurrentExplorer {
   }
 
   async exploreBatch(baseUrl, sectionBatch, navigationIntelligence) {
-    const explorationPromises = sectionBatch.map(section => 
-      this.exploreSection(baseUrl, section, navigationIntelligence)
+    const explorationPromises = sectionBatch.map(section =>
+      this.exploreSection(baseUrl, section, navigationIntelligence),
     );
 
     try {
       const batchResults = await Promise.allSettled(explorationPromises);
-      
+
       batchResults.forEach((result, index) => {
         const section = sectionBatch[index];
         if (result.status === 'fulfilled') {
@@ -101,38 +101,38 @@ class ConcurrentExplorer {
     let browser = null;
     let context = null;
     let page = null;
-    
+
     try {
       browser = await chromium.launch({
         headless: process.env.HEADLESS_MODE !== 'false',
-        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
       });
-      
+
       this.browsers.push(browser);
       context = await browser.newContext({
-        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
       });
       page = await context.newPage();
 
       // Enhanced error handling with retries
       this.logger.info(`🔍 Exploring section: ${section.name} (${section.url})`);
-      
+
       let navigationSuccess = false;
       let retryCount = 0;
       const maxRetries = 2;
-      
+
       while (!navigationSuccess && retryCount < maxRetries) {
         try {
-          await page.goto(section.url, { 
-            waitUntil: 'domcontentloaded', 
-            timeout: 30000 
+          await page.goto(section.url, {
+            waitUntil: 'domcontentloaded',
+            timeout: 30000,
           });
           await page.waitForTimeout(2000);
           navigationSuccess = true;
         } catch (navError) {
           retryCount++;
           this.logger.warn(`Navigation attempt ${retryCount} failed for ${section.name}: ${navError.message}`);
-          
+
           if (retryCount < maxRetries) {
             await page.waitForTimeout(5000); // Wait before retry
           } else {
@@ -147,7 +147,7 @@ class ConcurrentExplorer {
         exploration_metadata: {
           start_time: startTime,
           retry_count: retryCount,
-          navigation_success: navigationSuccess
+          navigation_success: navigationSuccess,
         },
         page_type: null,
         selectors: null,
@@ -155,7 +155,7 @@ class ConcurrentExplorer {
         product_discovery: null,
         url_patterns: null,
         interaction_elements: null,
-        errors: []
+        errors: [],
       };
 
       // Enhanced data extraction with individual error handling
@@ -211,8 +211,8 @@ class ConcurrentExplorer {
       if (section.has_dropdown || (sectionIntelligence.navigation_paths && sectionIntelligence.navigation_paths.subcategories.length > 0)) {
         try {
           sectionIntelligence.subcategory_exploration = await this.exploreSubcategories(
-            page, 
-            sectionIntelligence.navigation_paths.subcategories.slice(0, 3) // Limit for performance
+            page,
+            sectionIntelligence.navigation_paths.subcategories.slice(0, 3), // Limit for performance
           );
         } catch (error) {
           this.logger.warn(`Subcategory exploration failed for ${section.name}:`, error.message);
@@ -225,11 +225,11 @@ class ConcurrentExplorer {
       const endTime = Date.now();
       sectionIntelligence.exploration_metadata.end_time = endTime;
       sectionIntelligence.exploration_metadata.duration_ms = endTime - startTime;
-      sectionIntelligence.exploration_metadata.success_rate = sectionIntelligence.errors.length === 0 ? 1.0 : 
+      sectionIntelligence.exploration_metadata.success_rate = sectionIntelligence.errors.length === 0 ? 1.0 :
         Math.max(0, 1 - (sectionIntelligence.errors.length / 6)); // 6 main extraction steps
 
       this.logger.info(`✅ Section exploration completed: ${section.name} (${sectionIntelligence.exploration_metadata.duration_ms}ms, ${sectionIntelligence.errors.length} errors)`);
-      
+
       return sectionIntelligence;
 
     } catch (error) {
@@ -239,9 +239,9 @@ class ConcurrentExplorer {
         url: section.url,
         duration: endTime - startTime,
         error: error.message,
-        stack: error.stack
+        stack: error.stack,
       });
-      
+
       // Return partial intelligence even on critical failure
       return {
         section_name: section.name,
@@ -251,7 +251,7 @@ class ConcurrentExplorer {
           end_time: endTime,
           duration_ms: endTime - startTime,
           critical_failure: true,
-          error: error.message
+          error: error.message,
         },
         page_type: 'unknown',
         selectors: { _metadata: { critical_failure: true } },
@@ -259,22 +259,22 @@ class ConcurrentExplorer {
         product_discovery: { total_found: 0, products: [] },
         url_patterns: { current_url: section.url },
         interaction_elements: { buttons: [], forms: [] },
-        errors: [{ step: 'critical_failure', error: error.message }]
+        errors: [{ step: 'critical_failure', error: error.message }],
       };
     } finally {
       // Enhanced cleanup with error handling
       try {
-        if (page) await page.close();
+        if (page) {await page.close();}
       } catch (error) {
         this.logger.warn(`Failed to close page for ${section.name}:`, error.message);
       }
-      
+
       try {
-        if (context) await context.close();
+        if (context) {await context.close();}
       } catch (error) {
         this.logger.warn(`Failed to close context for ${section.name}:`, error.message);
       }
-      
+
       try {
         if (browser) {
           await browser.close();
@@ -290,7 +290,7 @@ class ConcurrentExplorer {
     return await page.evaluate(() => {
       const url = window.location.href;
       const bodyClasses = document.body.className.toLowerCase();
-      
+
       if (url.includes('/product/') || bodyClasses.includes('product')) {
         return 'product_detail';
       }
@@ -303,7 +303,7 @@ class ConcurrentExplorer {
       if (url.includes('/search') || bodyClasses.includes('search')) {
         return 'search_results';
       }
-      
+
       return 'category_page';
     });
   }
@@ -313,7 +313,7 @@ class ConcurrentExplorer {
     await page.addScriptTag({
       content: `
         ${this.getIntelligentSelectorScript()}
-      `
+      `,
     });
 
     return await page.evaluate(async () => {
@@ -330,8 +330,8 @@ class ConcurrentExplorer {
           generation_strategy: 'intelligent',
           confidence_scores: {},
           fallback_count: 0,
-          validation_results: {}
-        }
+          validation_results: {},
+        },
       };
 
       // Initialize intelligent systems in page context
@@ -343,7 +343,7 @@ class ConcurrentExplorer {
       const navElements = {
         breadcrumb: document.querySelector('.breadcrumb, .breadcrumbs, [aria-label="breadcrumb"]'),
         sidebar: document.querySelector('.sidebar, .category-nav, .filters, .facets'),
-        pagination: document.querySelector('.pagination, .pager, .page-numbers')
+        pagination: document.querySelector('.pagination, .pager, .page-numbers'),
       };
 
       for (const [key, element] of Object.entries(navElements)) {
@@ -352,7 +352,7 @@ class ConcurrentExplorer {
             intelligentGenerator,
             validator,
             fallbackSystem,
-            document
+            document,
           });
           selectors.navigation[key] = result.selector;
           selectors._metadata.confidence_scores[`navigation.${key}`] = result.confidence;
@@ -361,34 +361,34 @@ class ConcurrentExplorer {
 
       // Product-related selectors with enhanced intelligence
       const productElements = document.querySelectorAll(
-        '.product, .product-item, .product-card, .grid__item, .card-wrapper'
+        '.product, .product-item, .product-card, .grid__item, .card-wrapper',
       );
-      
+
       if (productElements.length > 0) {
         const firstProduct = productElements[0];
-        
+
         // Extract product component selectors with context awareness
         const componentMap = {
           title: {
             element: firstProduct.querySelector('h1, h2, h3, .product-title, .card__heading, a'),
-            context: 'product.title'
+            context: 'product.title',
           },
           price: {
             element: firstProduct.querySelector('.price, .money, .product-price, .cost'),
-            context: 'pricing.price'
+            context: 'pricing.price',
           },
           image: {
             element: firstProduct.querySelector('img'),
-            context: 'images.product'
+            context: 'images.product',
           },
           link: {
             element: firstProduct.querySelector('a') || firstProduct.closest('a'),
-            context: 'product.link'
+            context: 'product.link',
           },
           container: {
             element: firstProduct,
-            context: 'product.container'
-          }
+            context: 'product.container',
+          },
         };
 
         for (const [componentKey, { element, context }] of Object.entries(componentMap)) {
@@ -397,11 +397,11 @@ class ConcurrentExplorer {
               intelligentGenerator,
               validator,
               fallbackSystem,
-              document
+              document,
             });
-            
+
             const [category, subKey] = context.split('.');
-            if (!selectors[category]) selectors[category] = {};
+            if (!selectors[category]) {selectors[category] = {};}
             selectors[category][subKey] = result.selector;
             selectors._metadata.confidence_scores[context] = result.confidence;
           }
@@ -410,21 +410,21 @@ class ConcurrentExplorer {
 
       // Enhanced filter selectors with classification
       const filterElements = document.querySelectorAll(
-        '.filter, .facet, [data-filter], .filter-option, select'
+        '.filter, .facet, [data-filter], .filter-option, select',
       );
-      
+
       for (let i = 0; i < Math.min(filterElements.length, 5); i++) {
         const filter = filterElements[i];
         const filterType = this.classifyFilter(filter);
         const context = `filters.${filterType}`;
-        
+
         const result = await this.generateIntelligentSelector(filter, context, {
           intelligentGenerator,
           validator,
           fallbackSystem,
-          document
+          document,
         });
-        
+
         if (!selectors.filters[filterType]) {
           selectors.filters[filterType] = [];
         }
@@ -434,14 +434,14 @@ class ConcurrentExplorer {
 
       // Availability indicators
       const availabilityEl = document.querySelector(
-        '.in-stock, .out-of-stock, .availability, .stock-status'
+        '.in-stock, .out-of-stock, .availability, .stock-status',
       );
       if (availabilityEl) {
         const result = await this.generateIntelligentSelector(availabilityEl, 'availability.status', {
           intelligentGenerator,
           validator,
           fallbackSystem,
-          document
+          document,
         });
         selectors.availability.status = result.selector;
         selectors._metadata.confidence_scores['availability.status'] = result.confidence;
@@ -454,7 +454,7 @@ class ConcurrentExplorer {
           intelligentGenerator,
           validator,
           fallbackSystem,
-          document
+          document,
         });
         selectors.variants.dropdown = result.selector;
         selectors._metadata.confidence_scores['variants.dropdown'] = result.confidence;
@@ -465,15 +465,15 @@ class ConcurrentExplorer {
         try {
           // 1. Generate optimal selector
           const generationResult = intelligentGenerator.generateOptimalSelector(element, { context });
-          
+
           // 2. Validate the selector
           const validationResult = await validator.validateSelector(
             generationResult.selector,
             document,
             context,
-            { requireUnique: false }
+            { requireUnique: false },
           );
-          
+
           // 3. If validation fails, try fallbacks
           if (!validationResult.isValid || validationResult.confidence < 0.6) {
             const fallbacks = await fallbackSystem.generateFallbackSelectors(
@@ -481,35 +481,35 @@ class ConcurrentExplorer {
               generationResult.selector,
               context,
               document,
-              { maxFallbacks: 3 }
+              { maxFallbacks: 3 },
             );
-            
+
             // Find best fallback
             for (const fallback of fallbacks) {
               const fallbackValidation = await validator.validateSelector(
                 fallback.selector,
                 document,
-                context
+                context,
               );
-              
+
               if (fallbackValidation.isValid && fallbackValidation.confidence > 0.5) {
                 return {
                   selector: fallback.selector,
                   confidence: fallbackValidation.confidence,
                   strategy: fallback.strategy,
-                  isFallback: true
+                  isFallback: true,
                 };
               }
             }
           }
-          
+
           return {
             selector: generationResult.selector,
             confidence: Math.min(generationResult.confidence, validationResult.confidence),
             strategy: generationResult.strategy,
-            isFallback: false
+            isFallback: false,
           };
-          
+
         } catch (error) {
           console.warn('Intelligent selector generation failed:', error);
           // Fallback to basic generation
@@ -519,19 +519,19 @@ class ConcurrentExplorer {
 
       // Basic fallback for error cases
       function generateBasicFallback(element) {
-        if (!element) return { selector: null, confidence: 0, strategy: 'basic-fallback' };
-        
+        if (!element) {return { selector: null, confidence: 0, strategy: 'basic-fallback' };}
+
         if (element.id) {
           return { selector: `#${element.id}`, confidence: 0.8, strategy: 'basic-id' };
         }
-        
+
         if (element.className) {
           const classes = element.className.split(' ').filter(c => c.trim());
           if (classes.length > 0) {
             return { selector: `.${classes[0]}`, confidence: 0.4, strategy: 'basic-class' };
           }
         }
-        
+
         return { selector: element.tagName.toLowerCase(), confidence: 0.2, strategy: 'basic-tag' };
       }
 
@@ -539,13 +539,13 @@ class ConcurrentExplorer {
         const text = filter.textContent.toLowerCase();
         const name = filter.name?.toLowerCase() || '';
         const className = filter.className.toLowerCase();
-        
-        if (text.includes('price') || name.includes('price') || className.includes('price')) return 'price';
-        if (text.includes('color') || name.includes('color') || className.includes('color')) return 'color';
-        if (text.includes('size') || name.includes('size') || className.includes('size')) return 'size';
-        if (text.includes('brand') || name.includes('brand') || className.includes('brand')) return 'brand';
-        if (text.includes('category') || name.includes('category') || className.includes('category')) return 'category';
-        
+
+        if (text.includes('price') || name.includes('price') || className.includes('price')) {return 'price';}
+        if (text.includes('color') || name.includes('color') || className.includes('color')) {return 'color';}
+        if (text.includes('size') || name.includes('size') || className.includes('size')) {return 'size';}
+        if (text.includes('brand') || name.includes('brand') || className.includes('brand')) {return 'brand';}
+        if (text.includes('category') || name.includes('category') || className.includes('category')) {return 'category';}
+
         return 'general';
       }
 
@@ -559,15 +559,15 @@ class ConcurrentExplorer {
         subcategories: [],
         related_sections: [],
         filter_options: [],
-        sorting_options: []
+        sorting_options: [],
       };
 
       // Find subcategory links
       const subcategorySelectors = [
         '.category-list a',
-        '.subcategory a', 
+        '.subcategory a',
         '.nav-category a',
-        '.sidebar a'
+        '.sidebar a',
       ];
 
       subcategorySelectors.forEach(selector => {
@@ -577,7 +577,7 @@ class ConcurrentExplorer {
             paths.subcategories.push({
               name: link.textContent.trim(),
               url: link.href,
-              selector: generateBasicSelector(link)
+              selector: generateBasicSelector(link),
             });
           }
         });
@@ -590,7 +590,7 @@ class ConcurrentExplorer {
           paths.filter_options.push({
             name: filter.textContent.trim(),
             value: filter.getAttribute('data-filter-value') || filter.value,
-            selector: generateBasicSelector(filter)
+            selector: generateBasicSelector(filter),
           });
         }
       });
@@ -604,7 +604,7 @@ class ConcurrentExplorer {
             paths.sorting_options.push({
               name: option.textContent.trim(),
               value: option.value,
-              selector: generateBasicSelector(sortSelect)
+              selector: generateBasicSelector(sortSelect),
             });
           }
         });
@@ -612,11 +612,11 @@ class ConcurrentExplorer {
 
       // Helper function for this context
       function generateBasicSelector(element) {
-        if (!element) return null;
-        if (element.id) return `#${element.id}`;
+        if (!element) {return null;}
+        if (element.id) {return `#${element.id}`;}
         if (element.className) {
           const classes = element.className.split(' ').filter(c => c.trim());
-          if (classes.length > 0) return `.${classes[0]}`;
+          if (classes.length > 0) {return `.${classes[0]}`;}
         }
         return element.tagName.toLowerCase();
       }
@@ -629,52 +629,52 @@ class ConcurrentExplorer {
     return await page.evaluate(() => {
       const productSelectors = [
         '.product', '.product-item', '.product-card', '.grid__item',
-        '.card-wrapper', '.collection-product-card', '[data-product-id]'
+        '.card-wrapper', '.collection-product-card', '[data-product-id]',
       ];
 
-      let products = [];
+      const products = [];
 
       // Helper function for generating selectors in page context
       function generateBasicSelector(element) {
-        if (!element) return null;
-        if (element.id) return `#${element.id}`;
+        if (!element) {return null;}
+        if (element.id) {return `#${element.id}`;}
         if (element.className) {
           const classes = element.className.split(' ').filter(c => c.trim());
-          if (classes.length > 0) return `.${classes[0]}`;
+          if (classes.length > 0) {return `.${classes[0]}`;}
         }
         return element.tagName.toLowerCase();
       }
-      
+
       for (const selector of productSelectors) {
         const elements = document.querySelectorAll(selector);
         if (elements.length > 0) {
           elements.forEach((element, index) => {
-            if (index >= 12) return; // Limit products per page
-            
+            if (index >= 12) {return;} // Limit products per page
+
             const titleEl = element.querySelector('h1, h2, h3, .product-title, .card__heading, a');
             const priceEl = element.querySelector('.price, .money, .product-price');
             const linkEl = element.querySelector('a') || element.closest('a');
             const imageEl = element.querySelector('img');
-            
+
             if (titleEl && linkEl) {
               products.push({
                 title: titleEl.textContent.trim(),
                 price: priceEl ? priceEl.textContent.trim() : null,
                 url: linkEl.href,
                 image: imageEl ? imageEl.src : null,
-                container_selector: generateBasicSelector(element)
+                container_selector: generateBasicSelector(element),
               });
             }
           });
           break; // Found products with this selector
         }
       }
-      
+
       return {
         total_found: products.length,
         products: products,
-        working_selector: products.length > 0 ? 
-          productSelectors.find(sel => document.querySelectorAll(sel).length > 0) : null
+        working_selector: products.length > 0 ?
+          productSelectors.find(sel => document.querySelectorAll(sel).length > 0) : null,
       };
     });
   }
@@ -683,7 +683,7 @@ class ConcurrentExplorer {
     return await page.evaluate(() => {
       const currentUrl = window.location.href;
       const baseUrl = window.location.origin;
-      
+
       // Helper functions for this context
       function analyzeURLStructure(url) {
         const urlObj = new URL(url);
@@ -691,7 +691,7 @@ class ConcurrentExplorer {
           protocol: urlObj.protocol,
           hostname: urlObj.hostname,
           pathname: urlObj.pathname,
-          segments: urlObj.pathname.split('/').filter(s => s)
+          segments: urlObj.pathname.split('/').filter(s => s),
         };
       }
 
@@ -708,8 +708,8 @@ class ConcurrentExplorer {
         discovered_patterns: {
           product_urls: extractURLPattern(currentUrl, 'product'),
           category_urls: extractURLPattern(currentUrl, 'category'),
-          collection_urls: extractURLPattern(currentUrl, 'collection')
-        }
+          collection_urls: extractURLPattern(currentUrl, 'collection'),
+        },
       };
     });
   }
@@ -720,16 +720,16 @@ class ConcurrentExplorer {
         buttons: [],
         forms: [],
         dropdowns: [],
-        toggles: []
+        toggles: [],
       };
 
       // Helper function for generating selectors in this context
       function generateBasicSelectorForElement(element) {
-        if (!element) return null;
-        if (element.id) return `#${element.id}`;
+        if (!element) {return null;}
+        if (element.id) {return `#${element.id}`;}
         if (element.className) {
           const classes = element.className.split(' ').filter(c => c.trim());
-          if (classes.length > 0) return `.${classes[0]}`;
+          if (classes.length > 0) {return `.${classes[0]}`;}
         }
         return element.tagName.toLowerCase();
       }
@@ -737,10 +737,10 @@ class ConcurrentExplorer {
       // Helper function to classify button purpose
       function classifyButtonPurpose(button) {
         const text = button.textContent.toLowerCase();
-        if (text.includes('cart') || text.includes('add to bag')) return 'add_to_cart';
-        if (text.includes('buy') || text.includes('purchase')) return 'purchase';
-        if (text.includes('search')) return 'search';
-        if (text.includes('filter')) return 'filter';
+        if (text.includes('cart') || text.includes('add to bag')) {return 'add_to_cart';}
+        if (text.includes('buy') || text.includes('purchase')) {return 'purchase';}
+        if (text.includes('search')) {return 'search';}
+        if (text.includes('filter')) {return 'filter';}
         return 'general';
       }
 
@@ -751,7 +751,7 @@ class ConcurrentExplorer {
           interactions.buttons.push({
             text: button.textContent.trim(),
             selector: generateBasicSelectorForElement(button),
-            purpose: classifyButtonPurpose(button)
+            purpose: classifyButtonPurpose(button),
           });
         }
       });
@@ -767,8 +767,8 @@ class ConcurrentExplorer {
             inputs: Array.from(form.querySelectorAll('input, select, textarea')).map(input => ({
               name: input.name,
               type: input.type,
-              selector: generateBasicSelectorForElement(input)
-            }))
+              selector: generateBasicSelectorForElement(input),
+            })),
           });
         }
       });
@@ -779,33 +779,33 @@ class ConcurrentExplorer {
 
   async exploreSubcategories(page, subcategories) {
     const results = [];
-    
+
     for (const subcategory of subcategories) {
       try {
         await page.goto(subcategory.url, { waitUntil: 'domcontentloaded', timeout: 15000 });
         await page.waitForTimeout(1500);
-        
+
         const subcategoryData = {
           name: subcategory.name,
           url: subcategory.url,
           products: await this.discoverProducts(page),
-          selectors: await this.extractSelectors(page)
+          selectors: await this.extractSelectors(page),
         };
-        
+
         results.push(subcategoryData);
         this.logger.info(`📁 Explored subcategory: ${subcategory.name} (${subcategoryData.products.total_found} products)`);
-        
+
       } catch (error) {
         this.logger.warn(`Failed to explore subcategory ${subcategory.name}:`, error.message);
       }
     }
-    
+
     return results;
   }
 
   async compileExplorationResults(domain) {
     const results = Array.from(this.explorationResults.values());
-    
+
     const compiled = {
       domain,
       sections_explored: results.length,
@@ -815,12 +815,12 @@ class ConcurrentExplorer {
       exploration_summary: {
         total_products_found: results.reduce((sum, r) => sum + (r.product_discovery?.total_found || 0), 0),
         working_selectors: this.identifyWorkingSelectors(results),
-        page_types_discovered: [...new Set(results.map(r => r.page_type))]
-      }
+        page_types_discovered: [...new Set(results.map(r => r.page_type))],
+      },
     };
 
     this.logger.info(`✅ Compiled exploration results for ${domain}: ${compiled.sections_explored} sections, ${compiled.exploration_summary.total_products_found} products`);
-    
+
     return compiled;
   }
 
@@ -835,7 +835,7 @@ class ConcurrentExplorer {
       filters: {},
       pagination: {},
       reliability_scores: {},
-      success_rate: 0
+      success_rate: 0,
     };
 
     let totalSuccessfulExtractions = 0;
@@ -844,8 +844,8 @@ class ConcurrentExplorer {
     results.forEach(result => {
       if (result.selectors) {
         Object.entries(result.selectors).forEach(([category, selectors]) => {
-          if (!aggregated[category]) aggregated[category] = {};
-          
+          if (!aggregated[category]) {aggregated[category] = {};}
+
           Object.entries(selectors).forEach(([key, selector]) => {
             if (selector) {
               if (!aggregated[category][key]) {
@@ -877,11 +877,11 @@ class ConcurrentExplorer {
             selectorArray.forEach(sel => {
               selectorCounts[sel] = (selectorCounts[sel] || 0) + 1;
             });
-            
+
             // Keep most common selector and calculate reliability
             const bestSelector = Object.entries(selectorCounts)
               .sort(([,a], [,b]) => b - a)[0];
-            
+
             if (bestSelector) {
               aggregated[category][key] = bestSelector[0];
               aggregated.reliability_scores[`${category}.${key}`] = bestSelector[1] / results.length;
@@ -899,7 +899,7 @@ class ConcurrentExplorer {
       product_url: null,
       category_url: null,
       collection_url: null,
-      examples: {}
+      examples: {},
     };
 
     results.forEach(result => {
@@ -910,9 +910,9 @@ class ConcurrentExplorer {
           }
         });
       }
-      
+
       if (result.section_url) {
-        if (!patterns.examples.category_urls) patterns.examples.category_urls = [];
+        if (!patterns.examples.category_urls) {patterns.examples.category_urls = [];}
         patterns.examples.category_urls.push(result.section_url);
       }
     });
@@ -925,13 +925,13 @@ class ConcurrentExplorer {
       total_sections: results.length,
       subcategories_found: results.reduce((sum, r) => sum + (r.navigation_paths?.subcategories?.length || 0), 0),
       filter_options_found: results.reduce((sum, r) => sum + (r.navigation_paths?.filter_options?.length || 0), 0),
-      interaction_elements: results.reduce((sum, r) => sum + (r.interaction_elements?.buttons?.length || 0), 0)
+      interaction_elements: results.reduce((sum, r) => sum + (r.interaction_elements?.buttons?.length || 0), 0),
     };
   }
 
   identifyWorkingSelectors(results) {
     const working = {};
-    
+
     results.forEach(result => {
       if (result.product_discovery?.working_selector) {
         const selector = result.product_discovery.working_selector;

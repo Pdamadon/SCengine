@@ -10,29 +10,29 @@ class NavigationMapper {
   async initialize() {
     this.browser = await chromium.launch({
       headless: process.env.HEADLESS_MODE !== 'false',
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     this.logger.info('Navigation Mapper initialized');
   }
 
   async mapSiteNavigation(url) {
-    if (!this.browser) await this.initialize();
-    
+    if (!this.browser) {await this.initialize();}
+
     const domain = new URL(url).hostname;
     const context = await this.browser.newContext();
     const page = await context.newPage();
 
     try {
       this.logger.info(`Starting navigation mapping for ${domain}`);
-      
+
       await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
       await page.waitForTimeout(3000);
 
       const navigationIntelligence = await this.extractNavigationIntelligence(page);
-      
+
       // Store in world model
       await this.worldModel.storeSiteNavigation(domain, navigationIntelligence);
-      
+
       this.logger.info(`Navigation mapping completed for ${domain}`);
       return navigationIntelligence;
 
@@ -54,22 +54,22 @@ class NavigationMapper {
         clickable_elements: [],
         site_structure: {},
         breadcrumb_patterns: [],
-        sidebar_navigation: []
+        sidebar_navigation: [],
       };
 
       // Helper function to generate reliable CSS selector
       const generateSelector = (element) => {
-        if (element.id) return `#${element.id}`;
-        
+        if (element.id) {return `#${element.id}`;}
+
         if (element.className) {
           const classes = element.className.split(' ').filter(c => c.trim());
-          if (classes.length > 0) return `.${classes[0]}`;
+          if (classes.length > 0) {return `.${classes[0]}`;}
         }
-        
+
         if (element.getAttribute('data-testid')) {
           return `[data-testid="${element.getAttribute('data-testid')}"]`;
         }
-        
+
         // Generate path-based selector as fallback
         const path = [];
         let current = element;
@@ -77,13 +77,13 @@ class NavigationMapper {
           let selector = current.tagName.toLowerCase();
           if (current.className) {
             const firstClass = current.className.split(' ')[0];
-            if (firstClass) selector += `.${firstClass}`;
+            if (firstClass) {selector += `.${firstClass}`;}
           }
           path.unshift(selector);
           current = current.parentElement;
-          if (path.length > 4) break; // Limit depth
+          if (path.length > 4) {break;} // Limit depth
         }
-        
+
         return path.join(' > ');
       };
 
@@ -95,14 +95,14 @@ class NavigationMapper {
         '.header-nav',
         '.navigation',
         '.main-menu',
-        '[role="navigation"]'
+        '[role="navigation"]',
       ];
 
       for (const selector of mainNavSelectors) {
         const navElement = document.querySelector(selector);
         if (navElement) {
           intelligence.navigation_selectors.main_nav = selector;
-          
+
           // Find main section links
           const sectionLinks = navElement.querySelectorAll('a');
           sectionLinks.forEach(link => {
@@ -112,9 +112,9 @@ class NavigationMapper {
                 url: link.href,
                 selector: generateSelector(link),
                 has_dropdown: hasDropdownMenu(link),
-                element_type: link.tagName.toLowerCase()
+                element_type: link.tagName.toLowerCase(),
               };
-              
+
               intelligence.main_sections.push(section);
             }
           });
@@ -124,15 +124,15 @@ class NavigationMapper {
 
       // Extract dropdown menu structures
       const dropdownElements = document.querySelectorAll(
-        '.dropdown, .mega-menu, .submenu, [data-dropdown], .nav-dropdown'
+        '.dropdown, .mega-menu, .submenu, [data-dropdown], .nav-dropdown',
       );
-      
+
       dropdownElements.forEach((dropdown, index) => {
         const dropdownInfo = {
           selector: generateSelector(dropdown),
           trigger_selector: findDropdownTrigger(dropdown),
           items: [],
-          columns: []
+          columns: [],
         };
 
         // Extract dropdown items
@@ -144,7 +144,7 @@ class NavigationMapper {
               url: item.href,
               selector: generateSelector(item),
               is_brand: isBrandLink(item),
-              is_category: isCategoryLink(item)
+              is_category: isCategoryLink(item),
             });
           }
         });
@@ -156,20 +156,20 @@ class NavigationMapper {
             index: colIndex,
             selector: generateSelector(column),
             type: classifyColumn(column),
-            items: []
+            items: [],
           };
-          
+
           const columnLinks = column.querySelectorAll('a');
           columnLinks.forEach(link => {
             if (link.textContent.trim()) {
               columnInfo.items.push({
                 name: link.textContent.trim(),
                 url: link.href,
-                selector: generateSelector(link)
+                selector: generateSelector(link),
               });
             }
           });
-          
+
           dropdownInfo.columns.push(columnInfo);
         });
 
@@ -183,7 +183,7 @@ class NavigationMapper {
         '.filters',
         '.facets',
         '.left-nav',
-        '.side-navigation'
+        '.side-navigation',
       ];
 
       for (const selector of sidebarSelectors) {
@@ -197,8 +197,8 @@ class NavigationMapper {
                 url: item.href || null,
                 selector: generateSelector(item),
                 type: item.tagName.toLowerCase(),
-                is_filter: item.textContent.toLowerCase().includes('filter') || 
-                          item.className.includes('filter')
+                is_filter: item.textContent.toLowerCase().includes('filter') ||
+                          item.className.includes('filter'),
               });
             }
           });
@@ -211,7 +211,7 @@ class NavigationMapper {
         '.breadcrumb',
         '.breadcrumbs',
         '[aria-label="breadcrumb"]',
-        '.nav-breadcrumb'
+        '.nav-breadcrumb',
       ];
 
       for (const selector of breadcrumbSelectors) {
@@ -219,21 +219,21 @@ class NavigationMapper {
         if (breadcrumb) {
           const items = breadcrumb.querySelectorAll('a, span');
           const breadcrumbPath = [];
-          
+
           items.forEach(item => {
             if (item.textContent.trim()) {
               breadcrumbPath.push({
                 text: item.textContent.trim(),
                 url: item.href || null,
-                selector: generateSelector(item)
+                selector: generateSelector(item),
               });
             }
           });
-          
+
           if (breadcrumbPath.length > 0) {
             intelligence.breadcrumb_patterns.push({
               selector: selector,
-              path: breadcrumbPath
+              path: breadcrumbPath,
             });
           }
           break;
@@ -243,8 +243,8 @@ class NavigationMapper {
       // Extract all clickable elements for comprehensive mapping
       const clickableElements = document.querySelectorAll('a, button, [role="button"], [onclick]');
       clickableElements.forEach((element, index) => {
-        if (index >= 100) return; // Limit to prevent overwhelming data
-        
+        if (index >= 100) {return;} // Limit to prevent overwhelming data
+
         const text = element.textContent.trim();
         if (text && text.length < 100) {
           intelligence.clickable_elements.push({
@@ -253,7 +253,7 @@ class NavigationMapper {
             selector: generateSelector(element),
             type: element.tagName.toLowerCase(),
             classes: element.className,
-            page_purpose: classifyElementPurpose(element, text)
+            page_purpose: classifyElementPurpose(element, text),
           });
         }
       });
@@ -277,11 +277,11 @@ class NavigationMapper {
       function isBrandLink(element) {
         const text = element.textContent.toLowerCase();
         const url = element.href?.toLowerCase() || '';
-        
-        return url.includes('/brand') || 
+
+        return url.includes('/brand') ||
                url.includes('/designer') ||
                text.match(/^[A-Z][a-z]+\s*[A-Z]*[a-z]*$/) && // Brand name pattern
-               !text.includes('shop') && 
+               !text.includes('shop') &&
                !text.includes('new') &&
                !text.includes('sale');
       }
@@ -289,41 +289,41 @@ class NavigationMapper {
       function isCategoryLink(element) {
         const text = element.textContent.toLowerCase();
         const url = element.href?.toLowerCase() || '';
-        
+
         const categoryKeywords = [
           'clothing', 'shoes', 'accessories', 'bags', 'jewelry',
           'shirts', 'pants', 'dresses', 'jackets', 'sweaters',
-          'new arrivals', 'sale', 'featured'
+          'new arrivals', 'sale', 'featured',
         ];
-        
-        return categoryKeywords.some(keyword => 
-          text.includes(keyword) || url.includes(keyword)
+
+        return categoryKeywords.some(keyword =>
+          text.includes(keyword) || url.includes(keyword),
         );
       }
 
       function classifyColumn(column) {
         const text = column.textContent.toLowerCase();
-        
-        if (text.includes('brand') || text.includes('designer')) return 'brands';
-        if (text.includes('category') || text.includes('shop')) return 'categories';
-        if (text.includes('new') || text.includes('featured')) return 'featured';
-        
+
+        if (text.includes('brand') || text.includes('designer')) {return 'brands';}
+        if (text.includes('category') || text.includes('shop')) {return 'categories';}
+        if (text.includes('new') || text.includes('featured')) {return 'featured';}
+
         return 'general';
       }
 
       function classifyElementPurpose(element, text) {
         const lowerText = text.toLowerCase();
         const url = element.href?.toLowerCase() || '';
-        
-        if (lowerText.includes('cart') || lowerText.includes('bag')) return 'cart';
-        if (lowerText.includes('account') || lowerText.includes('login')) return 'account';
-        if (lowerText.includes('search')) return 'search';
-        if (lowerText.includes('menu') || lowerText.includes('navigation')) return 'navigation';
-        if (url.includes('/product')) return 'product';
-        if (url.includes('/collection') || url.includes('/category')) return 'category';
-        if (lowerText.includes('add to cart') || lowerText.includes('buy')) return 'purchase';
-        if (lowerText.includes('filter') || lowerText.includes('sort')) return 'filtering';
-        
+
+        if (lowerText.includes('cart') || lowerText.includes('bag')) {return 'cart';}
+        if (lowerText.includes('account') || lowerText.includes('login')) {return 'account';}
+        if (lowerText.includes('search')) {return 'search';}
+        if (lowerText.includes('menu') || lowerText.includes('navigation')) {return 'navigation';}
+        if (url.includes('/product')) {return 'product';}
+        if (url.includes('/collection') || url.includes('/category')) {return 'category';}
+        if (lowerText.includes('add to cart') || lowerText.includes('buy')) {return 'purchase';}
+        if (lowerText.includes('filter') || lowerText.includes('sort')) {return 'filtering';}
+
         return 'general';
       }
 
