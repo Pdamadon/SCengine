@@ -5,7 +5,7 @@
 import { UUID, URL, Timestamp, Selector, Priority } from './common.types';
 
 // Scraping job types
-export type ScrapingType = 'product' | 'category_search' | 'full_site' | 'search';
+export type ScrapingType = 'product' | 'category' | 'category_search' | 'full_site' | 'search';
 
 // Product data structures
 export interface ProductPricing {

@@ -328,19 +328,23 @@ class AIShoppingScraper {
           services: {
             database: { 
               healthy: !!this.db, 
-              responseTime: await this.checkDatabaseHealth() 
+              responseTime: await this.checkDatabaseHealth(),
+              lastCheck: new Date()
             },
             redis: { 
               healthy: queueManager.isInitialized, 
-              responseTime: await this.checkRedisHealth() 
+              responseTime: await this.checkRedisHealth(),
+              lastCheck: new Date()
             },
             queue: { 
               healthy: queueManager.isInitialized,
-              queueDepth: await this.getQueueDepth() 
+              responseTime: await this.getQueueDepth(),
+              lastCheck: new Date()
             },
             workers: { 
               healthy: true, 
-              activeWorkers: await this.getActiveWorkerCount() 
+              responseTime: await this.getActiveWorkerCount(),
+              lastCheck: new Date()
             },
           },
           timestamp: new Date(),
@@ -348,7 +352,8 @@ class AIShoppingScraper {
         };
 
         // Check if any service is unhealthy
-        const unhealthyServices = Object.values(healthStatus.services).filter(service => !service.healthy);
+        const unhealthyServices = healthStatus.services ? 
+          Object.values(healthStatus.services).filter(service => !service.healthy) : [];
         if (unhealthyServices.length > 0) {
           healthStatus.healthy = false;
           res.status(503).json(healthStatus);
