@@ -71,8 +71,10 @@ export interface ProductDocument extends MongoDocument {
   url: URL;
   title: string;
   description?: string;
+  description_html?: string;           // HTML version of description
+  description_length?: number;         // Character count for AI analysis
   brand?: string;
-  category?: string;
+  // NOTE: category field removed - handled by product_categories relationships
   images?: string[];
   pricing: ProductPricing;
   variants?: ProductVariant[];
@@ -89,8 +91,39 @@ export interface ProductDocument extends MongoDocument {
     quantity_input?: Selector;
     buy_now?: Selector;
   };
+  
+  // ENHANCED: Rich Glasswing automation intelligence
+  glasswing_variants?: Array<{
+    type: string;                      // e.g., "size", "color"
+    label: string;                     // e.g., "Size", "Title"
+    selector: string;                  // CSS selector for variant dropdown
+    options: Array<{
+      value: string;                   // Shopify variant ID (e.g., "40561528471651")
+      text: string;                    // Display text (e.g., "6\" - $58", "Default Title")
+      available: boolean;              // Live availability status
+      selected: boolean;               // Default selection
+      variant_type: string;            // Variant classification
+    }>;
+  }>;
+  
+  automation_elements?: Record<string, {
+    primary: Selector;                 // Main selector (e.g., "#nav-menu-button")
+    alternatives: Selector[];          // Fallback selectors
+    playwright_action: string;         // Ready-to-execute Playwright action
+    element: {
+      tag: string;                     // HTML tag (e.g., "button", "select")
+      text?: string;                   // Element text content
+      value?: string;                  // Element value
+    };
+  }>;
+  
+  purchase_workflow?: string[];        // Complete automation sequence
+  
+  // Scraping metadata
   last_scraped?: Timestamp;
   scrape_frequency?: 'hourly' | 'daily' | 'weekly';
+  scrape_quality_score?: number;      // 0-100 quality assessment
+  scraped_at?: Timestamp;             // Original scraping timestamp
 }
 
 // Price history collection
@@ -244,6 +277,26 @@ export interface ScrapingJobResultDocument extends MongoDocument {
   processing_time_ms: number;
 }
 
+// ENHANCED: Product-Categories relationship with scraping provenance
+export interface ProductCategoryDocument extends MongoDocument {
+  product_id: string;                  // Links to ProductDocument
+  category_id: string;                 // Links to CategoryDocument
+  domain: Domain;                      // Site domain for this relationship
+  
+  // Scraping provenance - track how this relationship was discovered
+  discovered_from_category: string;   // Original category that found this product
+  discovery_method: 'category_scrape' | 'search_result' | 'manual_assignment' | 'ai_classification';
+  
+  // Relationship confidence
+  confidence_score?: number;          // 0-1 confidence this product belongs in category
+  relationship_strength?: 'primary' | 'secondary' | 'related'; // How strongly connected
+  
+  // Metadata
+  first_discovered?: Timestamp;       // When relationship first created
+  last_confirmed?: Timestamp;         // When relationship last verified
+  relationship_active: boolean;       // Is this relationship still valid
+}
+
 // Database connection types
 export interface DatabaseConfig {
   mongodb: {
@@ -268,6 +321,7 @@ export type CollectionName =
   | 'domains'
   | 'categories' 
   | 'products'
+  | 'product_categories'
   | 'price_history'
   | 'service_providers'
   | 'available_appointments'

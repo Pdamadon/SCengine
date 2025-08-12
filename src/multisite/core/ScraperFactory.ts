@@ -20,11 +20,13 @@ import {
 } from '../../types/common.types';
 import { ScrapingJobData } from '../../types/scraping.types';
 
+// TypeScript imports
+import PlatformDetector from './PlatformDetector';
+import UniversalScraper from './UniversalScraper';
+import GapScraper from '../scrapers/GapScraper';
+
 // Legacy imports (will be converted to TypeScript later)
-const PlatformDetector = require('./PlatformDetector');
 const GlasswingScraper = require('../../scrapers/GlasswingScraper');
-const UniversalScraper = require('./UniversalScraper');
-const GapScraper = require('../scrapers/GapScraper');
 
 // Import platform-specific scrapers as we create them
 // const ShopifyScraper = require('../scrapers/ShopifyScraper');
@@ -122,9 +124,7 @@ class ScraperFactory {
       if (options.fallbackToUniversal !== false) {
         this.logger.info('ScraperFactory: Falling back to UniversalScraper');
         
-        const universalScraper = new UniversalScraper(this.logger, {
-          target_url: url,
-        });
+        const universalScraper = new UniversalScraper(this.logger, url, {} as ScrapingJobData);
 
         return {
           scraper: universalScraper,
@@ -388,14 +388,12 @@ class ScraperFactory {
         // TODO: Implement ShopifyScraper
         // return new ShopifyScraper(this.logger, { target_url: url, config });
         this.logger.warn('ShopifyScraper not yet implemented, using UniversalScraper');
-        return new UniversalScraper(this.logger, { 
-          target_url: url,
+        return new UniversalScraper(this.logger, url, {
           scraping_type: jobData.scraping_type || 'product',
         });
 
       case 'gap':
-        return new GapScraper(this.logger, {
-          target_url: url,
+        return new GapScraper(this.logger, url, {
           scraping_type: jobData.scraping_type || 'product',
         });
 
@@ -403,8 +401,7 @@ class ScraperFactory {
         // TODO: Implement WooCommerceScraper
         // return new WooCommerceScraper(this.logger, { target_url: url, config });
         this.logger.warn('WooCommerceScraper not yet implemented, using UniversalScraper');
-        return new UniversalScraper(this.logger, { 
-          target_url: url,
+        return new UniversalScraper(this.logger, url, {
           scraping_type: jobData.scraping_type || 'product',
         });
 
@@ -412,8 +409,7 @@ class ScraperFactory {
         // TODO: Implement MagentoScraper
         // return new MagentoScraper(this.logger, { target_url: url, config });
         this.logger.warn('MagentoScraper not yet implemented, using UniversalScraper');
-        return new UniversalScraper(this.logger, { 
-          target_url: url,
+        return new UniversalScraper(this.logger, url, {
           scraping_type: jobData.scraping_type || 'product',
         });
 
@@ -427,8 +423,7 @@ class ScraperFactory {
         }
 
         // Default to UniversalScraper for unknown/custom platforms
-        return new UniversalScraper(this.logger, {
-          target_url: url,
+        return new UniversalScraper(this.logger, url, {
           scraping_type: jobData.scraping_type || 'product',
         });
     }

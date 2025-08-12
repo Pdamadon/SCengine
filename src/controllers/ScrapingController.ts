@@ -190,7 +190,7 @@ class ScrapingController {
 
       logger.error('SCRAPING_JOB_SUBMISSION_FAILED', {
         correlation_id: correlationId,
-        error: errorMessage,
+        error_message: errorMessage,
         stack: errorStack,
         duration_ms: Math.round(duration),
       });

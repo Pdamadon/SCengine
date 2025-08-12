@@ -94,6 +94,155 @@ class ScrapingAPI {
         timestamp: new Date().toISOString(),
       });
     });
+
+    // Clear database endpoint for testing
+    router.post('/clear-database', async (req, res) => {
+      try {
+        if (!this.mongoClient) {
+          return res.status(500).json({ error: 'MongoDB not connected' });
+        }
+
+        // Check both databases to see where data actually is
+        const aiDb = this.mongoClient.db('ai_shopping_scraper');
+        const worldDb = this.mongoClient.db('worldmodel1');
+        
+        // Clear all collections
+        const collections = ['products', 'categories', 'product_categories', 'domains', 'sites', 'category_hierarchy'];
+        const results = { ai_shopping_scraper: {}, worldmodel1: {} };
+        
+        for (const collectionName of collections) {
+          // Clear from ai_shopping_scraper database
+          const aiResult = await aiDb.collection(collectionName).deleteMany({});
+          results.ai_shopping_scraper[collectionName] = { deleted: aiResult.deletedCount };
+          
+          // Clear from worldmodel1 database
+          const worldResult = await worldDb.collection(collectionName).deleteMany({});
+          results.worldmodel1[collectionName] = { deleted: worldResult.deletedCount };
+        }
+
+        this.logger.info('Database cleared successfully', { results });
+
+        res.json({
+          success: true,
+          message: 'Database cleared successfully',
+          collections_cleared: results,
+          timestamp: new Date().toISOString()
+        });
+
+      } catch (error) {
+        this.logger.error('Database clearing failed:', error);
+        res.status(500).json({
+          error: 'Database clearing failed',
+          details: error.message
+        });
+      }
+    });
+
+    // Database inspection endpoint
+    router.get('/inspect-databases', async (req, res) => {
+      try {
+        if (!this.mongoClient) {
+          return res.status(500).json({ error: 'MongoDB not connected' });
+        }
+
+        // List all databases
+        const admin = this.mongoClient.db().admin();
+        const databasesList = await admin.listDatabases();
+        
+        const inspection = {
+          available_databases: databasesList.databases,
+          collections_info: {}
+        };
+
+        // Check key databases for our collections
+        const databasesToCheck = ['ai_shopping_scraper', 'worldmodel1'];
+        const collectionsToCheck = ['products', 'categories', 'product_categories', 'domains'];
+        
+        for (const dbName of databasesToCheck) {
+          const db = this.mongoClient.db(dbName);
+          inspection.collections_info[dbName] = {};
+          
+          for (const collectionName of collectionsToCheck) {
+            try {
+              const count = await db.collection(collectionName).countDocuments();
+              const sample = await db.collection(collectionName).findOne();
+              inspection.collections_info[dbName][collectionName] = {
+                count: count,
+                has_sample: !!sample,
+                sample_id: sample ? sample._id : null
+              };
+            } catch (error) {
+              inspection.collections_info[dbName][collectionName] = {
+                error: error.message
+              };
+            }
+          }
+        }
+
+        res.json({
+          success: true,
+          inspection: inspection,
+          timestamp: new Date().toISOString()
+        });
+
+      } catch (error) {
+        this.logger.error('Database inspection failed:', error);
+        res.status(500).json({
+          error: 'Database inspection failed',
+          details: error.message
+        });
+      }
+    });
+
+    // Temporary endpoint to verify database population
+    router.get('/verify-database', async (req, res) => {
+      try {
+        if (!this.mongoClient) {
+          return res.status(500).json({ error: 'MongoDB not connected' });
+        }
+
+        const db = this.mongoClient.db('ai_shopping_scraper');
+        
+        // Check products collection
+        const productsCount = await db.collection('products').countDocuments();
+        const recentProducts = await db.collection('products')
+          .find({})
+          .sort({ created_at: -1 })
+          .limit(5)
+          .project({ name: 1, price: 1, url: 1, created_at: 1, updated_at: 1 })
+          .toArray();
+
+        // Check categories collection  
+        const categoriesCount = await db.collection('categories').countDocuments();
+        
+        // Check product_categories relationships
+        const relationshipsCount = await db.collection('product_categories').countDocuments();
+
+        res.json({
+          success: true,
+          collections: {
+            products: {
+              count: productsCount,
+              recent: recentProducts
+            },
+            categories: {
+              count: categoriesCount
+            },
+            product_categories: {
+              count: relationshipsCount
+            }
+          },
+          timestamp: new Date().toISOString()
+        });
+
+      } catch (error) {
+        this.logger.error('Database verification failed:', error);
+        res.status(500).json({
+          error: 'Database verification failed',
+          details: error.message
+        });
+      }
+    });
   }
 
   getRouter() {

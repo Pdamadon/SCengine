@@ -14,7 +14,7 @@ class WorldModelPopulator {
     }
 
     try {
-      this.db = this.mongoClient.db('Worldmodel1');
+      this.db = this.mongoClient.db('ai_shopping_scraper');
       await this.loadCategoryHierarchy();
       this.logger.info('WorldModelPopulator initialized with MongoDB connection and category hierarchy');
       return true;

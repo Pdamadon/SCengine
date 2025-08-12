@@ -12,6 +12,7 @@ const GlasswingScraper = require('../scrapers/GlasswingScraper');
 const ScraperFactory = require('../multisite/core/ScraperFactory');
 const GapScraper = require('../multisite/scrapers/GapScraper');
 const UniversalScraper = require('../multisite/core/UniversalScraper');
+const WorldModelPopulator = require('../services/WorldModelPopulator');
 const { performance } = require('perf_hooks');
 
 class ScrapingWorker {
@@ -32,6 +33,9 @@ class ScrapingWorker {
     this.scraperFactory = new ScraperFactory(logger, {
       cacheTimeout: 24 * 60 * 60 * 1000, // 24 hours
     });
+
+    // Initialize WorldModelPopulator for orchestrated scraping
+    this.worldModelPopulator = new WorldModelPopulator(mongoClient);
 
     // Database collections
     this.jobsCollection = 'scraping_jobs';
@@ -201,8 +205,19 @@ class ScrapingWorker {
   async selectScraper(jobData) {
     const targetUrl = jobData.target_url.toLowerCase();
 
+    // Priority override: Always use GlasswingScraper for Glasswing sites
+    // This ensures we get the full orchestrated WorldModelPopulator workflow
+    if (targetUrl.includes('glasswingshop.com')) {
+      logger.info('ScrapingWorker: Using specialized GlasswingScraper for Glasswing site', {
+        url: targetUrl,
+        scraperType: 'GlasswingScraper',
+        reason: 'specialized_glasswing_scraper',
+      });
+      return this.scrapers.glasswing;
+    }
+
     try {
-      // Try multisite scraper factory first (supports Gap, Shopify, etc.)
+      // Try multisite scraper factory for other sites (supports Gap, Shopify, etc.)
       const scraperInfo = await this.scraperFactory.createScraper(targetUrl, jobData, {
         enableDeepAnalysis: false, // Start with fast detection
       });
@@ -222,11 +237,6 @@ class ScrapingWorker {
         error: error.message,
       });
       
-      // Fall back to legacy scraper selection
-      if (targetUrl.includes('glasswingshop.com')) {
-        return this.scrapers.glasswing;
-      }
-
       // Default to general scraper
       return this.scrapers.general;
     }
@@ -274,24 +284,50 @@ class ScrapingWorker {
   }
 
   /**
-   * Execute full site scraping
+   * Execute full site scraping using WorldModelPopulator orchestration
    */
   async executeFullSiteScraping(targetUrl, options, scraper, progressCallback) {
-    progressCallback(15, 'Starting full site discovery...');
+    progressCallback(15, 'Starting orchestrated full site discovery...');
 
-    // For Glasswing scraper, use the existing category-aware method
+    // Use WorldModelPopulator orchestrated workflow for comprehensive scraping
     if (scraper instanceof GlasswingScraper) {
-      const results = await scraper.scrapeWithCategories({
-        baseUrl: targetUrl,
-        maxPages: options.maxPages,
-        respectRobotsTxt: options.respectRobotsTxt,
-        delay: options.rateLimitDelay,
-        extractImages: options.extractImages,
-        extractReviews: options.extractReviews,
-        progressCallback: progressCallback,
-      });
+      try {
+        progressCallback(20, 'Initializing WorldModelPopulator orchestration...');
+        
+        // Use the orchestrated WorldModelPopulator workflow
+        const results = await this.worldModelPopulator.populateFromGlasswing({
+          progressCallback: (progress, message, details) => {
+            // Map progress from 20-95% range
+            const mappedProgress = Math.round(20 + (progress * 0.75));
+            progressCallback(mappedProgress, message || 'Processing...', details);
+          }
+        });
 
-      return this.formatScrapingResults(results, 'full_site');
+        progressCallback(95, 'Formatting orchestrated scraping results...');
+
+        // Format results for consistency with existing API
+        return this.formatOrchestatedResults(results, 'full_site');
+
+      } catch (error) {
+        logger.error('ScrapingWorker: Orchestrated full site scraping failed', {
+          targetUrl,
+          error: error.message,
+        });
+
+        // Fallback to basic scraping if orchestrated fails
+        progressCallback(15, 'Falling back to basic category-aware scraping...');
+        const results = await scraper.scrapeWithCategories({
+          baseUrl: targetUrl,
+          maxPages: options.maxPages,
+          respectRobotsTxt: options.respectRobotsTxt,
+          delay: options.rateLimitDelay,
+          extractImages: options.extractImages,
+          extractReviews: options.extractReviews,
+          progressCallback: progressCallback,
+        });
+
+        return this.formatScrapingResults(results, 'full_site');
+      }
     }
 
     // For general scraper, implement full site logic
@@ -377,6 +413,83 @@ class ScrapingWorker {
         data_quality_score: this.calculateDataQualityScore(items),
       },
     };
+  }
+
+  /**
+   * Format orchestrated WorldModelPopulator results for storage
+   */
+  formatOrchestatedResults(orchestratedResults, scrapingType) {
+    try {
+      // WorldModelPopulator returns comprehensive results with database insertions
+      const { 
+        products, 
+        categories, 
+        categoryHierarchy, 
+        productCategories, 
+        summary 
+      } = orchestratedResults;
+
+      // Convert database documents to API format
+      const items = products.map(product => ({
+        title: product.title,
+        price: product.price_cents ? (product.price_cents / 100).toFixed(2) : product.original_price,
+        url: product.url,
+        description: product.description,
+        images: product.images || [],
+        availability: product.availability || (product.in_stock ? 'in_stock' : 'out_of_stock'),
+        brand: product.brand,
+        sizes: product.glasswing_variants?.sizes?.map(s => s.value).join(', ') || '',
+        colors: product.glasswing_variants?.colors?.map(c => c.name).join(', ') || '',
+        category: product.category,
+        scraped_at: product.scraped_at,
+        platform: 'glasswing',
+        // Include rich automation intelligence
+        glasswing_product_id: product.glasswing_product_id,
+        automation_elements: product.automation_elements,
+        purchase_workflow: product.purchase_workflow,
+      }));
+
+      const totalItems = items.length;
+      const categoriesFound = categories?.length || 0;
+      const categoryNames = categories?.map(c => c.name) || [];
+      
+      // Include orchestrated workflow metadata
+      const orchestratedSummary = {
+        total_items: totalItems,
+        categories_found: categoriesFound,
+        categories: categoryNames,
+        scraping_type: scrapingType,
+        data_quality_score: this.calculateDataQualityScore(items),
+        // Orchestrated workflow metadata
+        total_products_stored: summary?.productsStored || totalItems,
+        total_categories_stored: summary?.categoriesStored || categoriesFound,
+        total_relationships_created: summary?.relationshipsCreated || 0,
+        category_hierarchy_levels: categoryHierarchy?.length || 0,
+        automation_intelligence_embedded: true,
+        orchestrated_workflow: true,
+        database_populated: true,
+      };
+
+      return {
+        data: items,
+        summary: orchestratedSummary,
+        orchestrated_metadata: {
+          categories_structure: categories,
+          category_hierarchy: categoryHierarchy,
+          product_category_relationships: productCategories,
+          raw_orchestrated_results: orchestratedResults,
+        },
+      };
+
+    } catch (error) {
+      logger.warn('ScrapingWorker: Failed to format orchestrated results, using fallback format', {
+        error: error.message,
+        scrapingType: scrapingType,
+      });
+
+      // Fallback to basic format
+      return this.formatScrapingResults([], scrapingType);
+    }
   }
 
   /**
