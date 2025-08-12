@@ -583,6 +583,209 @@ class GlasswingScraper {
     };
   }
 
+  // Main method called by ScrapingWorker for category-based scraping
+  async scrapeWithCategories(maxProducts = null, progressCallback = null) {
+    this.logger.info(`Starting category-based scraping for ${this.domain}`);
+    
+    try {
+      // Initialize if not already done
+      if (!this.browser) {
+        await this.initialize();
+      }
+
+      // Use the intelligence system to discover all categories first
+      const SiteIntelligence = require('../intelligence/SiteIntelligence');
+      const siteIntelligence = new SiteIntelligence(this.logger);
+      await siteIntelligence.initialize();
+
+      // Build comprehensive site intelligence
+      const intelligence = await siteIntelligence.buildComprehensiveSiteIntelligence(this.baseUrl, {
+        forceRefresh: false, // Use cached if available
+        maxConcurrent: 4,
+        maxSubcategories: 3
+      });
+
+      if (progressCallback) {
+        progressCallback({
+          stage: 'intelligence_complete',
+          message: `Site intelligence built: ${intelligence.summary.sections_mapped} sections discovered`,
+          progress: 25
+        });
+      }
+
+      // Extract all discovered categories
+      const categories = [];
+      
+      // Get navigation data from intelligence
+      const navigationData = await siteIntelligence.worldModel.getSiteNavigation(this.domain);
+      if (navigationData?.navigation_map?.main_sections) {
+        navigationData.navigation_map.main_sections.forEach(section => {
+          if (section.href && section.href.includes('collections')) {
+            categories.push({
+              name: section.text || section.title || 'Unknown Category',
+              url: section.href.startsWith('http') ? section.href : this.baseUrl + section.href,
+              type: 'main_navigation'
+            });
+          }
+        });
+      }
+
+      // Add dropdown menu categories
+      if (navigationData?.navigation_map?.dropdown_menus) {
+        Object.values(navigationData.navigation_map.dropdown_menus).forEach(dropdown => {
+          if (dropdown.items) {
+            dropdown.items.forEach(item => {
+              if (item.href && item.href.includes('collections')) {
+                categories.push({
+                  name: item.text || item.title || 'Unknown Category',
+                  url: item.href.startsWith('http') ? item.href : this.baseUrl + item.href,
+                  type: 'dropdown_menu'
+                });
+              }
+            });
+          }
+        });
+      }
+
+      // Fallback to default collections if no categories discovered
+      if (categories.length === 0) {
+        this.logger.warn('No categories discovered from intelligence, using fallback');
+        categories.push({
+          name: 'Clothing Collection',
+          url: this.baseUrl + '/collections/clothing-collection',
+          type: 'fallback'
+        });
+      }
+
+      this.logger.info(`Found ${categories.length} categories to scrape`);
+      
+      if (progressCallback) {
+        progressCallback({
+          stage: 'categories_discovered',
+          message: `Found ${categories.length} categories to scrape`,
+          progress: 35
+        });
+      }
+
+      // Scrape products from all categories
+      const allProducts = [];
+      const categoryResults = [];
+      let totalProductsProcessed = 0;
+
+      for (let i = 0; i < categories.length; i++) {
+        const category = categories[i];
+        this.logger.info(`Scraping category ${i + 1}/${categories.length}: ${category.name}`);
+
+        try {
+          // Calculate products to scrape from this category
+          const productsPerCategory = maxProducts ? Math.ceil(maxProducts / categories.length) : null;
+          
+          const categoryResult = await this.scrapeCompleteCollection(
+            category.url, 
+            productsPerCategory
+          );
+
+          categoryResults.push({
+            category: category,
+            result: categoryResult,
+            products_found: categoryResult.summary.totalProductsFound,
+            products_scraped: categoryResult.summary.detailedProductPages
+          });
+
+          // Add products to master list
+          if (categoryResult.productAnalysis) {
+            categoryResult.productAnalysis.forEach(product => {
+              if (!product.error) {
+                allProducts.push({
+                  ...product,
+                  category: category.name,
+                  categoryType: category.type
+                });
+              }
+            });
+          }
+
+          totalProductsProcessed += categoryResult.summary.detailedProductPages;
+
+          if (progressCallback) {
+            const progress = 35 + ((i + 1) / categories.length) * 60; // 35% to 95%
+            progressCallback({
+              stage: 'scraping_categories',
+              message: `Completed category ${i + 1}/${categories.length}: ${category.name} (${categoryResult.summary.detailedProductPages} products)`,
+              progress: Math.round(progress),
+              categories_complete: i + 1,
+              total_categories: categories.length,
+              products_scraped: totalProductsProcessed
+            });
+          }
+
+          // Apply maxProducts limit across all categories
+          if (maxProducts && allProducts.length >= maxProducts) {
+            this.logger.info(`Reached maxProducts limit of ${maxProducts}`);
+            break;
+          }
+
+          // Delay between categories
+          await new Promise(resolve => setTimeout(resolve, 2000));
+
+        } catch (error) {
+          this.logger.error(`Error scraping category ${category.name}:`, error.message);
+          categoryResults.push({
+            category: category,
+            error: error.message
+          });
+        }
+      }
+
+      // Cleanup intelligence system
+      await siteIntelligence.close();
+
+      const finalResult = {
+        site: this.domain,
+        timestamp: new Date().toISOString(),
+        intelligence: {
+          sections_mapped: intelligence.summary.sections_mapped,
+          selectors_identified: intelligence.summary.selectors_identified,
+          intelligence_score: intelligence.summary.intelligence_score
+        },
+        categories: {
+          discovered: categories.length,
+          processed: categoryResults.length,
+          successful: categoryResults.filter(r => !r.error).length
+        },
+        products: {
+          total_found: categoryResults.reduce((sum, cat) => sum + (cat.products_found || 0), 0),
+          total_scraped: allProducts.length,
+          max_requested: maxProducts
+        },
+        categoryResults: categoryResults,
+        allProducts: maxProducts ? allProducts.slice(0, maxProducts) : allProducts,
+        summary: {
+          success: true,
+          categories_discovered: categories.length,
+          categories_processed: categoryResults.length,
+          products_scraped: allProducts.length,
+          intelligence_used: true
+        }
+      };
+
+      if (progressCallback) {
+        progressCallback({
+          stage: 'complete',
+          message: `Scraping complete: ${allProducts.length} products from ${categories.length} categories`,
+          progress: 100
+        });
+      }
+
+      this.logger.info(`Category-based scraping completed: ${allProducts.length} products from ${categories.length} categories`);
+      return finalResult;
+
+    } catch (error) {
+      this.logger.error('Category-based scraping failed:', error);
+      throw error;
+    }
+  }
+
   async close() {
     if (this.browser) {
       await this.browser.close();

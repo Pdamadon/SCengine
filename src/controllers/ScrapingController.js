@@ -409,8 +409,8 @@ class ScrapingController {
 
     if (!body.scraping_type) {
       errors.push('scraping_type is required');
-    } else if (!['full_site', 'category', 'product', 'search'].includes(body.scraping_type)) {
-      errors.push('scraping_type must be one of: full_site, category, product, search');
+    } else if (!['full_site', 'category', 'category_search', 'product', 'search'].includes(body.scraping_type)) {
+      errors.push('scraping_type must be one of: full_site, category, category_search, product, search');
     }
 
     if (body.priority && !['low', 'normal', 'high', 'urgent'].includes(body.priority)) {

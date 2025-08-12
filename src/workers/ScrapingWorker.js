@@ -9,6 +9,9 @@ const { logger } = require('../utils/logger');
 const { metrics } = require('../utils/metrics');
 const ScrapingEngine = require('../scrapers/ScrapingEngine');
 const GlasswingScraper = require('../scrapers/GlasswingScraper');
+const ScraperFactory = require('../multisite/core/ScraperFactory');
+const GapScraper = require('../multisite/scrapers/GapScraper');
+const UniversalScraper = require('../multisite/core/UniversalScraper');
 const { performance } = require('perf_hooks');
 
 class ScrapingWorker {
@@ -24,6 +27,11 @@ class ScrapingWorker {
       glasswing: new GlasswingScraper(logger),
       general: new ScrapingEngine(logger, mongoClient),
     };
+    
+    // Initialize multisite scraper factory
+    this.scraperFactory = new ScraperFactory(logger, {
+      cacheTimeout: 24 * 60 * 60 * 1000, // 24 hours
+    });
 
     // Database collections
     this.jobsCollection = 'scraping_jobs';
@@ -40,6 +48,9 @@ class ScrapingWorker {
       if (!queueManager.isInitialized) {
         await queueManager.initialize();
       }
+      
+      // Initialize scraper factory
+      await this.scraperFactory.initialize();
 
       // Get the scraping queue
       const scrapingQueue = queueManager.getQueue('scraping');
@@ -114,7 +125,7 @@ class ScrapingWorker {
       progressCallback(5, 'Job started - initializing scraper...');
 
       // Determine scraper type based on target URL and job type
-      const scraper = this.selectScraper(job.data);
+      const scraper = await this.selectScraper(job.data);
       progressCallback(8, `Selected ${scraper.constructor.name} for scraping...`);
 
       // Execute scraping operation
@@ -185,17 +196,40 @@ class ScrapingWorker {
 
   /**
    * Select appropriate scraper based on job data
+   * Enhanced with multisite platform detection
    */
-  selectScraper(jobData) {
+  async selectScraper(jobData) {
     const targetUrl = jobData.target_url.toLowerCase();
 
-    // Check for specific site scrapers
-    if (targetUrl.includes('glasswingshop.com')) {
-      return this.scrapers.glasswing;
-    }
+    try {
+      // Try multisite scraper factory first (supports Gap, Shopify, etc.)
+      const scraperInfo = await this.scraperFactory.createScraper(targetUrl, jobData, {
+        enableDeepAnalysis: false, // Start with fast detection
+      });
+      
+      logger.info('ScrapingWorker: Selected multisite scraper', {
+        url: targetUrl,
+        platform: scraperInfo.platformInfo.platform,
+        confidence: scraperInfo.platformInfo.confidence,
+        scraperType: scraperInfo.scraper.constructor.name,
+      });
+      
+      return scraperInfo.scraper;
+      
+    } catch (error) {
+      logger.warn('ScrapingWorker: Multisite scraper selection failed, falling back to legacy scrapers', {
+        url: targetUrl,
+        error: error.message,
+      });
+      
+      // Fall back to legacy scraper selection
+      if (targetUrl.includes('glasswingshop.com')) {
+        return this.scrapers.glasswing;
+      }
 
-    // Default to general scraper
-    return this.scrapers.general;
+      // Default to general scraper
+      return this.scrapers.general;
+    }
   }
 
   /**
@@ -225,6 +259,7 @@ class ScrapingWorker {
         return await this.executeFullSiteScraping(jobData.target_url, scrapingOptions, scraper, progressCallback);
 
       case 'category':
+      case 'category_search': // Support both legacy and new naming
         return await this.executeCategoryScraping(jobData.target_url, scrapingOptions, scraper, progressCallback);
 
       case 'product':
@@ -265,10 +300,18 @@ class ScrapingWorker {
 
   /**
    * Execute category scraping
+   * Enhanced to support multisite scrapers
    */
   async executeCategoryScraping(targetUrl, options, scraper, progressCallback) {
     progressCallback(15, 'Starting category page analysis...');
 
+    // Handle multisite scrapers (Gap, Universal, etc.)
+    if (scraper instanceof GapScraper || scraper instanceof UniversalScraper) {
+      const results = await scraper.scrape(progressCallback);
+      return this.formatMultisiteResults(results, 'category');
+    }
+    
+    // Handle legacy Glasswing scraper
     if (scraper instanceof GlasswingScraper) {
       const results = await scraper.scrapeCategoryPage(targetUrl, {
         maxPages: options.maxPages,
@@ -287,17 +330,20 @@ class ScrapingWorker {
 
   /**
    * Execute product scraping
+   * Enhanced to support multisite scrapers
    */
   async executeProductScraping(targetUrl, options, scraper, progressCallback) {
     progressCallback(15, 'Extracting product data...');
 
+    // Handle multisite scrapers (Gap, Universal, etc.)
+    if (scraper instanceof GapScraper || scraper instanceof UniversalScraper) {
+      const results = await scraper.scrape(progressCallback);
+      return this.formatMultisiteResults(results, 'product');
+    }
+    
+    // Handle legacy Glasswing scraper
     if (scraper instanceof GlasswingScraper) {
-      const result = await scraper.scrapeProductDetails(targetUrl, {
-        extractImages: options.extractImages,
-        extractReviews: options.extractReviews,
-        progressCallback: progressCallback,
-      });
-
+      const result = await scraper.scrapeProductPage(targetUrl);
       return this.formatScrapingResults([result], 'product');
     }
 
@@ -314,7 +360,7 @@ class ScrapingWorker {
   }
 
   /**
-   * Format scraping results for storage
+   * Format scraping results for storage (legacy format)
    */
   formatScrapingResults(rawResults, scrapingType) {
     const items = Array.isArray(rawResults) ? rawResults : [rawResults];
@@ -331,6 +377,92 @@ class ScrapingWorker {
         data_quality_score: this.calculateDataQualityScore(items),
       },
     };
+  }
+
+  /**
+   * Format multisite scraper results for storage
+   */
+  formatMultisiteResults(multisiteResults, scrapingType) {
+    try {
+      // Multisite scrapers return structured results with products array
+      const products = multisiteResults.products || [];
+      const pages = multisiteResults.pages || [];
+      
+      // Convert multisite format to legacy format for compatibility
+      const items = products.map(product => ({
+        title: product.title,
+        price: product.price,
+        url: product.url,
+        description: product.description,
+        images: product.images ? product.images.map(img => img.src) : [],
+        availability: product.available ? 'in_stock' : 'out_of_stock',
+        brand: product.brand,
+        sizes: product.sizes ? product.sizes.map(size => size.text).join(', ') : '',
+        colors: product.colors ? product.colors.map(color => color.name).join(', ') : '',
+        category: this.extractCategoryFromUrl(product.url),
+        scraped_at: product.scrapedAt,
+        platform: multisiteResults.platform,
+      }));
+
+      const totalItems = items.length;
+      const categories = [...new Set(items.map(item => item.category).filter(Boolean))];
+      
+      // Include multisite-specific metadata
+      const summary = {
+        total_items: totalItems,
+        categories_found: categories.length,
+        categories: categories,
+        scraping_type: scrapingType,
+        data_quality_score: this.calculateDataQualityScore(items),
+        platform: multisiteResults.platform,
+        pages_scraped: multisiteResults.summary?.pagesScraped || pages.length,
+        success_rate: multisiteResults.summary?.successRate || 1.0,
+        duration_ms: multisiteResults.summary?.duration || 0,
+      };
+
+      return {
+        data: items,
+        summary: summary,
+        raw_results: multisiteResults, // Keep original results for analysis
+      };
+
+    } catch (error) {
+      logger.warn('ScrapingWorker: Failed to format multisite results, using fallback format', {
+        error: error.message,
+        scrapingType: scrapingType,
+      });
+
+      // Fallback to basic format
+      return this.formatScrapingResults([], scrapingType);
+    }
+  }
+
+  /**
+   * Extract category from product URL
+   */
+  extractCategoryFromUrl(url) {
+    try {
+      const urlPath = new URL(url).pathname.toLowerCase();
+      
+      // Common category patterns
+      const categoryPatterns = [
+        /\/browse\/([^\/]+)/,
+        /\/collections\/([^\/]+)/,
+        /\/category\/([^\/]+)/,
+        /\/shop\/([^\/]+)/,
+      ];
+      
+      for (const pattern of categoryPatterns) {
+        const match = urlPath.match(pattern);
+        if (match && match[1]) {
+          return match[1].replace(/-/g, ' ').replace(/_/g, ' ');
+        }
+      }
+      
+      return 'unknown';
+    } catch (error) {
+      return 'unknown';
+    }
   }
 
   /**
@@ -515,6 +647,13 @@ class ScrapingWorker {
 
     if (this.activeJobs.size > 0) {
       logger.warn(`ScrapingWorker: Force stopping with ${this.activeJobs.size} active jobs`);
+    }
+
+    // Clean up scraper factory resources
+    try {
+      await this.scraperFactory.close();
+    } catch (error) {
+      logger.warn('ScrapingWorker: Error closing scraper factory', { error: error.message });
     }
 
     logger.info('ScrapingWorker: Worker stopped');

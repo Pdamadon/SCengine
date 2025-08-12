@@ -34,10 +34,10 @@ class ValidationService {
   createScrapingJobSchema() {
     return Joi.object({
       scraping_type: Joi.string()
-        .valid('full_site', 'category', 'product', 'search')
+        .valid('full_site', 'category', 'category_search', 'product', 'search')
         .required()
         .messages({
-          'any.only': 'scraping_type must be one of: full_site, category, product, search',
+          'any.only': 'scraping_type must be one of: full_site, category, category_search, product, search',
           'any.required': 'scraping_type is required',
         }),
 
@@ -165,9 +165,9 @@ class ValidationService {
         }),
 
       type: Joi.string()
-        .valid('full_site', 'category', 'product', 'search')
+        .valid('full_site', 'category', 'category_search', 'product', 'search')
         .messages({
-          'any.only': 'type must be one of: full_site, category, product, search',
+          'any.only': 'type must be one of: full_site, category, category_search, product, search',
         }),
 
       page: Joi.number()
@@ -364,15 +364,15 @@ class ValidationService {
       }
     }
 
-    // Check request body for SQL injection patterns
-    if (req.body && typeof req.body === 'object') {
+    // Check request body for SQL injection patterns (only for requests with bodies)
+    if (req.body && typeof req.body === 'object' && Object.keys(req.body).length > 0) {
       if (this.containsSQLInjection(JSON.stringify(req.body))) {
         errors.push('Potential SQL injection detected in request body');
       }
     }
 
-    // Check for XSS patterns
-    if (req.body && typeof req.body === 'object') {
+    // Check for XSS patterns (only for requests with bodies)
+    if (req.body && typeof req.body === 'object' && Object.keys(req.body).length > 0) {
       if (this.containsXSS(JSON.stringify(req.body))) {
         errors.push('Potential XSS detected in request body');
       }
@@ -413,14 +413,19 @@ class ValidationService {
    */
   containsSQLInjection(input) {
     const sqlPatterns = [
-      /('|(\\')|(;)|(\|)|(\*)|(%)|(<)|(>)|(\{)|(\})|(\[)|(\])|(\^)|(`)|(\~)|(\!)|(@)|(#)|(\$)|(&)|(\+)|(\=))/,
-      /(union.*select)/i,
-      /(insert.*into)/i,
-      /(delete.*from)/i,
-      /(update.*set)/i,
-      /(drop.*table)/i,
-      /(exec.*xp_)/i,
+      // More specific SQL injection patterns that avoid false positives
+      /(union\s+select)/i,
+      /(insert\s+into)/i,
+      /(delete\s+from)/i,
+      /(update\s+set)/i,
+      /(drop\s+table)/i,
+      /(exec\s+xp_)/i,
       /(sp_executesql)/i,
+      /(';\s*(drop|delete|insert|update|union|select))/i,
+      /(or\s+1\s*=\s*1)/i,
+      /(and\s+1\s*=\s*1)/i,
+      /(\bselect\b.*\bfrom\b)/i,
+      /(\'\s*or\s*\'\w*\'\s*=\s*\'\w*)/i,
     ];
 
     return sqlPatterns.some(pattern => pattern.test(input));

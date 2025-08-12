@@ -29,6 +29,7 @@
     "scrape:intelligence": "node test-site-intelligence.js",
     "queue:worker": "node src/workers/startWorker.js",
     "worker:start": "node src/workers/startWorker.js",
+    "orchestrate": "node src/scrapers/redis_product_queue_orchestrator.js",
     "health": "curl -f http://localhost:3000/health || exit 1",
     "metrics": "curl -s http://localhost:3000/metrics",
     "monitoring": "curl -s http://localhost:3000/monitoring/summary | jq .",

@@ -348,7 +348,7 @@ class ConcurrentExplorer {
 
       for (const [key, element] of Object.entries(navElements)) {
         if (element) {
-          const result = await this.generateIntelligentSelector(element, `navigation.${key}`, {
+          const result = await generateIntelligentSelector(element, `navigation.${key}`, {
             intelligentGenerator,
             validator,
             fallbackSystem,
@@ -393,7 +393,7 @@ class ConcurrentExplorer {
 
         for (const [componentKey, { element, context }] of Object.entries(componentMap)) {
           if (element) {
-            const result = await this.generateIntelligentSelector(element, context, {
+            const result = await generateIntelligentSelector(element, context, {
               intelligentGenerator,
               validator,
               fallbackSystem,
@@ -415,10 +415,10 @@ class ConcurrentExplorer {
 
       for (let i = 0; i < Math.min(filterElements.length, 5); i++) {
         const filter = filterElements[i];
-        const filterType = this.classifyFilter(filter);
+        const filterType = classifyFilter(filter);
         const context = `filters.${filterType}`;
 
-        const result = await this.generateIntelligentSelector(filter, context, {
+        const result = await generateIntelligentSelector(filter, context, {
           intelligentGenerator,
           validator,
           fallbackSystem,
@@ -437,7 +437,7 @@ class ConcurrentExplorer {
         '.in-stock, .out-of-stock, .availability, .stock-status',
       );
       if (availabilityEl) {
-        const result = await this.generateIntelligentSelector(availabilityEl, 'availability.status', {
+        const result = await generateIntelligentSelector(availabilityEl, 'availability.status', {
           intelligentGenerator,
           validator,
           fallbackSystem,
@@ -450,7 +450,7 @@ class ConcurrentExplorer {
       // Variant selectors (for product pages)
       const variantSelects = document.querySelectorAll('select[name*="variant"], select.variant');
       if (variantSelects.length > 0) {
-        const result = await this.generateIntelligentSelector(variantSelects[0], 'variants.dropdown', {
+        const result = await generateIntelligentSelector(variantSelects[0], 'variants.dropdown', {
           intelligentGenerator,
           validator,
           fallbackSystem,
@@ -513,7 +513,7 @@ class ConcurrentExplorer {
         } catch (error) {
           console.warn('Intelligent selector generation failed:', error);
           // Fallback to basic generation
-          return this.generateBasicFallback(element);
+          return generateBasicFallback(element);
         }
       }
 

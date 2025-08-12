@@ -1,4 +1,4 @@
-const RedisCache = require('../scraping/RedisCache');
+const RedisCache = require('../scrapers/RedisCache');
 
 class WorldModel {
   constructor(logger) {
@@ -25,7 +25,12 @@ class WorldModel {
 
     try {
       // Store in Redis with 7-day TTL (navigation changes less frequently)
-      await this.cache.redis.setex(key, 7 * 24 * 60 * 60, JSON.stringify(intelligence));
+      if (this.cache.connected && this.cache.redis) {
+        await this.cache.redis.setex(key, 7 * 24 * 60 * 60, JSON.stringify(intelligence));
+      } else if (this.cache.memoryCache) {
+        // Use memory cache fallback
+        this.cache.memoryCache.set(key, JSON.stringify(intelligence));
+      }
 
       // Also cache in memory for fast access
       this.siteIntelligence.set(domain, intelligence);
@@ -45,12 +50,18 @@ class WorldModel {
         return this.siteIntelligence.get(domain);
       }
 
-      // Check Redis
+      // Check Redis or memory cache
       const key = `site_nav:${domain}`;
-      const cached = await this.cache.redis.get(key);
+      let cached = null;
+      
+      if (this.cache.connected && this.cache.redis) {
+        cached = await this.cache.redis.get(key);
+      } else if (this.cache.memoryCache) {
+        cached = this.cache.memoryCache.get(key);
+      }
 
       if (cached) {
-        const intelligence = JSON.parse(cached);
+        const intelligence = typeof cached === 'string' ? JSON.parse(cached) : cached;
         this.siteIntelligence.set(domain, intelligence); // Cache in memory
         return intelligence;
       }
@@ -84,7 +95,11 @@ class WorldModel {
 
     try {
       // Store with 3-day TTL (selectors may change with site updates)
-      await this.cache.redis.setex(key, 3 * 24 * 60 * 60, JSON.stringify(selectorIntelligence));
+      if (this.cache.connected && this.cache.redis) {
+        await this.cache.redis.setex(key, 3 * 24 * 60 * 60, JSON.stringify(selectorIntelligence));
+      } else if (this.cache.memoryCache) {
+        this.cache.memoryCache.set(key, JSON.stringify(selectorIntelligence));
+      }
       this.logger.info(`Stored selector library for ${domain} with ${Object.keys(selectors).length} categories`);
       return true;
     } catch (error) {
@@ -96,10 +111,16 @@ class WorldModel {
   async getSelectorLibrary(domain) {
     try {
       const key = `selectors:${domain}`;
-      const cached = await this.cache.redis.get(key);
+      let cached = null;
+      
+      if (this.cache.connected && this.cache.redis) {
+        cached = await this.cache.redis.get(key);
+      } else if (this.cache.memoryCache) {
+        cached = this.cache.memoryCache.get(key);
+      }
 
       if (cached) {
-        return JSON.parse(cached);
+        return typeof cached === 'string' ? JSON.parse(cached) : cached;
       }
 
       return null;
@@ -125,7 +146,11 @@ class WorldModel {
     };
 
     try {
-      await this.cache.redis.setex(key, 7 * 24 * 60 * 60, JSON.stringify(urlIntelligence));
+      if (this.cache.connected && this.cache.redis) {
+        await this.cache.redis.setex(key, 7 * 24 * 60 * 60, JSON.stringify(urlIntelligence));
+      } else if (this.cache.memoryCache) {
+        this.cache.memoryCache.set(key, JSON.stringify(urlIntelligence));
+      }
       this.logger.info(`Stored URL patterns for ${domain}`);
       return true;
     } catch (error) {
@@ -137,10 +162,16 @@ class WorldModel {
   async getURLPatterns(domain) {
     try {
       const key = `url_patterns:${domain}`;
-      const cached = await this.cache.redis.get(key);
+      let cached = null;
+      
+      if (this.cache.connected && this.cache.redis) {
+        cached = await this.cache.redis.get(key);
+      } else if (this.cache.memoryCache) {
+        cached = this.cache.memoryCache.get(key);
+      }
 
       if (cached) {
-        return JSON.parse(cached);
+        return typeof cached === 'string' ? JSON.parse(cached) : cached;
       }
 
       return null;
@@ -165,7 +196,11 @@ class WorldModel {
 
     try {
       // Store with 1-hour TTL (product data changes frequently)
-      await this.cache.redis.setex(key, 60 * 60, JSON.stringify(productIntelligence));
+      if (this.cache.connected && this.cache.redis) {
+        await this.cache.redis.setex(key, 60 * 60, JSON.stringify(productIntelligence));
+      } else if (this.cache.memoryCache) {
+        this.cache.memoryCache.set(key, JSON.stringify(productIntelligence));
+      }
       return true;
     } catch (error) {
       this.logger.error('Failed to store product intelligence:', error);
@@ -176,10 +211,16 @@ class WorldModel {
   async getProductIntelligence(productUrl) {
     try {
       const key = `product:${Buffer.from(productUrl).toString('base64')}`;
-      const cached = await this.cache.redis.get(key);
+      let cached = null;
+      
+      if (this.cache.connected && this.cache.redis) {
+        cached = await this.cache.redis.get(key);
+      } else if (this.cache.memoryCache) {
+        cached = this.cache.memoryCache.get(key);
+      }
 
       if (cached) {
-        const intelligence = JSON.parse(cached);
+        const intelligence = typeof cached === 'string' ? JSON.parse(cached) : cached;
 
         // Check if data is still fresh
         const expiresAt = new Date(intelligence.expires_at);
