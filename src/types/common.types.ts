@@ -16,14 +16,6 @@ export type Priority = 'urgent' | 'high' | 'normal' | 'low';
 export type JobStatus = 'pending' | 'running' | 'completed' | 'failed' | 'cancelled';
 export type ScrapeStatus = 'queued' | 'processing' | 'completed' | 'error' | 'timeout';
 
-// Common response wrapper
-export interface ApiResponse<T = any> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  message?: string;
-  timestamp: Timestamp;
-}
 
 // Pagination types
 export interface PaginationParams {

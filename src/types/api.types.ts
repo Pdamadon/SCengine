@@ -2,10 +2,19 @@
  * API request/response types
  */
 
-import { UUID, URL, Timestamp, Priority, PaginationParams, PaginatedResponse, ApiResponse } from './common.types';
+import { UUID, URL, Timestamp, Priority, PaginationParams, PaginatedResponse } from './common.types';
 import { ScrapingType, ScrapingConfig, Product, Category } from './scraping.types';
 import { QueueStats, QueueJobStatus } from './queue.types';
 import { SiteIntelligence } from './intelligence.types';
+
+// Common API response wrapper
+export interface ApiResponse<T = any> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
+  timestamp: Timestamp;
+}
 
 // Request body types
 export interface CreateScrapingJobRequest {
