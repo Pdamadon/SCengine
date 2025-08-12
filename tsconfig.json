@@ -1,0 +1,93 @@
+{
+  "compilerOptions": {
+    // Language and Environment
+    "target": "ES2022",
+    "module": "CommonJS",
+    "lib": ["ES2022"],
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "downlevelIteration": true,
+    
+    // Type Checking
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUncheckedIndexedAccess": false,
+    "exactOptionalPropertyTypes": false,
+    
+    // JavaScript Support (for gradual migration)
+    "allowJs": true,
+    "checkJs": false,
+    "maxNodeModuleJsDepth": 1,
+    
+    // Output
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "removeComments": false,
+    "importHelpers": true,
+    
+    // Interop Constraints
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    
+    // Skip Library Check (for faster builds)
+    "skipLibCheck": true,
+    
+    // Advanced
+    "experimentalDecorators": false,
+    "emitDecoratorMetadata": false,
+    
+    // Path Mapping (for cleaner imports)
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"],
+      "@types/*": ["types/*"],
+      "@utils/*": ["utils/*"],
+      "@services/*": ["services/*"],
+      "@controllers/*": ["controllers/*"],
+      "@middleware/*": ["middleware/*"],
+      "@scrapers/*": ["scrapers/*"],
+      "@intelligence/*": ["intelligence/*"],
+      "@multisite/*": ["multisite/*"],
+      "@workers/*": ["workers/*"],
+      "@routes/*": ["routes/*"],
+      "@database/*": ["database/*"]
+    }
+  },
+  
+  // Files to Include
+  "include": [
+    "src/**/*.ts",
+    "src/types/**/*"
+  ],
+  
+  // Files to Exclude
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "**/*.test.ts",
+    "**/*.test.js",
+    "**/*.spec.ts",
+    "**/*.spec.js",
+    "tests/**/*",
+    "docs/**/*",
+    "results/**/*"
+  ],
+  
+  // TypeScript-specific compiler options
+  "ts-node": {
+    "require": ["tsconfig-paths/register"],
+    "files": true,
+    "experimentalSpecifierResolution": "node"
+  }
+}
