@@ -128,6 +128,10 @@ class ConcurrentExplorer {
             timeout: 30000,
           });
           await page.waitForTimeout(2000);
+          
+          // Close any popups that might have appeared
+          await this.closeAnyPopups(page);
+          
           navigationSuccess = true;
         } catch (navError) {
           retryCount++;
@@ -625,56 +629,211 @@ class ConcurrentExplorer {
     });
   }
 
+  async closeAnyPopups(page) {
+    try {
+      const modalCloseSelectors = [
+        'button[aria-label*="close"]:visible',
+        'button[aria-label*="Close"]:visible',
+        '[class*="modal"] button[class*="close"]:visible',
+        '[class*="popup"] button[class*="close"]:visible',
+        'button:has-text("No Thanks"):visible',
+        'button[class*="decline"]:visible',
+        '[role="dialog"] button[aria-label*="close"]:visible'
+      ];
+      
+      for (const selector of modalCloseSelectors) {
+        try {
+          const closeButton = await page.locator(selector).first();
+          if (await closeButton.isVisible({ timeout: 500 })) {
+            await closeButton.click();
+            await page.waitForTimeout(300);
+            this.logger.info('Closed popup/modal');
+            return true;
+          }
+        } catch (e) {
+          // Try next selector
+        }
+      }
+    } catch (e) {
+      // No modal to close
+    }
+    return false;
+  }
+
+  async loadAllProducts(page) {
+    this.logger.info('Loading all products on page...');
+    
+    // Handle Load More buttons
+    let loadMoreClicked = 0;
+    while (loadMoreClicked < 10) {
+      const loadMoreButton = await page.locator([
+        'button:has-text("Load More")',
+        'button:has-text("Show More")',
+        'button:has-text("View More")',
+        '[class*="load-more"]',
+        '[class*="show-more"]'
+      ].join(', ')).first();
+      
+      if (await loadMoreButton.isVisible({ timeout: 1000 })) {
+        await loadMoreButton.click();
+        loadMoreClicked++;
+        this.logger.info(`Clicked Load More button (${loadMoreClicked}x)`);
+        await page.waitForTimeout(2000);
+      } else {
+        break;
+      }
+    }
+    
+    // Scroll to load lazy content
+    let previousCount = 0;
+    let scrollAttempts = 0;
+    
+    while (scrollAttempts < 10) {
+      const currentCount = await page.evaluate(() => {
+        return document.querySelectorAll('[class*="product"]').length;
+      });
+      
+      if (currentCount === previousCount && scrollAttempts > 2) {
+        break;
+      }
+      
+      previousCount = currentCount;
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await page.waitForTimeout(1500);
+      scrollAttempts++;
+    }
+    
+    this.logger.info(`Loaded ${previousCount} products after scrolling`);
+  }
+
   async discoverProducts(page) {
+    // First, close any popups and load all products
+    await this.closeAnyPopups(page);
+    await this.loadAllProducts(page);
+    
     return await page.evaluate(() => {
+      // Comprehensive product selectors to find product containers
       const productSelectors = [
         '.product', '.product-item', '.product-card', '.grid__item',
         '.card-wrapper', '.collection-product-card', '[data-product-id]',
+        '.item', '.product-tile', '.product-wrap', '.product-block',
+        'article.product', 'div[data-testid*="product"]', '.plp-item',
+        '.productListing', '.product-list-item', '.category-product'
       ];
 
-      const products = [];
+      const uniqueProducts = new Map(); // Map of product ID to URL
+      let workingSelector = null;
 
-      // Helper function for generating selectors in page context
-      function generateBasicSelector(element) {
-        if (!element) {return null;}
-        if (element.id) {return `#${element.id}`;}
-        if (element.className) {
-          const classes = element.className.split(' ').filter(c => c.trim());
-          if (classes.length > 0) {return `.${classes[0]}`;}
-        }
-        return element.tagName.toLowerCase();
-      }
-
+      // Try each selector to find product containers
       for (const selector of productSelectors) {
         const elements = document.querySelectorAll(selector);
         if (elements.length > 0) {
-          elements.forEach((element, index) => {
-            if (index >= 12) {return;} // Limit products per page
+          workingSelector = selector;
+          
+          elements.forEach((element) => {
+            // Find ALL links within the product container
+            const links = element.querySelectorAll('a[href]');
+            
+            links.forEach(link => {
+              const href = link.href;
+              // Filter for likely product URLs (not category/filter links)
+              if (href && 
+                  !href.includes('#') && 
+                  !href.includes('javascript:') &&
+                  (href.includes('/product') || 
+                   href.includes('/p/') || 
+                   href.includes('/pd/') ||
+                   href.includes('/item/') ||
+                   href.includes('.html') ||
+                   href.includes('?pid=') ||
+                   href.includes('?id='))) {
+                
+                // Extract product ID to ensure uniqueness (no variants)
+                let productId = null;
+                const pidMatch = href.match(/pid=(\d+)/);
+                const idMatch = href.match(/id=(\d+)/);
+                const pathMatch = href.match(/\/p\/([\w-]+)/);
+                
+                if (pidMatch) productId = pidMatch[1];
+                else if (idMatch) productId = idMatch[1];
+                else if (pathMatch) productId = pathMatch[1];
+                else productId = href; // Use full URL as ID if no pattern matches
+                
+                // Store only if we haven't seen this product ID
+                if (!uniqueProducts.has(productId)) {
+                  uniqueProducts.set(productId, href);
+                }
+              }
+            });
 
-            const titleEl = element.querySelector('h1, h2, h3, .product-title, .card__heading, a');
-            const priceEl = element.querySelector('.price, .money, .product-price');
-            const linkEl = element.querySelector('a') || element.closest('a');
-            const imageEl = element.querySelector('img');
-
-            if (titleEl && linkEl) {
-              products.push({
-                title: titleEl.textContent.trim(),
-                price: priceEl ? priceEl.textContent.trim() : null,
-                url: linkEl.href,
-                image: imageEl ? imageEl.src : null,
-                container_selector: generateBasicSelector(element),
-              });
+            // Also check if the container itself is a link
+            const containerLink = element.closest('a');
+            if (containerLink && containerLink.href) {
+              const href = containerLink.href;
+              // Same uniqueness logic
+              let productId = null;
+              const pidMatch = href.match(/pid=(\d+)/);
+              const idMatch = href.match(/id=(\d+)/);
+              const pathMatch = href.match(/\/p\/([\w-]+)/);
+              
+              if (pidMatch) productId = pidMatch[1];
+              else if (idMatch) productId = idMatch[1];
+              else if (pathMatch) productId = pathMatch[1];
+              else productId = href;
+              
+              if (!uniqueProducts.has(productId)) {
+                uniqueProducts.set(productId, href);
+              }
             }
           });
-          break; // Found products with this selector
+          
+          // If we found products, stop searching
+          if (uniqueProducts.size > 0) break;
         }
       }
+
+      // If no products found with containers, try direct product link patterns
+      if (uniqueProducts.size === 0) {
+        const allLinks = document.querySelectorAll('a[href]');
+        allLinks.forEach(link => {
+          const href = link.href;
+          // Common product URL patterns
+          if (href && (
+            href.match(/\/product\.[a-z]+\?[a-z]+=[\w\d]+/i) || // product.do?pid=123
+            href.match(/\/p\/[\w\d-]+/i) || // /p/product-name
+            href.match(/\/products?\/[\w\d-]+/i) || // /product/name or /products/name
+            href.match(/\/item\/[\w\d]+/i) || // /item/12345
+            href.match(/\/[\w-]+\/pd\/[\w\d]+/i) || // /category/pd/12345
+            href.match(/\/dp\/[\w\d]+/i) // Amazon style /dp/B08XYZ
+          )) {
+            // Extract product ID for uniqueness
+            let productId = href;
+            const pidMatch = href.match(/pid=(\d+)/);
+            const idMatch = href.match(/id=(\d+)/);
+            if (pidMatch) productId = pidMatch[1];
+            else if (idMatch) productId = idMatch[1];
+            
+            if (!uniqueProducts.has(productId)) {
+              uniqueProducts.set(productId, href);
+            }
+          }
+        });
+      }
+
+      // Convert Map to Array and create simplified product objects
+      const products = Array.from(uniqueProducts.values()).map(url => ({
+        url: url,
+        // We'll extract full details in phase 2
+        title: null,
+        price: null,
+        image: null
+      }));
 
       return {
         total_found: products.length,
         products: products,
-        working_selector: products.length > 0 ?
-          productSelectors.find(sel => document.querySelectorAll(sel).length > 0) : null,
+        working_selector: workingSelector,
+        extraction_method: workingSelector ? 'container_based' : 'pattern_based'
       };
     });
   }
@@ -812,6 +971,7 @@ class ConcurrentExplorer {
       selectors: this.aggregateSelectors(results),
       urlPatterns: this.aggregateURLPatterns(results),
       navigation_intelligence: this.aggregateNavigationIntelligence(results),
+      products: this.aggregateProducts(results),
       exploration_summary: {
         total_products_found: results.reduce((sum, r) => sum + (r.product_discovery?.total_found || 0), 0),
         working_selectors: this.identifyWorkingSelectors(results),
@@ -927,6 +1087,16 @@ class ConcurrentExplorer {
       filter_options_found: results.reduce((sum, r) => sum + (r.navigation_paths?.filter_options?.length || 0), 0),
       interaction_elements: results.reduce((sum, r) => sum + (r.interaction_elements?.buttons?.length || 0), 0),
     };
+  }
+
+  aggregateProducts(results) {
+    const allProducts = [];
+    results.forEach(result => {
+      if (result.product_discovery?.products && Array.isArray(result.product_discovery.products)) {
+        allProducts.push(...result.product_discovery.products);
+      }
+    });
+    return allProducts;
   }
 
   identifyWorkingSelectors(results) {

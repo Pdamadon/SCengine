@@ -109,3 +109,14 @@ dump.rdb
 
 # Railway specific
 .railway/
+
+# Test results and deprecated code
+test-results/
+deprecated/
+
+# Temporary test files in root
+test-*.js
+*-test.js
+*-results.json
+*-urls-*.json
+site_intelligence_*.json

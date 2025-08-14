@@ -1,0 +1,1377 @@
+[
+  {
+    "site": "www.macys.com",
+    "url": "https://www.macys.com",
+    "duration": 33838,
+    "hierarchy": {
+      "levels": {
+        "1": [
+          {
+            "name": "Women's Finish Line Shoes",
+            "url": "https://www.macys.com/shop/brands/finish-line/finish-line-womens-shoes?id=63268",
+            "has_dropdown": false,
+            "discovered_via": "unknown"
+          },
+          {
+            "name": "Baby Shoes",
+            "url": "https://www.macys.com/shop/kids-clothes/baby-products/baby-shoes?id=73512",
+            "has_dropdown": false,
+            "discovered_via": "unknown"
+          },
+          {
+            "name": "Boys' Shoes",
+            "url": "https://www.macys.com/shop/kids-clothes/kids-shoes/boys-shoes?id=209702",
+            "has_dropdown": false,
+            "discovered_via": "unknown"
+          },
+          {
+            "name": "Girls' Shoes",
+            "url": "https://www.macys.com/shop/kids-clothes/kids-shoes/girls-shoes?id=209698",
+            "has_dropdown": false,
+            "discovered_via": "unknown"
+          },
+          {
+            "name": "Men's Accessories",
+            "url": "https://www.macys.com/shop/mens-clothing/mens-accessories/Special_offers/Sales%20%26%20Discounts?id=47665",
+            "has_dropdown": false,
+            "discovered_via": "unknown"
+          },
+          {
+            "name": "Men's Shoes",
+            "url": "https://www.macys.com/shop/sale/mens-sale/mens-shoe-sale?id=43387",
+            "has_dropdown": false,
+            "discovered_via": "unknown"
+          },
+          {
+            "name": "Kids' Shoes",
+            "url": "https://www.macys.com/shop/kids-clothes/kids-shoes/Special_offers/Sales%20%26%20Discounts?id=48561",
+            "has_dropdown": false,
+            "discovered_via": "unknown"
+          },
+          {
+            "name": "Baby Boy Clothing (0-24M)",
+            "url": "https://www.macys.com/shop/baby-products/baby-boy-clothes?id=48693",
+            "has_dropdown": false,
+            "discovered_via": "unknown"
+          },
+          {
+            "name": "Baby Girl Clothing (0-24M)",
+            "url": "https://www.macys.com/shop/baby-products/baby-girls-clothes?id=48692",
+            "has_dropdown": false,
+            "discovered_via": "unknown"
+          },
+          {
+            "name": "Kids' Clothing",
+            "url": "https://www.macys.com/shop/kids-clothes/all-kids-clothing?id=188671",
+            "has_dropdown": false,
+            "discovered_via": "unknown"
+          },
+          {
+            "name": "Kids' Clothing",
+            "url": "https://www.macys.com/shop/sale/sales-for-kids/kids-clothing-sale?id=341211",
+            "has_dropdown": false,
+            "discovered_via": "unknown"
+          },
+          {
+            "name": "Kids' Shoes",
+            "url": "https://www.macys.com/shop/sale/sales-for-kids/kids-shoes-sale?id=340640",
+            "has_dropdown": false,
+            "discovered_via": "unknown"
+          },
+          {
+            "name": "Women’s Shoes",
+            "url": "https://www.macys.com/shop/womens-clothing/all-womens-shoes?id=56233",
+            "has_dropdown": false,
+            "discovered_via": "unknown"
+          },
+          {
+            "name": "Men's Shoes",
+            "url": "https://www.macys.com/shop/mens-clothing/shop-all-mens-shoes?id=55822",
+            "has_dropdown": false,
+            "discovered_via": "unknown"
+          },
+          {
+            "name": "Women's Shoes",
+            "url": "https://www.macys.com/shop/sale/limited-time-specials/limited-time-specials-women/womens-shoes-limited-time-specials?id=139259",
+            "has_dropdown": false,
+            "discovered_via": "unknown"
+          },
+          {
+            "name": "Women's Accessories",
+            "url": "https://www.macys.com/shop/sale/limited-time-specials/limited-time-specials-women/womens-accessories-limited-time-specials?id=340475",
+            "has_dropdown": false,
+            "discovered_via": "unknown"
+          },
+          {
+            "name": "Girls' Accessories",
+            "url": "https://www.macys.com/shop/kids-clothes/toddler-kids-accessories/girls-accessories?id=340809",
+            "has_dropdown": false,
+            "discovered_via": "unknown"
+          },
+          {
+            "name": "Kids' Cold Weather Accessories",
+            "url": "https://www.macys.com/shop/kids-clothes/toddler-kids-accessories/kids-cold-weather-accessories?id=265560",
+            "has_dropdown": false,
+            "discovered_via": "unknown"
+          },
+          {
+            "name": "Women's Finish Line Shoes",
+            "url": "https://www.macys.com/shop/brands/finish-line/womens-shoes?id=63268",
+            "has_dropdown": false,
+            "discovered_via": "unknown"
+          },
+          {
+            "name": "Men's Finish Line Shoes",
+            "url": "https://www.macys.com/shop/brands/finish-line/mens-shoes?id=63266",
+            "has_dropdown": false,
+            "discovered_via": "unknown"
+          }
+        ],
+        "2": [],
+        "3": [],
+        "4": []
+      },
+      "paths": [
+        {
+          "path": "Home → Women",
+          "depth": 1,
+          "complete": true
+        },
+        {
+          "path": "Home → Men",
+          "depth": 1,
+          "complete": true
+        },
+        {
+          "path": "Home → Beauty",
+          "depth": 1,
+          "complete": true
+        },
+        {
+          "path": "Home → Shoes",
+          "depth": 1,
+          "complete": true
+        },
+        {
+          "path": "Home → Home",
+          "depth": 1,
+          "complete": true
+        },
+        {
+          "path": "Home → Jewelry",
+          "depth": 1,
+          "complete": true
+        },
+        {
+          "path": "Home → Furniture & Mattresses",
+          "depth": 1,
+          "complete": true
+        },
+        {
+          "path": "Home → Kids & Baby",
+          "depth": 1,
+          "complete": true
+        },
+        {
+          "path": "Home → All Women's Clothing",
+          "depth": 1,
+          "complete": true
+        }
+      ],
+      "strategy_contributions": {
+        "unknown": {
+          "levels": {
+            "1": [
+              "Women's Finish Line Shoes",
+              "Baby Shoes",
+              "Boys' Shoes",
+              "Girls' Shoes",
+              "Men's Accessories",
+              "Men's Shoes",
+              "Kids' Shoes",
+              "Baby Boy Clothing (0-24M)",
+              "Baby Girl Clothing (0-24M)",
+              "Kids' Clothing",
+              "Kids' Clothing",
+              "Kids' Shoes",
+              "Women’s Shoes",
+              "Men's Shoes",
+              "Women's Shoes",
+              "Women's Accessories",
+              "Girls' Accessories",
+              "Kids' Cold Weather Accessories",
+              "Women's Finish Line Shoes",
+              "Men's Finish Line Shoes"
+            ]
+          }
+        }
+      }
+    },
+    "tree": {
+      "name": "Homepage",
+      "children": [
+        {
+          "name": "Women's Finish Line Shoes",
+          "url": "https://www.macys.com/shop/brands/finish-line/finish-line-womens-shoes?id=63268",
+          "has_dropdown": false,
+          "children": []
+        },
+        {
+          "name": "Baby Shoes",
+          "url": "https://www.macys.com/shop/kids-clothes/baby-products/baby-shoes?id=73512",
+          "has_dropdown": false,
+          "children": []
+        },
+        {
+          "name": "Boys' Shoes",
+          "url": "https://www.macys.com/shop/kids-clothes/kids-shoes/boys-shoes?id=209702",
+          "has_dropdown": false,
+          "children": []
+        },
+        {
+          "name": "Girls' Shoes",
+          "url": "https://www.macys.com/shop/kids-clothes/kids-shoes/girls-shoes?id=209698",
+          "has_dropdown": false,
+          "children": []
+        },
+        {
+          "name": "Men's Accessories",
+          "url": "https://www.macys.com/shop/mens-clothing/mens-accessories/Special_offers/Sales%20%26%20Discounts?id=47665",
+          "has_dropdown": false,
+          "children": []
+        },
+        {
+          "name": "Men's Shoes",
+          "url": "https://www.macys.com/shop/sale/mens-sale/mens-shoe-sale?id=43387",
+          "has_dropdown": false,
+          "children": []
+        },
+        {
+          "name": "Kids' Shoes",
+          "url": "https://www.macys.com/shop/kids-clothes/kids-shoes/Special_offers/Sales%20%26%20Discounts?id=48561",
+          "has_dropdown": false,
+          "children": []
+        },
+        {
+          "name": "Baby Boy Clothing (0-24M)",
+          "url": "https://www.macys.com/shop/baby-products/baby-boy-clothes?id=48693",
+          "has_dropdown": false,
+          "children": []
+        },
+        {
+          "name": "Baby Girl Clothing (0-24M)",
+          "url": "https://www.macys.com/shop/baby-products/baby-girls-clothes?id=48692",
+          "has_dropdown": false,
+          "children": []
+        },
+        {
+          "name": "Kids' Clothing",
+          "url": "https://www.macys.com/shop/kids-clothes/all-kids-clothing?id=188671",
+          "has_dropdown": false,
+          "children": []
+        },
+        {
+          "name": "Kids' Clothing",
+          "url": "https://www.macys.com/shop/sale/sales-for-kids/kids-clothing-sale?id=341211",
+          "has_dropdown": false,
+          "children": []
+        },
+        {
+          "name": "Kids' Shoes",
+          "url": "https://www.macys.com/shop/sale/sales-for-kids/kids-shoes-sale?id=340640",
+          "has_dropdown": false,
+          "children": []
+        },
+        {
+          "name": "Women’s Shoes",
+          "url": "https://www.macys.com/shop/womens-clothing/all-womens-shoes?id=56233",
+          "has_dropdown": false,
+          "children": []
+        },
+        {
+          "name": "Men's Shoes",
+          "url": "https://www.macys.com/shop/mens-clothing/shop-all-mens-shoes?id=55822",
+          "has_dropdown": false,
+          "children": []
+        },
+        {
+          "name": "Women's Shoes",
+          "url": "https://www.macys.com/shop/sale/limited-time-specials/limited-time-specials-women/womens-shoes-limited-time-specials?id=139259",
+          "has_dropdown": false,
+          "children": []
+        },
+        {
+          "name": "Women's Accessories",
+          "url": "https://www.macys.com/shop/sale/limited-time-specials/limited-time-specials-women/womens-accessories-limited-time-specials?id=340475",
+          "has_dropdown": false,
+          "children": []
+        },
+        {
+          "name": "Girls' Accessories",
+          "url": "https://www.macys.com/shop/kids-clothes/toddler-kids-accessories/girls-accessories?id=340809",
+          "has_dropdown": false,
+          "children": []
+        },
+        {
+          "name": "Kids' Cold Weather Accessories",
+          "url": "https://www.macys.com/shop/kids-clothes/toddler-kids-accessories/kids-cold-weather-accessories?id=265560",
+          "has_dropdown": false,
+          "children": []
+        },
+        {
+          "name": "Women's Finish Line Shoes",
+          "url": "https://www.macys.com/shop/brands/finish-line/womens-shoes?id=63268",
+          "has_dropdown": false,
+          "children": []
+        },
+        {
+          "name": "Men's Finish Line Shoes",
+          "url": "https://www.macys.com/shop/brands/finish-line/mens-shoes?id=63266",
+          "has_dropdown": false,
+          "children": []
+        }
+      ]
+    },
+    "metrics": {
+      "total_items": 1845,
+      "max_depth": 1,
+      "levels_discovered": {
+        "1": 20
+      },
+      "paths": {
+        "total": 9,
+        "complete": 9,
+        "incomplete": 0
+      },
+      "coverage_estimate": 30
+    },
+    "raw_discovery": {
+      "main_sections": [
+        {
+          "name": "Women's Finish Line Shoes",
+          "url": "https://www.macys.com/shop/brands/finish-line/finish-line-womens-shoes?id=63268",
+          "selector": "nav a",
+          "has_dropdown": false,
+          "element_type": "a",
+          "discovered_by": "ComprehensiveLinkStrategy",
+          "confidence": 0.9
+        },
+        {
+          "name": "Baby Shoes",
+          "url": "https://www.macys.com/shop/kids-clothes/baby-products/baby-shoes?id=73512",
+          "selector": "nav a",
+          "has_dropdown": false,
+          "element_type": "a",
+          "discovered_by": "ComprehensiveLinkStrategy",
+          "confidence": 0.9
+        },
+        {
+          "name": "Boys' Shoes",
+          "url": "https://www.macys.com/shop/kids-clothes/kids-shoes/boys-shoes?id=209702",
+          "selector": "nav a",
+          "has_dropdown": false,
+          "element_type": "a",
+          "discovered_by": "ComprehensiveLinkStrategy",
+          "confidence": 0.9
+        },
+        {
+          "name": "Girls' Shoes",
+          "url": "https://www.macys.com/shop/kids-clothes/kids-shoes/girls-shoes?id=209698",
+          "selector": "nav a",
+          "has_dropdown": false,
+          "element_type": "a",
+          "discovered_by": "ComprehensiveLinkStrategy",
+          "confidence": 0.9
+        },
+        {
+          "name": "Men's Accessories",
+          "url": "https://www.macys.com/shop/mens-clothing/mens-accessories/Special_offers/Sales%20%26%20Discounts?id=47665",
+          "selector": "nav a",
+          "has_dropdown": false,
+          "element_type": "a",
+          "discovered_by": "ComprehensiveLinkStrategy",
+          "confidence": 0.9
+        },
+        {
+          "name": "Men's Shoes",
+          "url": "https://www.macys.com/shop/sale/mens-sale/mens-shoe-sale?id=43387",
+          "selector": "nav a",
+          "has_dropdown": false,
+          "element_type": "a",
+          "discovered_by": "ComprehensiveLinkStrategy",
+          "confidence": 0.9
+        },
+        {
+          "name": "Kids' Shoes",
+          "url": "https://www.macys.com/shop/kids-clothes/kids-shoes/Special_offers/Sales%20%26%20Discounts?id=48561",
+          "selector": "nav a",
+          "has_dropdown": false,
+          "element_type": "a",
+          "discovered_by": "ComprehensiveLinkStrategy",
+          "confidence": 0.9
+        },
+        {
+          "name": "Baby Boy Clothing (0-24M)",
+          "url": "https://www.macys.com/shop/baby-products/baby-boy-clothes?id=48693",
+          "selector": "nav a",
+          "has_dropdown": false,
+          "element_type": "a",
+          "discovered_by": "ComprehensiveLinkStrategy",
+          "confidence": 0.9
+        },
+        {
+          "name": "Baby Girl Clothing (0-24M)",
+          "url": "https://www.macys.com/shop/baby-products/baby-girls-clothes?id=48692",
+          "selector": "nav a",
+          "has_dropdown": false,
+          "element_type": "a",
+          "discovered_by": "ComprehensiveLinkStrategy",
+          "confidence": 0.9
+        },
+        {
+          "name": "Kids' Clothing",
+          "url": "https://www.macys.com/shop/kids-clothes/all-kids-clothing?id=188671",
+          "selector": "nav a",
+          "has_dropdown": false,
+          "element_type": "a",
+          "discovered_by": "ComprehensiveLinkStrategy",
+          "confidence": 0.9
+        },
+        {
+          "name": "Kids' Clothing",
+          "url": "https://www.macys.com/shop/sale/sales-for-kids/kids-clothing-sale?id=341211",
+          "selector": "nav a",
+          "has_dropdown": false,
+          "element_type": "a",
+          "discovered_by": "ComprehensiveLinkStrategy",
+          "confidence": 0.9
+        },
+        {
+          "name": "Kids' Shoes",
+          "url": "https://www.macys.com/shop/sale/sales-for-kids/kids-shoes-sale?id=340640",
+          "selector": "nav a",
+          "has_dropdown": false,
+          "element_type": "a",
+          "discovered_by": "ComprehensiveLinkStrategy",
+          "confidence": 0.9
+        },
+        {
+          "name": "Women’s Shoes",
+          "url": "https://www.macys.com/shop/womens-clothing/all-womens-shoes?id=56233",
+          "selector": "nav a",
+          "has_dropdown": false,
+          "element_type": "a",
+          "discovered_by": "ComprehensiveLinkStrategy",
+          "confidence": 0.9
+        },
+        {
+          "name": "Men's Shoes",
+          "url": "https://www.macys.com/shop/mens-clothing/shop-all-mens-shoes?id=55822",
+          "selector": "nav a",
+          "has_dropdown": false,
+          "element_type": "a",
+          "discovered_by": "ComprehensiveLinkStrategy",
+          "confidence": 0.9
+        },
+        {
+          "name": "Women's Shoes",
+          "url": "https://www.macys.com/shop/sale/limited-time-specials/limited-time-specials-women/womens-shoes-limited-time-specials?id=139259",
+          "selector": "nav a",
+          "has_dropdown": false,
+          "element_type": "a",
+          "discovered_by": "ComprehensiveLinkStrategy",
+          "confidence": 0.9
+        },
+        {
+          "name": "Women's Accessories",
+          "url": "https://www.macys.com/shop/sale/limited-time-specials/limited-time-specials-women/womens-accessories-limited-time-specials?id=340475",
+          "selector": "nav a",
+          "has_dropdown": false,
+          "element_type": "a",
+          "discovered_by": "ComprehensiveLinkStrategy",
+          "confidence": 0.9
+        },
+        {
+          "name": "Girls' Accessories",
+          "url": "https://www.macys.com/shop/kids-clothes/toddler-kids-accessories/girls-accessories?id=340809",
+          "selector": "nav a",
+          "has_dropdown": false,
+          "element_type": "a",
+          "discovered_by": "ComprehensiveLinkStrategy",
+          "confidence": 0.9
+        },
+        {
+          "name": "Kids' Cold Weather Accessories",
+          "url": "https://www.macys.com/shop/kids-clothes/toddler-kids-accessories/kids-cold-weather-accessories?id=265560",
+          "selector": "nav a",
+          "has_dropdown": false,
+          "element_type": "a",
+          "discovered_by": "ComprehensiveLinkStrategy",
+          "confidence": 0.9
+        },
+        {
+          "name": "Women's Finish Line Shoes",
+          "url": "https://www.macys.com/shop/brands/finish-line/womens-shoes?id=63268",
+          "selector": "nav a",
+          "has_dropdown": false,
+          "element_type": "a",
+          "discovered_by": "ComprehensiveLinkStrategy",
+          "confidence": 0.9
+        },
+        {
+          "name": "Men's Finish Line Shoes",
+          "url": "https://www.macys.com/shop/brands/finish-line/mens-shoes?id=63266",
+          "selector": "nav a",
+          "has_dropdown": false,
+          "element_type": "a",
+          "discovered_by": "ComprehensiveLinkStrategy",
+          "confidence": 0.9
+        }
+      ],
+      "dropdown_menus": {},
+      "navigation_selectors": {
+        "general": [
+          "nav a",
+          "[class*=\"nav\"] a",
+          "a[href*=\"/shop/\"]",
+          "[aria-label=\"Open Shop All Menu\"]",
+          "#mobile-nav",
+          ".category-button",
+          ".category-link",
+          ".menu-link-body",
+          ".button",
+          "a",
+          "[aria-label=\"Open Women menu\"]",
+          "[aria-label=\"Open Men menu\"]",
+          "[aria-label=\"Open Beauty menu\"]",
+          "[aria-label=\"Open Shoes menu\"]",
+          "[aria-label=\"Open Home menu\"]",
+          "[aria-label=\"Open Jewelry menu\"]",
+          "[aria-label=\"Open Handbags menu\"]",
+          "[aria-label=\"Open Furniture & Mattresses menu\"]",
+          "[aria-label=\"Open Kids & Baby menu\"]",
+          "[aria-label=\"Open Toys menu\"]",
+          "[aria-label=\"Open Back To School menu\"]",
+          "[aria-label=\"Open Gifts menu\"]",
+          "[aria-label=\"Open New & Trending menu\"]",
+          "[aria-label=\"Open Sale menu\"]",
+          "#fob-Women",
+          "#fob-Men",
+          "#fob-Beauty",
+          "#fob-Shoes",
+          "#fob-Home",
+          "#fob-Jewelry",
+          "#fob-Handbags",
+          "#fob-Furniture & Mattresses",
+          "#fob-Kids & Baby",
+          "#fob-Back To School",
+          "#fob-Gifts",
+          "#fob-New & Trending",
+          "#fob-Sale",
+          ".menu-link",
+          ".secondary",
+          ".credit-card-link",
+          ".social-pinterest-white",
+          ".social-youtube-white",
+          ".menu-link-sm",
+          "#Women",
+          "#0_0_0_10",
+          "#0_0_0_13",
+          "#0_1_1_0",
+          "#0_1_1_1",
+          "#0_1_1_2",
+          "#0_1_1_3",
+          "#0_1_1_4",
+          "#0_1_1_5",
+          "#0_1_1_6",
+          "#0_1_2_0",
+          "#0_1_2_1",
+          "#0_1_2_2",
+          "#0_1_2_3",
+          "#0_2_0_1",
+          "#0_2_0_8",
+          "#0_2_0_10",
+          "#0_3_0_6",
+          "#0_3_0_7",
+          "#0_3_1_0",
+          "#0_3_2_0",
+          "#0_3_2_1",
+          "#0_4_0_1",
+          "#0_4_0_3",
+          "#0_4_0_4",
+          "#0_4_0_5",
+          "#0_4_0_6",
+          "#0_4_0_7",
+          "#0_4_0_8",
+          "#Men",
+          "#1_0_0_5",
+          "#1_0_0_9",
+          "#1_0_0_12",
+          "#1_1_0_9",
+          "#1_1_1_0",
+          "#1_1_1_4",
+          "#1_2_0_5",
+          "#1_2_0_10",
+          "#1_2_1_0",
+          "#1_2_1_3",
+          ".menu-link-heavy",
+          "#1_3_4_0",
+          "#1_3_4_1",
+          "#1_4_0_1",
+          "#1_4_0_3",
+          "#1_4_0_4",
+          "#1_4_0_5",
+          "#Beauty",
+          "#2_0_0_3",
+          "#2_0_0_4",
+          "#2_0_0_5",
+          "#2_0_0_6",
+          "#2_1_0_8",
+          "#2_1_1_5",
+          "#2_3_0_3",
+          "#Shoes",
+          "#3_0_0_3",
+          "#3_0_0_11",
+          "#3_0_0_14",
+          "#3_1_0_4",
+          "#3_1_0_8",
+          "#3_1_0_9",
+          "#3_1_0_11",
+          "#3_1_1_1",
+          "#3_2_1_2",
+          "#3_2_1_3",
+          "#3_2_1_4",
+          "#3_3_1_0",
+          "#3_3_1_1",
+          "#Home",
+          "#4_0_1_5",
+          "#4_1_0_4",
+          "#4_2_1_0",
+          "#4_2_1_1",
+          "#4_2_2_1",
+          "#4_3_0_5",
+          "#4_3_0_6",
+          "#4_3_0_7",
+          "#4_3_1_1",
+          "#4_3_1_2",
+          "#4_3_1_3",
+          "#4_3_1_6",
+          "#4_3_2_1",
+          "#4_4_0_2",
+          "#4_4_0_3",
+          "#4_4_1_1",
+          "#4_4_1_3",
+          "#4_4_1_4",
+          "#Jewelry",
+          "#5_0_0_6",
+          "#5_0_0_9",
+          "#5_0_1_2",
+          "#5_1_0_1",
+          "#5_1_0_2",
+          "#5_1_0_3",
+          "#5_1_0_4",
+          "#5_1_0_5",
+          "#5_1_1_1",
+          "#5_1_1_2",
+          "#5_1_1_6",
+          "#5_1_1_7",
+          "#5_2_0_0",
+          "#5_2_0_1",
+          "#5_2_0_2",
+          "#5_2_0_3",
+          "#5_2_0_4",
+          "#5_2_0_5",
+          "#5_2_0_6",
+          "#5_2_0_7",
+          "#5_2_0_8",
+          "#5_2_0_9",
+          "#5_2_0_10",
+          "#5_2_0_11",
+          "#5_2_0_12",
+          "#5_2_0_13",
+          "#5_2_0_14",
+          "#5_2_1_0",
+          "#5_2_1_1",
+          "#5_2_1_2",
+          "#5_3_0_1",
+          "#5_3_0_2",
+          "#5_3_0_3",
+          "#5_3_0_4",
+          "#5_3_0_5",
+          "#5_3_1_1",
+          "#5_3_1_2",
+          "#5_3_1_3",
+          "#5_3_1_5",
+          "#5_3_2_0",
+          "#Handbags",
+          "#6_0_0_0",
+          "#6_0_0_1",
+          "#6_0_0_2",
+          "#6_0_0_3",
+          "#6_0_0_4",
+          "#6_0_0_5",
+          "#6_0_0_6",
+          "#6_0_0_7",
+          "#6_0_0_9",
+          "#6_0_0_10",
+          "#6_0_0_11",
+          "#6_0_1_0",
+          "#6_0_1_1",
+          "#6_0_1_2",
+          "#6_0_1_3",
+          "#6_1_0_3",
+          "#6_2_0_3",
+          "#6_2_0_6",
+          "#6_3_0_0",
+          "#6_3_1_1",
+          "#6_3_1_2",
+          "#6_3_1_3",
+          "#6_3_1_4",
+          "#6_3_1_5",
+          "#6_3_2_0",
+          "#Furniture & Mattresses",
+          "#7_1_1_6",
+          "#7_2_0_5",
+          "#7_3_2_0",
+          "#7_3_2_1",
+          "#7_4_0_0",
+          "#7_4_0_1",
+          "#7_4_0_2",
+          "#7_4_0_3",
+          "#7_4_0_4",
+          "#7_4_0_5",
+          "#7_4_0_6",
+          "#Kids & Baby",
+          "#8_2_0_3",
+          "#8_2_1_1",
+          "#8_2_1_2",
+          "#8_2_1_3",
+          "#8_2_2_1",
+          "#8_2_2_2",
+          "#8_2_2_3",
+          "#8_3_1_1",
+          "#8_3_2_2",
+          "#8_3_2_3",
+          "#8_3_2_4",
+          "#8_3_2_5",
+          "#8_3_2_6",
+          "#8_3_3_0",
+          "#8_3_3_1",
+          "#8_4_0_0",
+          "#8_4_0_1",
+          "#8_4_0_2",
+          "#8_4_0_3",
+          "#8_4_0_4",
+          "#8_4_0_5",
+          "#8_4_0_6",
+          "#8_4_0_7",
+          "#8_4_0_8",
+          "#8_4_0_9",
+          "#8_4_0_10",
+          "#Toys",
+          "#9_0_0_1",
+          "#9_0_0_2",
+          "#9_0_0_3",
+          "#9_0_0_5",
+          "#9_0_0_6",
+          "#9_0_0_7",
+          "#9_0_1_0",
+          "#9_0_1_1",
+          "#9_0_1_2",
+          "#9_0_1_3",
+          "#9_0_1_4",
+          "#9_0_1_5",
+          "#9_0_1_6",
+          "#9_0_1_7",
+          "#9_0_1_8",
+          "#9_1_1_0",
+          "#9_1_1_1",
+          "#9_2_0_0",
+          "#9_2_0_1",
+          "#9_2_0_2",
+          "#9_2_0_3",
+          "#9_2_0_4",
+          "#9_2_0_5",
+          "#9_2_0_6",
+          "#9_2_0_7",
+          "#9_2_0_8",
+          "#9_2_0_9",
+          "#9_2_0_10",
+          "#9_2_0_11",
+          "#9_2_0_12",
+          "#9_2_0_13",
+          "#9_2_0_14",
+          "#9_2_0_15",
+          "#Back To School",
+          "#10_0_0_0",
+          "#10_0_0_1",
+          "#10_0_0_2",
+          "#10_0_0_3",
+          "#10_0_0_4",
+          "#10_0_0_5",
+          "#10_0_0_6",
+          "#10_0_0_7",
+          "#10_0_0_9",
+          "#10_0_0_10",
+          "#10_0_0_11",
+          "#10_1_0_0",
+          "#10_1_0_1",
+          "#10_1_0_2",
+          "#10_1_0_3",
+          "#10_1_0_4",
+          "#10_1_0_5",
+          "#10_1_0_6",
+          "#10_1_0_8",
+          "#10_1_0_9",
+          "#10_1_0_10",
+          "#10_2_0_1",
+          "#10_2_0_2",
+          "#10_2_0_3",
+          "#10_2_0_4",
+          "#10_2_0_5",
+          "#10_2_0_6",
+          "#10_2_0_7",
+          "#10_2_1_0",
+          "#10_2_1_1",
+          "#10_2_1_2",
+          "#10_2_1_3",
+          "#10_2_1_4",
+          "#10_2_1_5",
+          "#10_2_1_6",
+          "#10_2_1_7",
+          "#10_3_0_1",
+          "#10_3_0_2",
+          "#10_3_0_3",
+          "#10_3_0_4",
+          "#10_3_0_5",
+          "#10_3_0_6",
+          "#10_3_0_7",
+          "#10_3_1_0",
+          "#10_3_1_1",
+          "#10_3_1_2",
+          "#10_3_2_0",
+          "#10_3_2_1",
+          "#10_3_2_2",
+          "#10_3_2_3",
+          "#10_4_0_0",
+          "#10_4_0_1",
+          "#10_4_0_3",
+          "#10_4_0_4",
+          "#10_4_0_5",
+          "#Gifts",
+          "#11_1_0_4",
+          "#11_1_1_1",
+          "#11_1_1_2",
+          "#11_1_1_3",
+          "#11_1_1_4",
+          "#11_1_1_5",
+          "#11_1_2_4",
+          "#11_2_1_0",
+          "#11_2_1_1",
+          "#11_2_2_1",
+          "#11_3_0_0",
+          "#11_3_0_1",
+          "#11_3_0_2",
+          "#11_3_0_3",
+          "#11_3_0_5",
+          "#11_3_0_7",
+          "#11_3_0_9",
+          "#11_3_0_11",
+          "#11_3_0_14",
+          "#11_3_0_16",
+          "#11_3_0_17",
+          "#11_3_0_18",
+          "#New & Trending",
+          "#12_1_0_7",
+          "#12_1_1_2",
+          "#12_1_1_3",
+          "#12_1_1_5",
+          "#12_1_1_6",
+          "#12_2_0_2",
+          "#12_2_0_3",
+          "#12_2_0_6",
+          "#12_2_1_1",
+          "#12_2_1_3",
+          "#12_2_3_1",
+          "#12_3_1_0",
+          "#12_3_1_2",
+          "#12_3_1_3",
+          "#12_3_1_5",
+          "#12_3_1_6",
+          "#12_3_1_7",
+          "#12_3_2_0",
+          "#12_3_2_1",
+          "#Sale",
+          "#13_0_0_1",
+          "#13_0_0_2",
+          "#13_0_0_3",
+          "#13_0_0_4",
+          "#13_0_0_5",
+          "#13_0_0_6",
+          "#13_0_0_8",
+          "#13_0_0_9",
+          "#13_0_1_2",
+          "#13_1_0_1",
+          "#13_1_0_5",
+          "#13_1_0_6",
+          "#13_1_0_7",
+          "#13_1_0_8",
+          "#13_1_0_9",
+          "#13_1_1_1",
+          "#13_1_1_2",
+          "#13_2_0_1",
+          "#13_2_0_3",
+          "#13_2_0_4",
+          "#13_2_0_5",
+          "#13_2_1_1",
+          "#13_2_2_0",
+          "#13_2_2_1",
+          "#13_3_0_6"
+        ]
+      },
+      "clickable_elements": [
+        {
+          "text": "Kitchen Islands & Carts",
+          "url": "https://www.macys.com/shop/furniture/dining-room-furniture/kitchen-islands-carts?id=185646",
+          "selector": "a",
+          "type": "a",
+          "page_purpose": "navigation",
+          "discovered_by": "AriaNavigationStrategy"
+        },
+        {
+          "text": "FAQs and Help",
+          "url": "https://www.macys.com/customer-service/",
+          "selector": ".menu-link",
+          "type": "a",
+          "page_purpose": "navigation",
+          "discovered_by": "HiddenElementStrategy"
+        },
+        {
+          "text": "Visit us on Pinterest - External Website. Opens in a new Window.",
+          "url": "https://www.pinterest.com/macys/",
+          "selector": ".social-pinterest-white",
+          "type": "a",
+          "page_purpose": "navigation",
+          "discovered_by": "HiddenElementStrategy"
+        },
+        {
+          "text": "Visit us on Youtube - External Website. Opens in a new Window.",
+          "url": "https://www.youtube.com/user/macys",
+          "selector": ".social-youtube-white",
+          "type": "a",
+          "page_purpose": "navigation",
+          "discovered_by": "HiddenElementStrategy"
+        },
+        {
+          "text": "Cookie Preferences",
+          "url": "https://www.macys.com/#",
+          "selector": ".menu-link-sm",
+          "type": "a",
+          "page_purpose": "navigation",
+          "discovered_by": "HiddenElementStrategy"
+        },
+        {
+          "text": "Legal Notice",
+          "url": "https://www.macys.com/customer-service/articles/legal-notice",
+          "selector": ".menu-link-sm",
+          "type": "a",
+          "page_purpose": "navigation",
+          "discovered_by": "HiddenElementStrategy"
+        },
+        {
+          "text": "Carter's",
+          "url": "https://www.macys.com/shop/brands/carters?id=16342",
+          "selector": "#8_3_2_2",
+          "type": "a",
+          "page_purpose": "navigation",
+          "discovered_by": "HiddenElementStrategy"
+        }
+      ],
+      "site_structure": {},
+      "breadcrumb_patterns": [],
+      "sidebar_navigation": [],
+      "_pipeline_metadata": {
+        "strategies_used": [
+          "ComprehensiveLinkStrategy",
+          "AriaNavigationStrategy",
+          "VisibleNavigationStrategy",
+          "HiddenElementStrategy"
+        ],
+        "total_discovered": 1845,
+        "confidence": 0.6714285714285714,
+        "metrics": {
+          "ComprehensiveLinkStrategy": {
+            "duration": 142,
+            "itemsFound": 1838,
+            "confidence": 0.9,
+            "success": true
+          },
+          "AriaNavigationStrategy": {
+            "duration": 43,
+            "itemsFound": 1372,
+            "confidence": 0.95,
+            "success": true
+          },
+          "DataAttributeStrategy": {
+            "duration": 12,
+            "itemsFound": 0,
+            "confidence": 0.6,
+            "success": true
+          },
+          "VisibleNavigationStrategy": {
+            "duration": 20,
+            "itemsFound": 74,
+            "confidence": 1,
+            "success": true
+          },
+          "HiddenElementStrategy": {
+            "duration": 65,
+            "itemsFound": 1756,
+            "confidence": 0.8,
+            "success": true
+          },
+          "InteractionNavigationStrategy": {
+            "duration": 0,
+            "itemsFound": 0,
+            "confidence": 0,
+            "success": false,
+            "error": "Timeout after 5000ms"
+          },
+          "DepartmentExplorationStrategy": {
+            "duration": 0,
+            "itemsFound": 0,
+            "confidence": 0,
+            "success": false,
+            "error": "Timeout after 5000ms"
+          }
+        }
+      },
+      "hierarchical_tree": {
+        "url": "https://www.macys.com",
+        "name": "Root",
+        "type": "root",
+        "depth": 0,
+        "children": [
+          {
+            "name": "Women",
+            "url": "https://www.macys.com/shop/womens?id=118",
+            "type": "main_category",
+            "depth": 1,
+            "selector": "nav a",
+            "has_dropdown": false,
+            "children": [],
+            "metadata": {
+              "discovered_at": "2025-08-14T03:59:24.552Z",
+              "exploration_method": "ComprehensiveLinkStrategy"
+            }
+          },
+          {
+            "name": "Men",
+            "url": "https://www.macys.com/shop/mens?id=1",
+            "type": "main_category",
+            "depth": 1,
+            "selector": "nav a",
+            "has_dropdown": false,
+            "children": [],
+            "metadata": {
+              "discovered_at": "2025-08-14T03:59:26.786Z",
+              "exploration_method": "ComprehensiveLinkStrategy"
+            }
+          },
+          {
+            "name": "Beauty",
+            "url": "https://www.macys.com/shop/makeup-and-perfume/all-beauty-category?id=290756",
+            "type": "main_category",
+            "depth": 1,
+            "selector": "nav a",
+            "has_dropdown": false,
+            "children": [],
+            "metadata": {
+              "discovered_at": "2025-08-14T03:59:28.877Z",
+              "exploration_method": "ComprehensiveLinkStrategy"
+            }
+          },
+          {
+            "name": "Shoes",
+            "url": "https://www.macys.com/shop/womens-shoes?id=13247",
+            "type": "main_category",
+            "depth": 1,
+            "selector": "nav a",
+            "has_dropdown": false,
+            "children": [],
+            "metadata": {
+              "discovered_at": "2025-08-14T03:59:30.961Z",
+              "exploration_method": "ComprehensiveLinkStrategy"
+            }
+          },
+          {
+            "name": "Home",
+            "url": "https://www.macys.com/shop/shop-all-for-the-home?id=173142",
+            "type": "main_category",
+            "depth": 1,
+            "selector": "nav a",
+            "has_dropdown": false,
+            "children": [],
+            "metadata": {
+              "discovered_at": "2025-08-14T03:59:33.046Z",
+              "exploration_method": "ComprehensiveLinkStrategy"
+            }
+          },
+          {
+            "name": "Jewelry",
+            "url": "https://www.macys.com/shop/jewelry-watches?id=544",
+            "type": "main_category",
+            "depth": 1,
+            "selector": "nav a",
+            "has_dropdown": false,
+            "children": [],
+            "metadata": {
+              "discovered_at": "2025-08-14T03:59:35.152Z",
+              "exploration_method": "ComprehensiveLinkStrategy"
+            }
+          },
+          {
+            "name": "Furniture & Mattresses",
+            "url": "https://www.macys.com/shop/furniture?id=29391",
+            "type": "main_category",
+            "depth": 1,
+            "selector": "nav a",
+            "has_dropdown": false,
+            "children": [],
+            "metadata": {
+              "discovered_at": "2025-08-14T03:59:37.225Z",
+              "exploration_method": "ComprehensiveLinkStrategy"
+            }
+          },
+          {
+            "name": "Kids & Baby",
+            "url": "https://www.macys.com/shop/kids-clothes?id=5991",
+            "type": "main_category",
+            "depth": 1,
+            "selector": "nav a",
+            "has_dropdown": false,
+            "children": [],
+            "metadata": {
+              "discovered_at": "2025-08-14T03:59:39.332Z",
+              "exploration_method": "ComprehensiveLinkStrategy"
+            }
+          },
+          {
+            "name": "All Women's Clothing",
+            "url": "https://www.macys.com/shop/womens/clothing?id=188851",
+            "type": "main_category",
+            "depth": 1,
+            "selector": "nav a",
+            "has_dropdown": false,
+            "children": [],
+            "metadata": {
+              "discovered_at": "2025-08-14T03:59:41.414Z",
+              "exploration_method": "ComprehensiveLinkStrategy"
+            }
+          }
+        ],
+        "metadata": {
+          "discovered_at": "2025-08-14T03:59:24.552Z",
+          "total_items": 9,
+          "max_depth_reached": 1
+        }
+      },
+      "tree_metadata": {
+        "total_nodes": 9,
+        "max_depth": 1,
+        "categories": 9
+      },
+      "total_items": 1845,
+      "categories": {
+        "departments": [
+          {
+            "name": "Women's Finish Line Shoes",
+            "url": "https://www.macys.com/shop/brands/finish-line/finish-line-womens-shoes?id=63268",
+            "selector": "nav a",
+            "has_dropdown": false,
+            "element_type": "a",
+            "discovered_by": "ComprehensiveLinkStrategy",
+            "confidence": 0.9
+          },
+          {
+            "name": "Baby Shoes",
+            "url": "https://www.macys.com/shop/kids-clothes/baby-products/baby-shoes?id=73512",
+            "selector": "nav a",
+            "has_dropdown": false,
+            "element_type": "a",
+            "discovered_by": "ComprehensiveLinkStrategy",
+            "confidence": 0.9
+          },
+          {
+            "name": "Boys' Shoes",
+            "url": "https://www.macys.com/shop/kids-clothes/kids-shoes/boys-shoes?id=209702",
+            "selector": "nav a",
+            "has_dropdown": false,
+            "element_type": "a",
+            "discovered_by": "ComprehensiveLinkStrategy",
+            "confidence": 0.9
+          },
+          {
+            "name": "Girls' Shoes",
+            "url": "https://www.macys.com/shop/kids-clothes/kids-shoes/girls-shoes?id=209698",
+            "selector": "nav a",
+            "has_dropdown": false,
+            "element_type": "a",
+            "discovered_by": "ComprehensiveLinkStrategy",
+            "confidence": 0.9
+          },
+          {
+            "name": "Men's Accessories",
+            "url": "https://www.macys.com/shop/mens-clothing/mens-accessories/Special_offers/Sales%20%26%20Discounts?id=47665",
+            "selector": "nav a",
+            "has_dropdown": false,
+            "element_type": "a",
+            "discovered_by": "ComprehensiveLinkStrategy",
+            "confidence": 0.9
+          },
+          {
+            "name": "Men's Shoes",
+            "url": "https://www.macys.com/shop/sale/mens-sale/mens-shoe-sale?id=43387",
+            "selector": "nav a",
+            "has_dropdown": false,
+            "element_type": "a",
+            "discovered_by": "ComprehensiveLinkStrategy",
+            "confidence": 0.9
+          },
+          {
+            "name": "Kids' Shoes",
+            "url": "https://www.macys.com/shop/kids-clothes/kids-shoes/Special_offers/Sales%20%26%20Discounts?id=48561",
+            "selector": "nav a",
+            "has_dropdown": false,
+            "element_type": "a",
+            "discovered_by": "ComprehensiveLinkStrategy",
+            "confidence": 0.9
+          },
+          {
+            "name": "Baby Boy Clothing (0-24M)",
+            "url": "https://www.macys.com/shop/baby-products/baby-boy-clothes?id=48693",
+            "selector": "nav a",
+            "has_dropdown": false,
+            "element_type": "a",
+            "discovered_by": "ComprehensiveLinkStrategy",
+            "confidence": 0.9
+          },
+          {
+            "name": "Baby Girl Clothing (0-24M)",
+            "url": "https://www.macys.com/shop/baby-products/baby-girls-clothes?id=48692",
+            "selector": "nav a",
+            "has_dropdown": false,
+            "element_type": "a",
+            "discovered_by": "ComprehensiveLinkStrategy",
+            "confidence": 0.9
+          },
+          {
+            "name": "Kids' Clothing",
+            "url": "https://www.macys.com/shop/kids-clothes/all-kids-clothing?id=188671",
+            "selector": "nav a",
+            "has_dropdown": false,
+            "element_type": "a",
+            "discovered_by": "ComprehensiveLinkStrategy",
+            "confidence": 0.9
+          },
+          {
+            "name": "Kids' Clothing",
+            "url": "https://www.macys.com/shop/sale/sales-for-kids/kids-clothing-sale?id=341211",
+            "selector": "nav a",
+            "has_dropdown": false,
+            "element_type": "a",
+            "discovered_by": "ComprehensiveLinkStrategy",
+            "confidence": 0.9
+          },
+          {
+            "name": "Kids' Shoes",
+            "url": "https://www.macys.com/shop/sale/sales-for-kids/kids-shoes-sale?id=340640",
+            "selector": "nav a",
+            "has_dropdown": false,
+            "element_type": "a",
+            "discovered_by": "ComprehensiveLinkStrategy",
+            "confidence": 0.9
+          },
+          {
+            "name": "Women’s Shoes",
+            "url": "https://www.macys.com/shop/womens-clothing/all-womens-shoes?id=56233",
+            "selector": "nav a",
+            "has_dropdown": false,
+            "element_type": "a",
+            "discovered_by": "ComprehensiveLinkStrategy",
+            "confidence": 0.9
+          },
+          {
+            "name": "Men's Shoes",
+            "url": "https://www.macys.com/shop/mens-clothing/shop-all-mens-shoes?id=55822",
+            "selector": "nav a",
+            "has_dropdown": false,
+            "element_type": "a",
+            "discovered_by": "ComprehensiveLinkStrategy",
+            "confidence": 0.9
+          },
+          {
+            "name": "Women's Shoes",
+            "url": "https://www.macys.com/shop/sale/limited-time-specials/limited-time-specials-women/womens-shoes-limited-time-specials?id=139259",
+            "selector": "nav a",
+            "has_dropdown": false,
+            "element_type": "a",
+            "discovered_by": "ComprehensiveLinkStrategy",
+            "confidence": 0.9
+          },
+          {
+            "name": "Women's Accessories",
+            "url": "https://www.macys.com/shop/sale/limited-time-specials/limited-time-specials-women/womens-accessories-limited-time-specials?id=340475",
+            "selector": "nav a",
+            "has_dropdown": false,
+            "element_type": "a",
+            "discovered_by": "ComprehensiveLinkStrategy",
+            "confidence": 0.9
+          },
+          {
+            "name": "Girls' Accessories",
+            "url": "https://www.macys.com/shop/kids-clothes/toddler-kids-accessories/girls-accessories?id=340809",
+            "selector": "nav a",
+            "has_dropdown": false,
+            "element_type": "a",
+            "discovered_by": "ComprehensiveLinkStrategy",
+            "confidence": 0.9
+          },
+          {
+            "name": "Kids' Cold Weather Accessories",
+            "url": "https://www.macys.com/shop/kids-clothes/toddler-kids-accessories/kids-cold-weather-accessories?id=265560",
+            "selector": "nav a",
+            "has_dropdown": false,
+            "element_type": "a",
+            "discovered_by": "ComprehensiveLinkStrategy",
+            "confidence": 0.9
+          },
+          {
+            "name": "Women's Finish Line Shoes",
+            "url": "https://www.macys.com/shop/brands/finish-line/womens-shoes?id=63268",
+            "selector": "nav a",
+            "has_dropdown": false,
+            "element_type": "a",
+            "discovered_by": "ComprehensiveLinkStrategy",
+            "confidence": 0.9
+          },
+          {
+            "name": "Men's Finish Line Shoes",
+            "url": "https://www.macys.com/shop/brands/finish-line/mens-shoes?id=63266",
+            "selector": "nav a",
+            "has_dropdown": false,
+            "element_type": "a",
+            "discovered_by": "ComprehensiveLinkStrategy",
+            "confidence": 0.9
+          }
+        ],
+        "categories": [],
+        "brands": [],
+        "utility": [],
+        "other": []
+      },
+      "hierarchy_depth": 1,
+      "hierarchy_nodes": 9
+    }
+  }
+]

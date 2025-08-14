@@ -1078,6 +1078,318 @@ class AdvancedFallbackSystem {
       },
     };
   }
+
+  /**
+   * Persist learning data to WorldModel for cross-session use
+   * @param {string} domain - Domain to store learning for
+   * @param {Object} learningData - Learning data to persist
+   */
+  async persistLearning(domain, learningData = null) {
+    try {
+      if (!this.worldModel) {
+        // Initialize WorldModel if not available
+        const WorldModel = require('./WorldModel');
+        this.worldModel = new WorldModel(this.logger);
+        await this.worldModel.initialize();
+      }
+
+      const patterns = {
+        successful_selectors: Array.from(this.learningData.successfulPatterns.entries()),
+        failed_patterns: Array.from(this.learningData.failedPatterns.entries()),
+        strategy_success_rates: this.performanceMetrics.strategySuccessRates,
+        context_success_rates: Array.from(this.learningData.contextSuccessRates.entries()),
+        
+        // Additional learning metadata
+        total_fallbacks_generated: this.performanceMetrics.totalFallbacksGenerated,
+        successful_fallbacks: this.performanceMetrics.successfulFallbacks,
+        average_generation_time: this.performanceMetrics.averageGenerationTime,
+        
+        // Custom learning data if provided
+        ...(learningData || {}),
+        
+        // Metadata
+        last_updated: new Date().toISOString(),
+        version: '1.0'
+      };
+
+      await this.worldModel.storeLearningPatterns(domain, patterns);
+      
+      this.logger?.info('Learning patterns persisted successfully', {
+        domain,
+        successful_patterns: this.learningData.successfulPatterns.size,
+        failed_patterns: this.learningData.failedPatterns.size,
+        strategy_rates: Object.keys(this.performanceMetrics.strategySuccessRates).length
+      });
+
+    } catch (error) {
+      this.logger?.error('Failed to persist learning patterns', {
+        domain,
+        error: error.message
+      });
+    }
+  }
+
+  /**
+   * Load existing learning patterns from WorldModel
+   * @param {string} domain - Domain to load learning for
+   */
+  async loadExistingLearning(domain) {
+    try {
+      if (!this.worldModel) {
+        const WorldModel = require('./WorldModel');
+        this.worldModel = new WorldModel(this.logger);
+        await this.worldModel.initialize();
+      }
+
+      const patterns = await this.worldModel.getLearningPatterns(domain);
+      
+      if (patterns) {
+        // Restore successful patterns
+        if (patterns.successful_selectors) {
+          this.learningData.successfulPatterns = new Map(patterns.successful_selectors);
+        }
+        
+        // Restore failed patterns
+        if (patterns.failed_patterns) {
+          this.learningData.failedPatterns = new Map(patterns.failed_patterns);
+        }
+        
+        // Restore strategy success rates
+        if (patterns.strategy_success_rates) {
+          this.performanceMetrics.strategySuccessRates = {
+            ...this.performanceMetrics.strategySuccessRates,
+            ...patterns.strategy_success_rates
+          };
+        }
+        
+        // Restore context success rates
+        if (patterns.context_success_rates) {
+          this.learningData.contextSuccessRates = new Map(patterns.context_success_rates);
+        }
+        
+        // Restore performance metrics
+        if (patterns.total_fallbacks_generated) {
+          this.performanceMetrics.totalFallbacksGenerated = patterns.total_fallbacks_generated;
+        }
+        if (patterns.successful_fallbacks) {
+          this.performanceMetrics.successfulFallbacks = patterns.successful_fallbacks;
+        }
+        if (patterns.average_generation_time) {
+          this.performanceMetrics.averageGenerationTime = patterns.average_generation_time;
+        }
+
+        this.logger?.info('Existing learning patterns loaded successfully', {
+          domain,
+          successful_patterns: this.learningData.successfulPatterns.size,
+          failed_patterns: this.learningData.failedPatterns.size,
+          last_updated: patterns.last_updated
+        });
+
+        return true;
+      }
+
+    } catch (error) {
+      this.logger?.warn('Failed to load existing learning patterns', {
+        domain,
+        error: error.message
+      });
+    }
+
+    return false;
+  }
+
+  /**
+   * Apply cross-site learning patterns to current domain
+   * @param {string} domain - Current domain
+   * @param {string} elementType - Type of element to get patterns for
+   * @returns {Array} Cross-site patterns applicable to current context
+   */
+  async applyCrossSiteLearning(domain, elementType) {
+    try {
+      if (!this.worldModel) {
+        const WorldModel = require('./WorldModel');
+        this.worldModel = new WorldModel(this.logger);
+        await this.worldModel.initialize();
+      }
+
+      // Get patterns from similar sites
+      const similarPatterns = await this.worldModel.getCrossSitePatterns(domain, elementType);
+      
+      if (!similarPatterns || similarPatterns.length === 0) {
+        return [];
+      }
+
+      // Generate fallbacks based on cross-site patterns
+      const crossSiteFallbacks = this.generateFallbacksFromPatterns(similarPatterns, elementType);
+      
+      this.logger?.info('Applied cross-site learning patterns', {
+        domain,
+        elementType,
+        patterns_found: similarPatterns.length,
+        fallbacks_generated: crossSiteFallbacks.length
+      });
+
+      return crossSiteFallbacks;
+
+    } catch (error) {
+      this.logger?.warn('Failed to apply cross-site learning', {
+        domain,
+        elementType,
+        error: error.message
+      });
+      return [];
+    }
+  }
+
+  /**
+   * Generate fallbacks from learned patterns
+   * @param {Array} patterns - Patterns from other sites
+   * @param {string} elementType - Type of element
+   * @returns {Array} Generated fallback selectors
+   */
+  generateFallbacksFromPatterns(patterns, elementType) {
+    const fallbacks = [];
+    
+    patterns.forEach((pattern, index) => {
+      if (pattern.selector && pattern.success_rate > 0.5) {
+        fallbacks.push({
+          selector: pattern.selector,
+          confidence: pattern.success_rate * 0.8, // Slightly lower confidence for cross-site patterns
+          strategy: 'cross-site-learning',
+          details: {
+            source_domain: pattern.domain,
+            success_rate: pattern.success_rate,
+            usage_count: pattern.usage_count || 1,
+            element_type: elementType
+          }
+        });
+      }
+    });
+
+    // Sort by confidence and limit results
+    return fallbacks
+      .sort((a, b) => b.confidence - a.confidence)
+      .slice(0, 5); // Top 5 cross-site patterns
+  }
+
+  /**
+   * Learn from successful selector usage
+   * @param {string} selector - Successful selector
+   * @param {string} context - Context where it was used
+   * @param {string} strategy - Strategy that generated it
+   */
+  recordSuccessfulSelector(selector, context, strategy) {
+    // Record successful pattern
+    const patternKey = `${context}:${selector}`;
+    const currentCount = this.learningData.successfulPatterns.get(patternKey) || 0;
+    this.learningData.successfulPatterns.set(patternKey, currentCount + 1);
+
+    // Update strategy success rate
+    const strategyKey = strategy || 'unknown';
+    if (!this.performanceMetrics.strategySuccessRates[strategyKey]) {
+      this.performanceMetrics.strategySuccessRates[strategyKey] = 0;
+    }
+    this.performanceMetrics.strategySuccessRates[strategyKey] += 0.1; // Increment success
+
+    // Update context success rate
+    const contextCount = this.learningData.contextSuccessRates.get(context) || { success: 0, total: 0 };
+    contextCount.success += 1;
+    contextCount.total += 1;
+    this.learningData.contextSuccessRates.set(context, contextCount);
+
+    // Update performance metrics
+    this.performanceMetrics.successfulFallbacks += 1;
+
+    this.logger?.debug('Recorded successful selector usage', {
+      selector,
+      context,
+      strategy,
+      usage_count: this.learningData.successfulPatterns.get(patternKey)
+    });
+  }
+
+  /**
+   * Learn from failed selector usage
+   * @param {string} selector - Failed selector
+   * @param {string} context - Context where it failed
+   * @param {string} strategy - Strategy that generated it
+   * @param {string} error - Error message
+   */
+  recordFailedSelector(selector, context, strategy, error = null) {
+    // Record failed pattern
+    const patternKey = `${context}:${selector}`;
+    const currentCount = this.learningData.failedPatterns.get(patternKey) || 0;
+    this.learningData.failedPatterns.set(patternKey, currentCount + 1);
+
+    // Update context failure rate
+    const contextCount = this.learningData.contextSuccessRates.get(context) || { success: 0, total: 0 };
+    contextCount.total += 1;
+    this.learningData.contextSuccessRates.set(context, contextCount);
+
+    this.logger?.debug('Recorded failed selector usage', {
+      selector,
+      context,
+      strategy,
+      error,
+      failure_count: this.learningData.failedPatterns.get(patternKey)
+    });
+  }
+
+  /**
+   * Get learning statistics for reporting
+   * @returns {Object} Learning statistics
+   */
+  getLearningStats() {
+    const totalSuccessful = Array.from(this.learningData.successfulPatterns.values())
+      .reduce((sum, count) => sum + count, 0);
+    
+    const totalFailed = Array.from(this.learningData.failedPatterns.values())
+      .reduce((sum, count) => sum + count, 0);
+
+    const contextStats = {};
+    for (const [context, stats] of this.learningData.contextSuccessRates.entries()) {
+      contextStats[context] = {
+        success_rate: stats.total > 0 ? (stats.success / stats.total).toFixed(3) : 0,
+        total_attempts: stats.total,
+        successful_attempts: stats.success
+      };
+    }
+
+    return {
+      successful_patterns: this.learningData.successfulPatterns.size,
+      failed_patterns: this.learningData.failedPatterns.size,
+      total_successful_uses: totalSuccessful,
+      total_failed_uses: totalFailed,
+      overall_success_rate: (totalSuccessful + totalFailed) > 0 ? 
+        (totalSuccessful / (totalSuccessful + totalFailed)).toFixed(3) : 0,
+      strategy_success_rates: this.performanceMetrics.strategySuccessRates,
+      context_statistics: contextStats,
+      performance_metrics: {
+        total_fallbacks_generated: this.performanceMetrics.totalFallbacksGenerated,
+        successful_fallbacks: this.performanceMetrics.successfulFallbacks,
+        average_generation_time: this.performanceMetrics.averageGenerationTime
+      }
+    };
+  }
+
+  /**
+   * Reset learning data (useful for testing or fresh starts)
+   */
+  resetLearning() {
+    this.learningData.successfulPatterns.clear();
+    this.learningData.failedPatterns.clear();
+    this.learningData.contextSuccessRates.clear();
+    
+    this.performanceMetrics.strategySuccessRates = {
+      'visual-similarity': 0,
+      'structural': 0,
+      'platform-specific': 0,
+      'content-based': 0,
+      'adaptive-pattern': 0
+    };
+
+    this.logger?.info('Learning data reset');
+  }
 }
 
 module.exports = AdvancedFallbackSystem;

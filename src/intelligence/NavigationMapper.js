@@ -1,37 +1,131 @@
 const { chromium } = require('playwright');
+const NavigationDiscoveryPipeline = require('./navigation/NavigationDiscoveryPipeline');
+const NavigationTreeBuilder = require('./navigation/NavigationTreeBuilder');
+const MainNavigationStrategy = require('./navigation/strategies/MainNavigationStrategy');
+const DropdownDiscoveryStrategy = require('./navigation/strategies/DropdownDiscoveryStrategy');
+const AriaNavigationStrategy = require('./navigation/strategies/AriaNavigationStrategy');
+const DataAttributeStrategy = require('./navigation/strategies/DataAttributeStrategy');
+const VisibleNavigationStrategy = require('./navigation/strategies/VisibleNavigationStrategy');
+const HiddenElementStrategy = require('./navigation/strategies/HiddenElementStrategy');
+const DepartmentExplorationStrategy = require('./navigation/strategies/DepartmentExplorationStrategy');
 
 class NavigationMapper {
   constructor(logger, worldModel) {
     this.logger = logger;
     this.worldModel = worldModel;
     this.browser = null;
+    this.pipeline = null;
+    this.treeBuilder = null;
+    this.usePipeline = true; // Feature flag to enable/disable pipeline
+    this.buildHierarchicalTree = true; // Feature flag for tree building
   }
 
   async initialize() {
     this.browser = await chromium.launch({
       headless: process.env.HEADLESS_MODE !== 'false',
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      args: [
+        '--no-sandbox', 
+        '--disable-setuid-sandbox',
+        '--disable-blink-features=AutomationControlled',
+        '--disable-features=IsolateOrigins,site-per-process'
+      ],
     });
-    this.logger.info('Navigation Mapper initialized');
+    
+    // Initialize the discovery pipeline with strategies
+    if (this.usePipeline) {
+      this.pipeline = new NavigationDiscoveryPipeline(this.logger, this.worldModel);
+      
+      // Add strategies in priority order - focused on getting clean main navigation
+      this.pipeline.addStrategies([
+        new MainNavigationStrategy(this.logger),       // Get main departments first
+        new DropdownDiscoveryStrategy(this.logger),    // Then get dropdown content
+        new AriaNavigationStrategy(this.logger),       // ARIA-based navigation
+        new DataAttributeStrategy(this.logger),        // Data attribute patterns
+        new VisibleNavigationStrategy(this.logger),    // Visible elements fallback
+        new HiddenElementStrategy(this.logger),        // Hidden menus if needed
+        new DepartmentExplorationStrategy(this.logger, { maxDepartments: 2 }) // Limited deep exploration
+      ]);
+      
+      this.logger.info('Navigation Mapper initialized with discovery pipeline');
+    } else {
+      this.logger.info('Navigation Mapper initialized (legacy mode)');
+    }
+    
+    // Initialize tree builder
+    if (this.buildHierarchicalTree) {
+      this.treeBuilder = new NavigationTreeBuilder(this.logger);
+      this.logger.info('Navigation Tree Builder initialized');
+    }
   }
 
   async mapSiteNavigation(url) {
     if (!this.browser) {await this.initialize();}
 
     const domain = new URL(url).hostname;
-    const context = await this.browser.newContext();
+    const context = await this.browser.newContext({
+      viewport: { width: 1920, height: 1080 },
+      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    });
     const page = await context.newPage();
 
     try {
       this.logger.info(`Starting navigation mapping for ${domain}`);
 
+      // Use domcontentloaded and then wait for JS to render
       await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+      
+      // Additional wait to ensure JavaScript has rendered navigation
       await page.waitForTimeout(3000);
+      
+      // Wait for navigation elements to appear
+      try {
+        await page.waitForSelector('nav, header, [role="navigation"], [class*="nav"], [class*="menu"]', { 
+          timeout: 5000,
+          state: 'visible'
+        });
+        this.logger.info('Navigation elements detected on page');
+      } catch (e) {
+        this.logger.warn('No navigation elements found with initial selectors, continuing anyway');
+      }
+      
+      // Close any popups that might block navigation discovery
+      await this.closeAnyPopups(page);
 
       const navigationIntelligence = await this.extractNavigationIntelligence(page);
+      
+      // Build hierarchical tree if enabled
+      if (this.buildHierarchicalTree && this.treeBuilder) {
+        try {
+          this.logger.info('Building hierarchical navigation tree...');
+          const navigationTree = await this.treeBuilder.buildNavigationTree(
+            url, 
+            navigationIntelligence,
+            {
+              maxDepth: 3,
+              maxBranchWidth: 15
+            }
+          );
+          
+          // Add tree to navigation intelligence
+          navigationIntelligence.hierarchical_tree = navigationTree;
+          navigationIntelligence.tree_metadata = {
+            total_nodes: navigationTree.metadata.total_items,
+            max_depth: navigationTree.metadata.max_depth_reached,
+            categories: navigationTree.children.length
+          };
+          
+          this.logger.info(`Navigation tree built: ${navigationTree.metadata.total_items} nodes, depth ${navigationTree.metadata.max_depth_reached}`);
+          
+        } catch (error) {
+          this.logger.error('Failed to build navigation tree:', error);
+          // Continue without tree - flat navigation still works
+        }
+      }
 
-      // Store in world model
-      await this.worldModel.storeSiteNavigation(domain, navigationIntelligence);
+      // Store in world model if available
+      if (this.worldModel && this.worldModel.storeSiteNavigation) {
+        await this.worldModel.storeSiteNavigation(domain, navigationIntelligence);
+      }
 
       this.logger.info(`Navigation mapping completed for ${domain}`);
       return navigationIntelligence;
@@ -45,7 +139,116 @@ class NavigationMapper {
     }
   }
 
+  async closeAnyPopups(page) {
+    try {
+      const modalCloseSelectors = [
+        // Aria labels
+        'button[aria-label*="close"]:visible',
+        'button[aria-label*="Close"]:visible',
+        'button[aria-label*="dismiss"]:visible',
+        
+        // Modal/popup close buttons
+        '[class*="modal"] button[class*="close"]:visible',
+        '[class*="popup"] button[class*="close"]:visible',
+        '[class*="overlay"] button[class*="close"]:visible',
+        '.modal button.close:visible',
+        '.popup button.close:visible',
+        
+        // Text-based close buttons
+        'button:has-text("No Thanks"):visible',
+        'button:has-text("Close"):visible',
+        'button:has-text("X"):visible',
+        'button:has-text("×"):visible',
+        'button:has-text("Dismiss"):visible',
+        'button:has-text("Maybe Later"):visible',
+        
+        // Cookie/privacy banners
+        'button[class*="accept-cookies"]:visible',
+        'button[class*="cookie-accept"]:visible',
+        'button:has-text("Accept"):visible',
+        'button:has-text("I Agree"):visible',
+        'button:has-text("Got It"):visible',
+        
+        // Email signup dismissals
+        'button[class*="decline"]:visible',
+        '[class*="email-signup"] button[class*="close"]:visible',
+        '[class*="newsletter"] button[class*="close"]:visible',
+        
+        // Generic close icons
+        'button.close:visible',
+        'a.close:visible',
+        '[class*="close-button"]:visible',
+        '[class*="close-icon"]:visible',
+        '[class*="dialog"] button[class*="close"]:visible',
+        '[role="dialog"] button[aria-label*="close"]:visible'
+      ];
+      
+      let closedCount = 0;
+      
+      // Try to close multiple popups/overlays
+      for (const selector of modalCloseSelectors) {
+        try {
+          const closeButtons = await page.locator(selector).all();
+          for (const button of closeButtons) {
+            try {
+              if (await button.isVisible({ timeout: 100 })) {
+                await button.click();
+                closedCount++;
+                await page.waitForTimeout(200);
+              }
+            } catch (e) {
+              // Skip if can't click
+            }
+          }
+        } catch (e) {
+          // Try next selector
+        }
+      }
+      
+      // Also try to click outside any modal/overlay to dismiss
+      if (closedCount === 0) {
+        try {
+          // Click on body to dismiss any click-outside dismissable overlays
+          await page.locator('body').click({ position: { x: 10, y: 10 }, timeout: 500 });
+        } catch (e) {
+          // Ignore if can't click
+        }
+      }
+      
+      if (closedCount > 0) {
+        this.logger.info(`Closed ${closedCount} popup(s)/modal(s)`);
+        // Wait a bit longer for animations to complete
+        await page.waitForTimeout(1000);
+      }
+    } catch (e) {
+      // No modal to close
+    }
+    return false;
+  }
+
   async extractNavigationIntelligence(page) {
+    // Use pipeline if enabled
+    if (this.usePipeline && this.pipeline) {
+      try {
+        this.logger.info('Using NavigationDiscoveryPipeline for enhanced discovery');
+        
+        const pipelineResults = await this.pipeline.discover(page, {
+          maxStrategies: 10,  // Run ALL strategies
+          minConfidence: 0.2,  // Lower threshold for comprehensive discovery
+          parallel: false, // Sequential for better debugging
+          earlyExit: false  // Don't stop early - get everything!
+        });
+        
+        // Convert pipeline results to legacy format
+        return this.convertPipelineToLegacyFormat(pipelineResults);
+        
+      } catch (error) {
+        this.logger.error('Pipeline discovery failed, falling back to legacy:', error.message);
+        // Fall through to legacy method
+      }
+    }
+    
+    // Legacy extraction method (current implementation)
     return await page.evaluate(() => {
       const intelligence = {
         main_sections: [],
@@ -331,7 +534,40 @@ class NavigationMapper {
     });
   }
 
+  /**
+   * Convert pipeline results to legacy NavigationMapper format
+   * This ensures backward compatibility with existing code
+   */
+  convertPipelineToLegacyFormat(pipelineResults) {
+    const { navigation_map, discovery_metadata } = pipelineResults;
+    
+    // The pipeline already returns in a compatible format
+    // Just add any missing fields for complete compatibility
+    const legacyFormat = {
+      main_sections: navigation_map.main_sections || [],
+      dropdown_menus: navigation_map.dropdown_menus || {},
+      navigation_selectors: navigation_map.navigation_selectors || {},
+      clickable_elements: navigation_map.clickable_elements || [],
+      site_structure: {},
+      breadcrumb_patterns: navigation_map.breadcrumb_patterns || [],
+      sidebar_navigation: navigation_map.sidebar_navigation || [],
+      _pipeline_metadata: discovery_metadata // Store pipeline metadata for debugging
+    };
+    
+    // Log discovery summary
+    this.logger.info(`Pipeline discovered: ${legacyFormat.main_sections.length} main sections, ${Object.keys(legacyFormat.dropdown_menus).length} dropdowns`);
+    if (discovery_metadata) {
+      this.logger.info(`Strategies used: ${discovery_metadata.strategies_used?.join(', ')}`);
+      this.logger.info(`Discovery confidence: ${(discovery_metadata.confidence * 100).toFixed(1)}%`);
+    }
+    
+    return legacyFormat;
+  }
+
   async close() {
+    if (this.treeBuilder) {
+      await this.treeBuilder.cleanup();
+    }
     if (this.browser) {
       await this.browser.close();
       this.logger.info('Navigation Mapper closed');

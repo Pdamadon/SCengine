@@ -34,9 +34,15 @@ class SiteIntelligence {
       // Phase 1: Map site navigation structure
       this.logger.info(`📍 Phase 1: Mapping navigation structure for ${domain}`);
       const navigationIntelligence = await this.navigationMapper.mapSiteNavigation(url);
+      
+      // Log hierarchical tree info if available
+      if (navigationIntelligence.hierarchical_tree) {
+        this.logger.info(`🌳 Navigation tree mapped: ${navigationIntelligence.tree_metadata.total_nodes} nodes, ${navigationIntelligence.tree_metadata.categories} main categories, depth ${navigationIntelligence.tree_metadata.max_depth}`);
+      }
 
       // Phase 2: Concurrent deep exploration
-      this.logger.info(`🔄 Phase 2: Concurrent section exploration (${navigationIntelligence.main_sections.length} sections)`);
+      const sectionsToExplore = navigationIntelligence.main_sections.length;
+      this.logger.info(`🔄 Phase 2: Concurrent section exploration (${sectionsToExplore} sections)`);
       const explorationResults = await this.concurrentExplorer.exploreAllSections(
         url,
         navigationIntelligence,
@@ -85,6 +91,7 @@ class SiteIntelligence {
         page_types_discovered: explorationResults.exploration_summary.page_types_discovered,
         working_selectors: explorationResults.exploration_summary.working_selectors,
       },
+      products: explorationResults.products || [],
       selectors: {
         library_size: Object.keys(explorationResults.selectors).length,
         success_rate: explorationResults.selectors.success_rate,

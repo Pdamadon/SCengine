@@ -11,6 +11,7 @@ const {
 } = require('../middleware/monitoring');
 const { healthCheck } = require('../middleware/healthCheck');
 const { logger } = require('../utils/logger');
+const { rateLimiter } = require('../utils/rateLimiter');
 
 const router = express.Router();
 
@@ -196,6 +197,109 @@ router.get('/monitoring/config', (req, res) => {
     res.status(500).json({
       error: 'CONFIG_RETRIEVAL_FAILED',
       message: 'Failed to retrieve monitoring configuration',
+      timestamp: new Date().toISOString(),
+      request_id: req.correlationId,
+    });
+  }
+});
+
+/**
+ * Rate limiting statistics endpoint
+ * GET /rate-limits
+ * GET /rate-limits?domain=example.com
+ */
+router.get('/rate-limits', (req, res) => {
+  try {
+    const { domain } = req.query;
+    
+    const stats = rateLimiter.getStats(domain || null);
+    
+    res.json({
+      rate_limiting: {
+        enabled: true,
+        adaptive: true,
+        jitter_enabled: true,
+        status: 'active'
+      },
+      domain_stats: stats,
+      global_summary: {
+        total_domains: Object.keys(stats).length,
+        domains_rate_limited: Object.values(stats).filter(s => s && s.isRateLimited).length,
+        total_requests: Object.values(stats).reduce((sum, s) => sum + (s ? s.requestCount : 0), 0),
+        total_successes: Object.values(stats).reduce((sum, s) => sum + (s ? s.successCount : 0), 0),
+        overall_success_rate: (() => {
+          const totalReq = Object.values(stats).reduce((sum, s) => sum + (s ? s.requestCount : 0), 0);
+          const totalSuccess = Object.values(stats).reduce((sum, s) => sum + (s ? s.successCount : 0), 0);
+          return totalReq > 0 ? ((totalSuccess / totalReq) * 100).toFixed(1) + '%' : '0%';
+        })()
+      },
+      timestamp: new Date().toISOString(),
+      request_id: req.correlationId,
+    });
+
+  } catch (error) {
+    logger.error('RATE_LIMIT_STATS_ERROR', {
+      error: error,
+      correlation_id: req.correlationId,
+    });
+
+    res.status(500).json({
+      error: 'RATE_LIMIT_STATS_FAILED',
+      message: 'Failed to retrieve rate limiting statistics',
+      timestamp: new Date().toISOString(),
+      request_id: req.correlationId,
+    });
+  }
+});
+
+/**
+ * Rate limiting configuration endpoint
+ * POST /rate-limits/configure
+ */
+router.post('/rate-limits/configure', (req, res) => {
+  try {
+    const { domain, baseDelay, minDelay, maxDelay, reset } = req.body;
+    
+    if (!domain) {
+      return res.status(400).json({
+        error: 'MISSING_DOMAIN',
+        message: 'Domain parameter is required',
+        timestamp: new Date().toISOString(),
+      });
+    }
+    
+    if (reset) {
+      rateLimiter.resetDomain(domain);
+      logger.info('Rate limiting reset for domain', { domain, correlation_id: req.correlationId });
+    } else {
+      const config = {};
+      if (baseDelay !== undefined) config.baseDelay = parseInt(baseDelay);
+      if (minDelay !== undefined) config.minDelay = parseInt(minDelay);
+      if (maxDelay !== undefined) config.maxDelay = parseInt(maxDelay);
+      
+      rateLimiter.configureDomain(domain, config);
+      logger.info('Rate limiting configured for domain', { domain, config, correlation_id: req.correlationId });
+    }
+    
+    const updatedStats = rateLimiter.getStats(domain);
+    
+    res.json({
+      success: true,
+      message: reset ? 'Rate limiting reset' : 'Rate limiting configured',
+      domain,
+      configuration: updatedStats,
+      timestamp: new Date().toISOString(),
+    });
+
+  } catch (error) {
+    logger.error('RATE_LIMIT_CONFIG_ERROR', {
+      error: error,
+      correlation_id: req.correlationId,
+    });
+
+    res.status(500).json({
+      error: 'RATE_LIMIT_CONFIG_FAILED',
+      message: 'Failed to configure rate limiting',
       timestamp: new Date().toISOString(),
       request_id: req.correlationId,
     });

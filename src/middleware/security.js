@@ -95,10 +95,8 @@ class SecurityService {
       ...config,
       standardHeaders: true,
       legacyHeaders: false,
-      keyGenerator: (req) => {
-        // Use forwarded IP if behind proxy, otherwise use connection IP
-        return req.ip || req.connection.remoteAddress;
-      },
+      // Use default key generator to properly handle IPv6 addresses
+      // keyGenerator: (req) => req.ip  // Removed custom keyGenerator to use default
       handler: (req, res) => {
         const clientIP = req.ip || req.connection.remoteAddress;
 
