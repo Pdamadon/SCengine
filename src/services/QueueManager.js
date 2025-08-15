@@ -17,9 +17,9 @@ class QueueManager extends EventEmitter {
     this.redisClient = null;
     this.isInitialized = false;
 
-    // Queue configuration
+    // Queue configuration - support both REDIS_URL and individual settings
     this.queueConfig = {
-      redis: {
+      redis: process.env.REDIS_URL ? process.env.REDIS_URL : {
         host: process.env.REDIS_HOST || 'localhost',
         port: process.env.REDIS_PORT || 6379,
         password: process.env.REDIS_PASSWORD || null,

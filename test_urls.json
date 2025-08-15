@@ -1,0 +1,44 @@
+{
+  "macys": [
+    "https://www.macys.com/shop/product/radley-fabric-sofa-collection-created-for-macys?ID=1434000",
+    "https://www.macys.com/shop/product/style-co-womens-v-neck-sweater-exclusively-at-macys?ID=18507662",
+    "https://www.macys.com/shop/product/9-pc.-best-of-beauty-set-created-for-macys?ID=18332348",
+    "https://www.macys.com/shop/product/clinique-moisture-surge-collection?ID=791793",
+    "https://www.macys.com/shop/product/free-7-pc.-gift-with-any-39.50-lancome-purchase-up-to-173-value?ID=13443466"
+  ],
+  "rei": [
+    "https://www.rei.com/product/224914/metolius-superclip",
+    "https://www.rei.com/product/185349/spot-gen4",
+    "https://www.rei.com/product/772529/amphipod-xinglet",
+    "https://www.rei.com/product/227956/rei-co-op-trail-40-pack-mens",
+    "https://www.rei.com/product/237422/rei-co-op-trailmade-60-pack-mens"
+  ],
+  "gap": [
+    "https://www.gap.com/browse/product.do?pid=816494012",
+    "https://www.gap.com/browse/product.do?pid=767512002",
+    "https://www.gap.com/browse/product.do?pid=738805032",
+    "https://www.gap.com/browse/product.do?pid=723330002",
+    "https://www.gap.com/browse/product.do?pid=724338092"
+  ],
+  "glasswingshop": [
+    "https://glasswingshop.com/products/arpenteur-custom-adn-jacket-blue",
+    "https://glasswingshop.com/products/man-tle-r0s8-shirt-black-weather",
+    "https://glasswingshop.com/products/cordera-quilted-jacket-navy",
+    "https://glasswingshop.com/products/flannel-seattle-logohead-6-panel-hat-green",
+    "https://glasswingshop.com/products/orslow-french-work-pant-hickory-1"
+  ],
+  "homedepot": [
+    "https://www.homedepot.com/p/Custom-Granite-Countertop/310171053",
+    "https://www.homedepot.com/p/Custom-Laminate-Countertop/310171055",
+    "https://www.homedepot.com/p/Flex-Patch-39201-6/308683712",
+    "https://www.homedepot.com/p/HDX-20-ft-x-100-ft-Clear-6-mil-Plastic-Sheeting-CFHD0620C/204711640",
+    "https://www.homedepot.com/p/OSB-7-16-Application-as-4ft-X-8-ft-Sheathing-Panel-386081/202106230"
+  ],
+  "nordstrom": [
+    "https://www.nordstrom.com/s/deodorant/4753597",
+    "https://www.nordstrom.com/s/powder-blush/2791357",
+    "https://www.nordstrom.com/s/brooke-crop-cashmere-turtleneck-sweater/8046552",
+    "https://www.nordstrom.com/s/jeanne-boots/8296841",
+    "https://www.nordstrom.com/s/gaviota-5-running-shoe-women-wide/7260551"
+  ]
+}

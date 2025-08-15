@@ -1,30 +1,32 @@
 /**
- * ExtractionPipeline - Wrapper for product extraction components
+ * ExtractionPipeline - Orchestrator for product extraction components
  * 
- * Coordinates:
- * - ConcurrentExplorer for parallel section exploration
+ * ORCHESTRATES (doesn't execute):
+ * - UniversalProductExtractor for intelligent product extraction
  * - ProductExtractorPool for parallel product extraction
  * - URLQueue for URL management and deduplication
  * - SelectorValidator for selector validation
  * 
- * This provides a clean interface to the extraction phase
+ * This is a thin orchestration layer that coordinates extraction components
  */
 
-const ConcurrentExplorer = require('../intelligence/ConcurrentExplorer');
+const UniversalProductExtractor = require('../extraction/UniversalProductExtractor');
 const ProductExtractorPool = require('../intelligence/extraction/ProductExtractorPool');
 const URLQueue = require('../intelligence/extraction/URLQueue');
 const SelectorValidator = require('../intelligence/SelectorValidator');
+const ProductPatternLearner = require('../intelligence/discovery/ProductPatternLearner');
 const { chromium } = require('playwright');
 
 class ExtractionPipeline {
   constructor(logger) {
     this.logger = logger;
     
-    // Initialize extraction components
-    this.concurrentExplorer = null;
+    // Initialize extraction components (orchestration, not execution)
+    this.universalExtractor = null; // Will be initialized on demand
     this.extractorPool = null;
     this.urlQueue = null;
     this.selectorValidator = new SelectorValidator(logger);
+    this.patternLearner = new ProductPatternLearner(logger);
     
     // Extraction state
     this.browser = null;
@@ -40,58 +42,58 @@ class ExtractionPipeline {
   }
 
   /**
-   * Main extraction method - extract products using learned patterns
+   * Main extraction orchestration method
    * 
    * @param {string} url - Target URL
-   * @param {object} options - Extraction options with patterns, selectors, navigation
+   * @param {object} options - Extraction options with learned patterns from LearningEngine
    * @returns {object} Extraction results
    */
   async extract(url, options = {}) {
     const domain = new URL(url).hostname;
     const startTime = Date.now();
     
-    this.logger.info('Starting product extraction', {
+    this.logger.info('Orchestrating product extraction', {
       url,
       domain,
       maxProducts: options.maxProducts,
-      maxWorkers: options.maxWorkers
+      maxWorkers: options.maxWorkers,
+      hasLearnedPatterns: !!options.learnedPatterns
     });
 
     try {
-      // Initialize browser for extraction
-      await this.initializeBrowser();
+      // Initialize the UniversalProductExtractor with learned patterns
+      this.universalExtractor = new UniversalProductExtractor(this.logger);
+      await this.universalExtractor.initialize();
       
-      // Initialize components with options
-      this.concurrentExplorer = new ConcurrentExplorer(this.logger, null);
-      await this.concurrentExplorer.initialize();
-      
+      // Initialize URL queue for managing discovered URLs
       this.urlQueue = new URLQueue(this.logger);
       await this.urlQueue.initialize(domain);
       
+      // Initialize extractor pool for parallel processing
       this.extractorPool = new ProductExtractorPool(this.logger, {
         maxWorkers: options.maxWorkers || 5,
         headless: process.env.HEADLESS_MODE !== 'false'
       });
       await this.extractorPool.initialize(domain);
       
-      // Phase 1: Discover product URLs
+      // Phase 1: Discover product URLs using learned patterns
       const discoveredUrls = await this.discoverProductUrls(
         url,
         options.navigation,
-        options.patterns,
+        options.learnedPatterns?.url_patterns,
         options.progressCallback
       );
       
-      // Phase 2: Extract product details
+      // Phase 2: Extract product details using UniversalProductExtractor
       const products = await this.extractProducts(
         discoveredUrls,
-        options.selectors,
+        options.learnedPatterns,
         options.maxProducts,
         options.progressCallback
       );
       
-      // Phase 3: Validate and enhance products
-      const validatedProducts = await this.validateProducts(products, options.selectors);
+      // Phase 3: Validate products using intelligence services
+      const validatedProducts = await this.validateProducts(products, options.learnedPatterns);
       
       // Compile extraction results
       const extractionResult = {
@@ -155,57 +157,84 @@ class ExtractionPipeline {
   }
 
   /**
-   * Phase 1: Discover product URLs from navigation
+   * Phase 1: Orchestrate product URL discovery using intelligence services
    */
   async discoverProductUrls(baseUrl, navigation, patterns, progressCallback) {
-    this.logger.info('Discovering product URLs');
+    this.logger.info('Orchestrating product URL discovery');
     
+    const domain = new URL(baseUrl).hostname;
     const discoveredUrls = new Set();
     
-    // Use navigation sections to find product listing pages
+    // Select sections to explore from navigation
     const sectionsToExplore = this.selectSectionsForExploration(navigation);
     
     if (progressCallback) {
-      progressCallback(10, `Exploring ${sectionsToExplore.length} sections for products`);
+      progressCallback(10, `Orchestrating exploration of ${sectionsToExplore.length} sections`);
     }
     
-    // Explore each section to find product URLs
-    for (let i = 0; i < sectionsToExplore.length; i++) {
-      const section = sectionsToExplore[i];
+    // If we don't have patterns yet, learn them using ProductPatternLearner
+    if (!patterns || patterns.length === 0) {
+      this.logger.info('No URL patterns provided, using ProductPatternLearner to discover');
       
+      // Initialize a browser page for pattern learning
+      if (!this.browser) {
+        await this.initializeBrowser();
+      }
+      
+      const learningPage = await this.browser.newPage();
+      
+      try {
+        // Navigate to first category page to learn patterns
+        if (sectionsToExplore.length > 0) {
+          await learningPage.goto(sectionsToExplore[0].url, { 
+            waitUntil: 'domcontentloaded', 
+            timeout: 30000 
+          });
+          
+          // Use ProductPatternLearner to learn what product URLs look like
+          patterns = await this.patternLearner.learnProductPatterns(learningPage, domain);
+          this.logger.info(`Learned ${patterns ? patterns.length : 0} URL patterns for ${domain}`);
+        }
+      } finally {
+        await learningPage.close();
+      }
+    }
+    
+    // Use ConcurrentExplorer or simple parallel exploration to find product URLs
+    // For now, using simple parallel approach, but should use ConcurrentExplorer
+    const explorationPromises = sectionsToExplore.map(async (section, index) => {
       try {
         const page = await this.browser.newPage();
         await page.goto(section.url, { waitUntil: 'domcontentloaded', timeout: 30000 });
         
-        // Find product URLs on the page
-        const urls = await this.findProductUrlsOnPage(page, patterns);
-        
-        urls.forEach(url => discoveredUrls.add(url));
-        
-        this.logger.debug(`Found ${urls.length} products in ${section.name}`, {
-          section: section.name,
-          urlCount: urls.length
-        });
+        // Use PatternLearner to find product URLs with learned patterns
+        const urls = await this.patternLearner.findProductUrlsWithPatterns(page, patterns);
         
         await page.close();
         
         if (progressCallback) {
-          const progress = 10 + ((i + 1) / sectionsToExplore.length * 30);
-          progressCallback(progress, `Discovered ${discoveredUrls.size} product URLs`);
+          const progress = 10 + ((index + 1) / sectionsToExplore.length * 30);
+          progressCallback(progress, `Discovered URLs from ${section.name}`);
         }
         
+        return urls;
       } catch (error) {
-        this.logger.warn(`Failed to explore section ${section.name}`, {
-          error: error.message
-        });
+        this.logger.warn(`Failed to explore section ${section.name}:`, error.message);
+        return [];
       }
-    }
+    });
     
-    // Add URLs to queue
+    // Wait for all explorations to complete
+    const allUrls = await Promise.all(explorationPromises);
+    
+    // Combine and deduplicate URLs
+    allUrls.flat().forEach(url => discoveredUrls.add(url));
+    
+    // Add URLs to queue for processing
     const urlArray = Array.from(discoveredUrls);
     await this.urlQueue.addBatch(urlArray);
     
-    this.logger.info(`Discovered ${urlArray.length} unique product URLs`);
+    this.logger.info(`Discovery complete: ${urlArray.length} unique product URLs found`);
     
     return urlArray;
   }
@@ -284,88 +313,62 @@ class ExtractionPipeline {
   }
 
   /**
-   * Phase 2: Extract product details from URLs
+   * Phase 2: Orchestrate product extraction using UniversalProductExtractor
    */
-  async extractProducts(urls, selectors, maxProducts, progressCallback) {
-    this.logger.info(`Extracting details from ${urls.length} product URLs`);
+  async extractProducts(urls, learnedPatterns, maxProducts, progressCallback) {
+    this.logger.info(`Orchestrating extraction of ${urls.length} product URLs`);
     
     // Limit URLs if maxProducts specified
     const urlsToProcess = maxProducts ? urls.slice(0, maxProducts) : urls;
+    const domain = new URL(urls[0]).hostname;
     
-    // Create extraction function
-    const extractionFunction = this.createExtractionFunction(selectors);
+    // Create extraction function that uses UniversalProductExtractor
+    const extractionFunction = async (page, url) => {
+      try {
+        // Use the intelligent UniversalProductExtractor
+        const product = await this.universalExtractor.extractProduct(url, domain, {
+          platformPatterns: learnedPatterns,
+          page: page // Reuse the existing page for efficiency
+        });
+        
+        return product;
+      } catch (error) {
+        this.logger.warn(`Failed to extract product from ${url}:`, error.message);
+        return null;
+      }
+    };
     
-    // Process URLs in batches
-    const products = await this.extractorPool.processBatch(
+    // Orchestrate parallel extraction using ProductExtractorPool
+    const extractionResult = await this.extractorPool.processBatch(
       urlsToProcess,
       extractionFunction,
-      (processed, total) => {
+      (progress, message) => {
         if (progressCallback) {
-          const progress = 40 + (processed / total * 40);
-          progressCallback(progress, `Extracted ${processed}/${total} products`);
+          const overallProgress = 40 + (progress * 0.4); // 40-80% of total
+          progressCallback(overallProgress, message);
         }
       }
     );
     
-    this.logger.info(`Extracted ${products.length} products`);
+    // Filter out failed extractions
+    const products = extractionResult.products || [];
+    const failed = extractionResult.failed || [];
+    
+    this.logger.info(`Extraction complete`, {
+      successful: products.length,
+      failed: failed.length,
+      total: urlsToProcess.length
+    });
     
     return products;
   }
 
-  /**
-   * Create extraction function for product details
-   */
-  createExtractionFunction(selectors) {
-    return async (page, url) => {
-      try {
-        await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
-        await page.waitForTimeout(2000); // Wait for dynamic content
-        
-        const product = await page.evaluate((selectors) => {
-          const extractText = (selector) => {
-            if (!selector) return null;
-            const element = document.querySelector(selector);
-            return element ? element.textContent.trim() : null;
-          };
-          
-          const extractAttribute = (selector, attr) => {
-            if (!selector) return null;
-            const element = document.querySelector(selector);
-            return element ? element.getAttribute(attr) : null;
-          };
-          
-          const extractImages = (selector) => {
-            if (!selector) return [];
-            const elements = document.querySelectorAll(selector);
-            return Array.from(elements).map(img => img.src || img.getAttribute('data-src'));
-          };
-          
-          return {
-            title: extractText(selectors.product_title),
-            price: extractText(selectors.product_price),
-            description: extractText(selectors.product_description),
-            images: extractImages(selectors.product_image),
-            url: window.location.href,
-            in_stock: document.querySelector(selectors.add_to_cart) !== null
-          };
-        }, selectors);
-        
-        return product;
-        
-      } catch (error) {
-        this.logger.debug(`Failed to extract product from ${url}`, {
-          error: error.message
-        });
-        return null;
-      }
-    };
-  }
 
   /**
-   * Phase 3: Validate and enhance products
+   * Phase 3: Validate products using intelligence services
    */
-  async validateProducts(products, selectors) {
-    this.logger.info(`Validating ${products.length} products`);
+  async validateProducts(products, learnedPatterns) {
+    this.logger.info(`Validating ${products.length} products using intelligence services`);
     
     const validatedProducts = [];
     

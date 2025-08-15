@@ -268,8 +268,13 @@ class MasterOrchestrator {
     const extractionResult = await this.extractionPipeline.extract(
       jobState.url,
       {
-        patterns: learningData.patterns,
-        selectors: learningData.selectors,
+        learnedPatterns: {
+          patterns: learningData.patterns,
+          selectors: learningData.selectors,
+          url_patterns: learningData.url_patterns,
+          extraction_rules: learningData.extraction_rules,
+          platform: learningData.platform_detected
+        },
         navigation: discoveryData.navigation,
         maxProducts: jobState.options.maxProducts || 1000,
         maxWorkers: jobState.options.maxWorkers || 5,

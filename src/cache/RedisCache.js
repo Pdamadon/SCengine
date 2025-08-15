@@ -18,15 +18,26 @@ class RedisCache {
     }
 
     try {
-      this.redis = new Redis({
-        host: process.env.REDIS_HOST || 'localhost',
-        port: process.env.REDIS_PORT || 6379,
-        password: process.env.REDIS_PASSWORD || undefined,
-        retryDelayOnFailover: 100,
-        enableReadyCheck: false,
-        maxRetriesPerRequest: null,
-        lazyConnect: true,
-      });
+      // Prefer REDIS_URL if available (for Railway/cloud Redis)
+      if (process.env.REDIS_URL) {
+        this.redis = new Redis(process.env.REDIS_URL, {
+          retryDelayOnFailover: 100,
+          enableReadyCheck: false,
+          maxRetriesPerRequest: null,
+          lazyConnect: true,
+        });
+      } else {
+        // Fall back to individual settings (for local Redis)
+        this.redis = new Redis({
+          host: process.env.REDIS_HOST || 'localhost',
+          port: process.env.REDIS_PORT || 6379,
+          password: process.env.REDIS_PASSWORD || undefined,
+          retryDelayOnFailover: 100,
+          enableReadyCheck: false,
+          maxRetriesPerRequest: null,
+          lazyConnect: true,
+        });
+      }
 
       // Test connection
       await this.redis.ping();

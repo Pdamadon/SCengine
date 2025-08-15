@@ -1,14 +1,30 @@
 const RedisCache = require('../cache/RedisCache');
+const mongoDBClient = require('../database/MongoDBClient');
+const { collections } = require('../config/mongodb');
 
 class WorldModel {
   constructor(logger) {
     this.logger = logger;
     this.cache = new RedisCache(logger);
+    this.mongoClient = mongoDBClient;
+    this.db = null;
+    this.collections = {};
     this.siteIntelligence = new Map(); // In-memory cache for active sites
   }
 
   async initialize() {
+    // Connect to Redis cache
     await this.cache.connect();
+    
+    // Connect to MongoDB
+    try {
+      this.db = await this.mongoClient.connect();
+      this.collections = this.mongoClient.getCollections();
+      this.logger.info('World Model initialized with MongoDB and Redis');
+    } catch (error) {
+      this.logger.warn('MongoDB connection failed, using Redis only:', error.message);
+    }
+    
     this.logger.info('World Model initialized successfully');
   }
 
@@ -660,10 +676,586 @@ class WorldModel {
     return Math.min(confidence, 1.0);
   }
 
+  // =====================================================
+  // MONGODB PRODUCT STORAGE METHODS
+  // =====================================================
+
+  /**
+   * Store product in MongoDB with multi-category support
+   */
+  async storeProduct(domain, productData) {
+    if (!this.db || !this.collections.products) {
+      this.logger.warn('MongoDB not connected, cannot store product');
+      return false;
+    }
+
+    try {
+      const product = {
+        ...productData,
+        domain,
+        product_id: productData.product_id || `${domain}_${Date.now()}`,
+        
+        // Ensure extraction strategy fields are preserved
+        extraction_strategy: productData.extraction_strategy || {
+          quick_check: {},
+          full_extraction: {},
+          interaction_requirements: {},
+          platform_hints: {}
+        },
+        
+        // Quick check configuration with defaults
+        quick_check_config: productData.quick_check_config || {
+          enabled: false,
+          check_interval_ms: 3600000, // 1 hour default
+          last_check: null,
+          next_check: null,
+          priority: 5
+        },
+        
+        // Initialize or preserve update history
+        update_history: productData.update_history || [],
+        
+        // Timestamps
+        created_at: productData.created_at || new Date(),
+        updated_at: new Date(),
+        scraped_at: new Date()
+      };
+      
+      // If this is an update and we have extraction success, add to history
+      if (productData.extraction_strategy && product.update_history) {
+        product.update_history.push({
+          timestamp: new Date(),
+          update_type: productData.update_type || 'full',
+          changes: productData.changes || {},
+          success: true,
+          extraction_time_ms: productData.extraction_time_ms || 0
+        });
+        
+        // Keep only last 50 history entries
+        if (product.update_history.length > 50) {
+          product.update_history = product.update_history.slice(-50);
+        }
+      }
+
+      // Upsert product (update if exists, insert if new)
+      const result = await this.collections.products.replaceOne(
+        { product_id: product.product_id, domain },
+        product,
+        { upsert: true }
+      );
+
+      this.logger.info(`Stored product ${product.product_id} in MongoDB with extraction strategy`);
+      
+      // Also cache in Redis for quick access
+      await this.storeProductIntelligence(productData.source_url || productData.url, productData);
+      
+      return result.acknowledged;
+    } catch (error) {
+      this.logger.error('Failed to store product in MongoDB:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Get product from MongoDB
+   */
+  async getProduct(domain, productId) {
+    if (!this.db || !this.collections.products) {
+      return null;
+    }
+
+    try {
+      const product = await this.collections.products.findOne({
+        product_id: productId,
+        domain
+      });
+      return product;
+    } catch (error) {
+      this.logger.error('Failed to get product from MongoDB:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Get products by category with pagination
+   */
+  async getProductsByCategory(domain, categoryId, options = {}) {
+    if (!this.db || !this.collections.products) {
+      return [];
+    }
+
+    const { limit = 50, offset = 0, sort = { created_at: -1 } } = options;
+
+    try {
+      const products = await this.collections.products
+        .find({
+          domain,
+          category_ids: categoryId,
+          availability: 'in_stock'
+        })
+        .sort(sort)
+        .skip(offset)
+        .limit(limit)
+        .toArray();
+
+      return products;
+    } catch (error) {
+      this.logger.error('Failed to get products by category:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Store domain intelligence in MongoDB
+   */
+  async storeDomainIntelligence(domain, intelligence) {
+    if (!this.db) {
+      return this.storeSiteNavigation(domain, intelligence); // Fallback to Redis
+    }
+
+    try {
+      // Store in navigation_maps collection
+      const navMap = {
+        domain,
+        navigation_type: 'main_menu',
+        structure: intelligence.navigation_map || {},
+        clickable_elements: intelligence.clickable_elements || [],
+        reliability_score: intelligence.reliability_score || 0.8,
+        last_verified: new Date(),
+        created_at: new Date(),
+        updated_at: new Date()
+      };
+
+      await this.db.collection('navigation_maps').replaceOne(
+        { domain, navigation_type: 'main_menu' },
+        navMap,
+        { upsert: true }
+      );
+
+      // Also store in Redis for quick access
+      await this.storeSiteNavigation(domain, intelligence);
+
+      this.logger.info(`Stored domain intelligence for ${domain} in MongoDB`);
+      return true;
+    } catch (error) {
+      this.logger.error('Failed to store domain intelligence:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Store category in MongoDB
+   */
+  async storeCategory(domain, categoryData) {
+    if (!this.db || !this.collections.categories) {
+      return false;
+    }
+
+    try {
+      const category = {
+        ...categoryData,
+        canonical_id: categoryData.canonical_id || `${domain}_${categoryData.name.toLowerCase().replace(/\s+/g, '_')}`,
+        status: 'active',
+        created_at: new Date(),
+        updated_at: new Date()
+      };
+
+      await this.collections.categories.replaceOne(
+        { canonical_id: category.canonical_id },
+        category,
+        { upsert: true }
+      );
+
+      this.logger.info(`Stored category ${category.canonical_id} in MongoDB`);
+      return true;
+    } catch (error) {
+      this.logger.error('Failed to store category:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Get category hierarchy from MongoDB
+   */
+  async getCategoryHierarchy(domain) {
+    if (!this.db || !this.collections.categoryHierarchy) {
+      return null;
+    }
+
+    try {
+      const hierarchy = await this.collections.categoryHierarchy
+        .find({ level_1_gender: { $exists: true } })
+        .sort({ navigation_priority: 1 })
+        .toArray();
+
+      return hierarchy;
+    } catch (error) {
+      this.logger.error('Failed to get category hierarchy:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Update selector library in MongoDB
+   */
+  async storeSelectorPattern(domain, elementType, selector, reliability = 0.8) {
+    if (!this.db) {
+      return this.storeSelectorLibrary(domain, { [elementType]: selector }); // Fallback to Redis
+    }
+
+    try {
+      const selectorDoc = {
+        domain,
+        selector,
+        element_type: elementType,
+        purpose: `Extract ${elementType} from product pages`,
+        reliability_score: reliability,
+        usage_count: 0,
+        success_count: 0,
+        last_successful_use: new Date(),
+        created_at: new Date(),
+        updated_at: new Date()
+      };
+
+      await this.db.collection('selector_libraries').replaceOne(
+        { domain, selector, element_type: elementType },
+        selectorDoc,
+        { upsert: true }
+      );
+
+      // Also update Redis cache
+      const current = await this.getSelectorLibrary(domain) || { selectors: {} };
+      current.selectors[elementType] = selector;
+      await this.storeSelectorLibrary(domain, current.selectors);
+
+      return true;
+    } catch (error) {
+      this.logger.error('Failed to store selector pattern:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Get best selectors from MongoDB
+   */
+  async getBestSelectors(domain, elementType, minReliability = 0.6) {
+    if (!this.db) {
+      const library = await this.getSelectorLibrary(domain);
+      return library?.selectors?.[elementType] ? [library.selectors[elementType]] : [];
+    }
+
+    try {
+      const selectors = await this.db.collection('selector_libraries')
+        .find({
+          domain,
+          element_type: elementType,
+          reliability_score: { $gte: minReliability }
+        })
+        .sort({ reliability_score: -1, success_count: -1 })
+        .limit(5)
+        .toArray();
+
+      return selectors.map(s => s.selector);
+    } catch (error) {
+      this.logger.error('Failed to get best selectors:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Record price history in MongoDB
+   */
+  async recordPriceChange(productId, domain, priceData) {
+    if (!this.db) {
+      return false;
+    }
+
+    try {
+      const priceHistory = {
+        product_id: productId,
+        domain,
+        price: priceData.price,
+        original_price: priceData.original_price,
+        currency: priceData.currency || 'USD',
+        discount_percentage: priceData.discount_percentage,
+        availability: priceData.availability,
+        timestamp: new Date()
+      };
+
+      await this.db.collection('price_history').insertOne(priceHistory);
+      
+      this.logger.info(`Recorded price change for product ${productId}`);
+      return true;
+    } catch (error) {
+      this.logger.error('Failed to record price change:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Get price history for a product
+   */
+  async getPriceHistory(productId, dateRange = {}) {
+    if (!this.db) {
+      return [];
+    }
+
+    const { startDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), endDate = new Date() } = dateRange;
+
+    try {
+      const history = await this.db.collection('price_history')
+        .find({
+          product_id: productId,
+          timestamp: { $gte: startDate, $lte: endDate }
+        })
+        .sort({ timestamp: -1 })
+        .toArray();
+
+      return history;
+    } catch (error) {
+      this.logger.error('Failed to get price history:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Update category product count
+   */
+  async updateCategoryProductCount(domain, categoryPath, count) {
+    if (!this.db || !this.collections.categories) {
+      return false;
+    }
+
+    try {
+      await this.collections.categories.updateOne(
+        { url_path: categoryPath },
+        { 
+          $set: { 
+            actual_product_count: count,
+            last_updated_count: new Date()
+          }
+        }
+      );
+
+      return true;
+    } catch (error) {
+      this.logger.error('Failed to update category product count:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Update extraction strategy for a product
+   */
+  async updateExtractionStrategy(productId, domain, strategy) {
+    if (!this.db || !this.collections.products) {
+      return false;
+    }
+
+    try {
+      // Add last_updated to the strategy object itself
+      const updatedStrategy = {
+        ...strategy,
+        last_updated: new Date()
+      };
+      
+      const result = await this.collections.products.updateOne(
+        { product_id: productId, domain },
+        { 
+          $set: { 
+            extraction_strategy: updatedStrategy,
+            updated_at: new Date()
+          }
+        }
+      );
+
+      if (result.modifiedCount > 0) {
+        this.logger.info(`Updated extraction strategy for product ${productId}`);
+      }
+      
+      return result.modifiedCount > 0;
+    } catch (error) {
+      this.logger.error('Failed to update extraction strategy:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Update quick check configuration for a product
+   */
+  async updateQuickCheckConfig(productId, domain, config) {
+    if (!this.db || !this.collections.products) {
+      return false;
+    }
+
+    try {
+      // Calculate next check time if interval is provided
+      if (config.check_interval_ms && !config.next_check) {
+        config.next_check = new Date(Date.now() + config.check_interval_ms);
+      }
+      
+      const result = await this.collections.products.updateOne(
+        { product_id: productId, domain },
+        { 
+          $set: { 
+            quick_check_config: config,
+            updated_at: new Date()
+          }
+        }
+      );
+
+      if (result.modifiedCount > 0) {
+        this.logger.info(`Updated quick check config for product ${productId}`);
+      }
+      
+      return result.modifiedCount > 0;
+    } catch (error) {
+      this.logger.error('Failed to update quick check config:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Record an extraction attempt in update history
+   */
+  async recordExtractionAttempt(productId, domain, attempt) {
+    if (!this.db || !this.collections.products) {
+      return false;
+    }
+
+    try {
+      const historyEntry = {
+        timestamp: new Date(),
+        update_type: attempt.update_type || 'full',
+        changes: attempt.changes || {},
+        success: attempt.success || false,
+        extraction_time_ms: attempt.extraction_time_ms || 0,
+        error: attempt.error || null
+      };
+      
+      // Push to update_history array and limit to 50 entries
+      const result = await this.collections.products.updateOne(
+        { product_id: productId, domain },
+        { 
+          $push: { 
+            update_history: {
+              $each: [historyEntry],
+              $slice: -50  // Keep only last 50 entries
+            }
+          },
+          $set: {
+            updated_at: new Date(),
+            'quick_check_config.last_check': new Date()
+          }
+        }
+      );
+
+      if (result.modifiedCount > 0) {
+        this.logger.info(`Recorded extraction attempt for product ${productId}: ${attempt.success ? 'success' : 'failure'}`);
+      }
+      
+      return result.modifiedCount > 0;
+    } catch (error) {
+      this.logger.error('Failed to record extraction attempt:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Get products needing quick check updates
+   */
+  async getProductsForQuickCheck(domain, limit = 100) {
+    if (!this.db || !this.collections.products) {
+      return [];
+    }
+
+    try {
+      const now = new Date();
+      const products = await this.collections.products.find({
+        domain,
+        'quick_check_config.enabled': true,
+        'quick_check_config.next_check': { $lte: now }
+      })
+      .sort({ 'quick_check_config.priority': -1, 'quick_check_config.next_check': 1 })
+      .limit(limit)
+      .toArray();
+      
+      this.logger.info(`Found ${products.length} products ready for quick check in ${domain}`);
+      return products;
+    } catch (error) {
+      this.logger.error('Failed to get products for quick check:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Store product-category relationship
+   */
+  async storeProductCategoryRelationship(productId, categoryId, relationshipData = {}) {
+    if (!this.db || !this.collections.productCategories) {
+      return false;
+    }
+
+    try {
+      const relationship = {
+        product_id: productId,
+        category_id: categoryId,
+        relationship_type: relationshipData.type || 'primary',
+        hierarchy_level: relationshipData.level || 1,
+        confidence_score: relationshipData.confidence || 0.9,
+        discovery_source: relationshipData.source || 'scraper',
+        relevance_score: relationshipData.relevance || 0.8,
+        created_at: new Date()
+      };
+
+      await this.collections.productCategories.replaceOne(
+        { product_id: productId, category_id: categoryId },
+        relationship,
+        { upsert: true }
+      );
+
+      return true;
+    } catch (error) {
+      this.logger.error('Failed to store product-category relationship:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Get MongoDB statistics
+   */
+  async getWorldModelStats() {
+    const stats = {
+      redis_connected: this.cache.connected,
+      mongodb_connected: this.mongoClient.isConnectedToDatabase()
+    };
+
+    if (this.db) {
+      try {
+        const [productCount, categoryCount, selectorCount] = await Promise.all([
+          this.collections.products?.countDocuments() || 0,
+          this.collections.categories?.countDocuments() || 0,
+          this.db.collection('selector_libraries').countDocuments()
+        ]);
+
+        stats.mongodb_stats = {
+          products: productCount,
+          categories: categoryCount,
+          selectors: selectorCount
+        };
+      } catch (error) {
+        stats.mongodb_stats = { error: error.message };
+      }
+    }
+
+    return stats;
+  }
+
   async close() {
     if (this.cache) {
       await this.cache.close();
     }
+    // MongoDB client is a singleton, don't close it here
     this.logger.info('World Model closed successfully');
   }
 }
