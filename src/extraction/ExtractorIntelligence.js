@@ -16,6 +16,7 @@ const { chromium } = require('playwright');
 const BrowserIntelligence = require('./BrowserIntelligence');
 const AdaptiveRetryStrategy = require('./AdaptiveRetryStrategy');
 const WorldModel = require('../intelligence/WorldModel');
+const SelectorCacheSingleton = require('../cache/SelectorCacheSingleton');
 
 class ExtractorIntelligence {
   constructor(logger, worldModel = null) {
@@ -28,6 +29,10 @@ class ExtractorIntelligence {
     
     // Add adaptive retry strategy for intelligent learning
     this.retryStrategy = new AdaptiveRetryStrategy(logger);
+    
+    // Use singleton cache for shared persistence across all components
+    this.selectorCache = SelectorCacheSingleton.getInstance();
+    this.cacheInitialized = false;
     
     // Configuration
     this.config = {
@@ -44,9 +49,22 @@ class ExtractorIntelligence {
   }
 
   /**
+   * Initialize cache connection
+   */
+  async initializeCache() {
+    if (!this.cacheInitialized) {
+      await this.selectorCache.initialize(this.logger);
+      this.cacheInitialized = true;
+      this.logger?.debug('ExtractorIntelligence singleton cache initialized');
+    }
+  }
+
+  /**
    * Initialize browser and services
    */
   async initialize() {
+    await this.initializeCache();
+    
     if (!this.browser) {
       this.browser = await chromium.launch({
         headless: false, // Visible for debugging
@@ -96,7 +114,30 @@ class ExtractorIntelligence {
       maxAttempts
     });
     
-    // Check if we already have good selectors
+    await this.initializeCache();
+    
+    // Check cache for proven selectors first
+    const cachedSelectors = await this.checkCacheForDomain(domain);
+    if (cachedSelectors && Object.keys(cachedSelectors).length >= this.config.requiredFields.length) {
+      this.logger.info(`Found cached selectors for ${domain}, testing quality...`);
+      
+      // Test cached selectors quality on sample URLs
+      const cachedStrategy = {
+        domain,
+        selectors: cachedSelectors,
+        source: 'cache'
+      };
+      
+      const quality = await this.evaluateStrategyQuality(cachedStrategy, sampleUrls.slice(0, 2));
+      if (quality >= qualityThreshold) {
+        this.logger.info(`Using cached selectors for ${domain} (quality: ${quality}%)`);
+        return { ...cachedStrategy, quality };
+      } else {
+        this.logger.info(`Cached selectors quality too low (${quality}%), starting fresh learning`);
+      }
+    }
+    
+    // Check if we already have good selectors in WorldModel
     const existingStrategy = await this.worldModel.getExtractionStrategy?.(domain);
     if (existingStrategy?.quality >= qualityThreshold) {
       this.logger.info(`Using existing strategy for ${domain} (quality: ${existingStrategy.quality}%)`);
@@ -830,6 +871,9 @@ class ExtractorIntelligence {
         await this.worldModel.cacheExtractionStrategy(domain, strategy);
       }
       
+      // Cache individual selectors for future use
+      await this.cacheLearnedSelectors(domain, strategy);
+      
       this.logger.info(`Stored extraction strategy for ${domain} with quality ${strategy.quality}%`);
       
       // Store learning history
@@ -873,12 +917,105 @@ class ExtractorIntelligence {
   }
 
   /**
+   * Check cache for existing selectors for a domain
+   */
+  async checkCacheForDomain(domain) {
+    try {
+      const selectors = {};
+      
+      for (const field of [...this.config.requiredFields, ...this.config.optionalFields]) {
+        const cached = await this.selectorCache.getOrDiscoverSelector(
+          domain,
+          field,
+          {
+            elementType: this.getElementTypeForField(field),
+            context: { domain }
+          }
+        );
+        
+        if (cached && cached.selector && cached.fromCache) {
+          selectors[field] = {
+            selector: cached.selector,
+            confidence: cached.reliability || 0.8,
+            source: 'cache'
+          };
+        }
+      }
+      
+      return Object.keys(selectors).length > 0 ? selectors : null;
+    } catch (error) {
+      this.logger.error('Failed to check cache for domain:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Cache individual selectors from a learned strategy
+   */
+  async cacheLearnedSelectors(domain, strategy) {
+    try {
+      if (!strategy.selectors) return;
+      
+      for (const [field, selectorData] of Object.entries(strategy.selectors)) {
+        if (selectorData.selector && selectorData.confidence > 0.6) {
+          await this.selectorCache.getOrDiscoverSelector(
+            domain,
+            field,
+            {
+              discoveryFn: async () => ({
+                selector: selectorData.selector,
+                alternatives: selectorData.alternatives || [],
+                reliability: selectorData.confidence,
+                discoveryMethod: 'iterative_learning',
+                metadata: {
+                  quality: strategy.quality,
+                  attempts: strategy.attempts_required,
+                  platform: strategy.platform,
+                  learned_at: strategy.learned_at,
+                  validated: true
+                }
+              }),
+              elementType: this.getElementTypeForField(field),
+              context: { domain }
+            }
+          );
+        }
+      }
+      
+      this.logger.debug(`Cached ${Object.keys(strategy.selectors).length} selectors for ${domain}`);
+    } catch (error) {
+      this.logger.error('Failed to cache learned selectors:', error);
+    }
+  }
+
+  /**
+   * Helper to map field to element type
+   */
+  getElementTypeForField(field) {
+    const typeMap = {
+      'title': 'text',
+      'price': 'price',
+      'images': 'image',
+      'availability': 'status',
+      'description': 'text',
+      'brand': 'text',
+      'variants': 'options'
+    };
+    
+    return typeMap[field] || 'generic';
+  }
+
+  /**
    * Clean up resources
    */
   async close() {
     if (this.browser) {
       await this.browser.close();
       this.browser = null;
+    }
+    
+    if (this.selectorCache) {
+      await this.selectorCache.close();
     }
   }
 }

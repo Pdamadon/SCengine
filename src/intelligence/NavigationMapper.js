@@ -1,6 +1,7 @@
 const { chromium } = require('playwright');
 const NavigationDiscoveryPipeline = require('./navigation/NavigationDiscoveryPipeline');
 const NavigationTreeBuilder = require('./navigation/NavigationTreeBuilder');
+const AdaptiveNavigationStrategy = require('./navigation/strategies/AdaptiveNavigationStrategy');
 const MainNavigationStrategy = require('./navigation/strategies/MainNavigationStrategy');
 const DropdownDiscoveryStrategy = require('./navigation/strategies/DropdownDiscoveryStrategy');
 const AriaNavigationStrategy = require('./navigation/strategies/AriaNavigationStrategy');
@@ -8,6 +9,8 @@ const DataAttributeStrategy = require('./navigation/strategies/DataAttributeStra
 const VisibleNavigationStrategy = require('./navigation/strategies/VisibleNavigationStrategy');
 const HiddenElementStrategy = require('./navigation/strategies/HiddenElementStrategy');
 const DepartmentExplorationStrategy = require('./navigation/strategies/DepartmentExplorationStrategy');
+const ProductCatalogStrategy = require('./navigation/strategies/ProductCatalogStrategy');
+const ProductCatalogCacheSingleton = require('../cache/ProductCatalogCacheSingleton');
 
 class NavigationMapper {
   constructor(logger, worldModel) {
@@ -21,13 +24,42 @@ class NavigationMapper {
   }
 
   async initialize() {
+    // Default initialization - will be overridden by initializeForSite if needed
+    await this.initializeForSite(false);
+  }
+
+  async initializeForSite(needsNonHeadless = false) {
+    const forceHeadless = process.env.HEADLESS_MODE === 'true';
+    const disableHeadless = process.env.HEADLESS_MODE === 'false';
+    
+    this.logger.info(`initializeForSite: needsNonHeadless=${needsNonHeadless}, forceHeadless=${forceHeadless}, disableHeadless=${disableHeadless}`);
+    
+    // Determine headless mode with site-specific override capability
+    let shouldUseHeadless;
+    if (needsNonHeadless) {
+      // OVERRIDE: Site specifically needs non-headless (e.g., Macy's blocks headless)
+      shouldUseHeadless = false;
+      this.logger.info('Using headless=false (site-specific override - site blocks headless browsers)');
+    } else if (forceHeadless) {
+      shouldUseHeadless = true;
+      this.logger.info('Using headless=true (global HEADLESS_MODE=true)');
+    } else if (disableHeadless) {
+      shouldUseHeadless = false;
+      this.logger.info('Using headless=false (global HEADLESS_MODE=false)');
+    } else {
+      // Default: use headless for better performance unless site needs otherwise
+      shouldUseHeadless = true;
+      this.logger.info('Using headless=true (default)');
+    }
+    
+    this.logger.info(`Launching browser: headless=${shouldUseHeadless}, reason=${needsNonHeadless ? 'site blocks headless' : 'default'}`);
+    
     this.browser = await chromium.launch({
-      headless: process.env.HEADLESS_MODE !== 'false',
+      headless: shouldUseHeadless,
       args: [
         '--no-sandbox', 
-        '--disable-setuid-sandbox',
-        '--disable-blink-features=AutomationControlled',
-        '--disable-features=IsolateOrigins,site-per-process'
+        '--disable-setuid-sandbox'
+        // Removed aggressive bot detection flags that trigger blocks
       ],
     });
     
@@ -35,15 +67,23 @@ class NavigationMapper {
     if (this.usePipeline) {
       this.pipeline = new NavigationDiscoveryPipeline(this.logger, this.worldModel);
       
-      // Add strategies in priority order - focused on getting clean main navigation
+      // Add strategies in priority order - adaptive strategy first for enterprise sites
       this.pipeline.addStrategies([
+        new AdaptiveNavigationStrategy(this.logger),   // FIRST: Enhanced mobile-first + complete tree discovery
         new MainNavigationStrategy(this.logger),       // Get main departments first
         new DropdownDiscoveryStrategy(this.logger),    // Then get dropdown content
         new AriaNavigationStrategy(this.logger),       // ARIA-based navigation
         new DataAttributeStrategy(this.logger),        // Data attribute patterns
         new VisibleNavigationStrategy(this.logger),    // Visible elements fallback
         new HiddenElementStrategy(this.logger),        // Hidden menus if needed
-        new DepartmentExplorationStrategy(this.logger, { maxDepartments: 2 }) // Limited deep exploration
+        new DepartmentExplorationStrategy(this.logger, { maxDepartments: 2 }), // Limited deep exploration
+        new ProductCatalogStrategy(this.logger, {      // NEW: Product discovery during pipeline
+          productDetectionThreshold: 5,               // Higher threshold for initial discovery
+          maxProductsPerPage: 100,                     // Limited for pipeline phase
+          enableInfiniteScroll: false,                 // Avoid complex interactions in pipeline
+          enableLoadMoreButtons: false,               // Save full pagination for tree building
+          enableTraditionalPagination: false          // Keep pipeline focused on navigation
+        })
       ]);
       
       this.logger.info('Navigation Mapper initialized with discovery pipeline');
@@ -51,20 +91,47 @@ class NavigationMapper {
       this.logger.info('Navigation Mapper initialized (legacy mode)');
     }
     
-    // Initialize tree builder
+    // Initialize tree builder with product catalog cache
     if (this.buildHierarchicalTree) {
-      this.treeBuilder = new NavigationTreeBuilder(this.logger);
-      this.logger.info('Navigation Tree Builder initialized');
+      // Get or create ProductCatalogCache singleton
+      const productCatalogCache = ProductCatalogCacheSingleton.getInstance(this.logger);
+      
+      this.treeBuilder = new NavigationTreeBuilder(this.logger, productCatalogCache);
+      this.logger.info('Navigation Tree Builder initialized with ProductCatalogCache');
     }
   }
 
   async mapSiteNavigation(url) {
-    if (!this.browser) {await this.initialize();}
-
     const domain = new URL(url).hostname;
+    
+    // Check if this site requires non-headless mode
+    const headlessBlockingSites = ['macys.com', 'nordstrom.com', 'saks.com'];
+    const needsNonHeadless = headlessBlockingSites.some(site => domain.includes(site));
+    
+    this.logger.info(`Site: ${domain}, needsNonHeadless: ${needsNonHeadless}, hasExistingBrowser: ${!!this.browser}`);
+    
+    // Initialize browser with appropriate headless setting
+    if (!this.browser) {
+      await this.initializeForSite(needsNonHeadless);
+    } else if (needsNonHeadless && this.browser._process?.spawnargs?.includes('--headless')) {
+      // Need to restart browser in non-headless mode
+      this.logger.info(`Restarting browser for ${domain} - needs non-headless mode`);
+      await this.browser.close();
+      await this.initializeForSite(needsNonHeadless);
+    }
+    
+    // Detect mobile-first sites that require mobile viewport (matches AdaptiveNavigationStrategy)
+    const mobileFirstSites = ['macys.com', 'homedepot.com', 'amazon.com', 'bestbuy.com'];
+    const isMobileFirst = mobileFirstSites.some(site => domain.includes(site));
+    
     const context = await this.browser.newContext({
-      viewport: { width: 1920, height: 1080 },
-      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      viewport: isMobileFirst ? { width: 375, height: 812 } : { width: 1920, height: 1080 },
+      userAgent: isMobileFirst ? 
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1' :
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      isMobile: isMobileFirst,
+      hasTouch: isMobileFirst,
+      deviceScaleFactor: isMobileFirst ? 2 : 1
     });
     const page = await context.newPage();
 
@@ -75,7 +142,8 @@ class NavigationMapper {
       await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
       
       // Additional wait to ensure JavaScript has rendered navigation
-      await page.waitForTimeout(3000);
+      // Mobile sites need extra time for navigation hydration
+      await page.waitForTimeout(isMobileFirst ? 5000 : 3000);
       
       // Wait for navigation elements to appear
       try {

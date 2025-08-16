@@ -10,11 +10,19 @@
  * - Variable timing delays
  * - User-agent rotation
  * - Cookie and session handling
+ * 
+ * Enhanced with Redis-MongoDB selector persistence for learning across sessions.
  */
+
+const SelectorCacheSingleton = require('../cache/SelectorCacheSingleton');
 
 class BrowserIntelligence {
   constructor(logger) {
     this.logger = logger;
+    
+    // Use singleton cache for shared persistence across all components
+    this.selectorCache = SelectorCacheSingleton.getInstance();
+    this.cacheInitialized = false;
     
     // Human behavior simulation config
     this.humanConfig = {
@@ -36,6 +44,17 @@ class BrowserIntelligence {
       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0'
     ];
+  }
+
+  /**
+   * Initialize the selector learning cache
+   */
+  async initialize() {
+    if (!this.cacheInitialized) {
+      await this.selectorCache.initialize(this.logger);
+      this.cacheInitialized = true;
+      this.logger?.info('BrowserIntelligence initialized with singleton selector learning cache');
+    }
   }
 
   /**
@@ -1986,7 +2005,8 @@ class BrowserIntelligence {
    * Calculate confidence score based on detected changes
    */
   calculateValidationConfidence(changes) {
-    if (changes.length === 0) return 0;
+    // Add defensive check for non-array or invalid changes
+    if (!changes || !Array.isArray(changes) || changes.length === 0) return 0;
     
     let score = 0;
     
@@ -2225,7 +2245,40 @@ class BrowserIntelligence {
    * Main discovery method - finds selectors by analyzing the actual DOM
    */
   async discoverSelectors(page, targetField) {
-    this.logger.info(`Discovering selectors for ${targetField} using DOM analysis`);
+    // Ensure cache is initialized
+    if (!this.cacheInitialized) {
+      await this.initialize();
+    }
+
+    const domain = new URL(page.url()).hostname;
+    this.logger.info(`Discovering selectors for ${targetField} on ${domain} using DOM analysis`);
+    
+    // Check cache first for existing selectors
+    const cached = await this.selectorCache.getOrDiscoverSelector(
+      domain,
+      targetField,
+      {
+        elementType: this.getElementTypeForField(targetField),
+        context: { url: page.url() }
+      }
+    );
+    
+    if (cached && cached.fromCache) {
+      this.logger.info(`Using cached selector for ${targetField}: ${cached.selector}`);
+      
+      // Convert cached selector to expected format
+      return [{
+        selector: cached.selector,
+        confidence: (cached.reliability || 0.7) * 100,
+        source: cached.cacheType === 'mongodb' ? 'cached-proven' : 'cached-recent',
+        sample: `Cached ${targetField} selector`,
+        interactive: { works: true, confidence: (cached.reliability || 0.7) * 100 },
+        finalConfidence: (cached.reliability || 0.7) * 100,
+        validated: true,
+        fromCache: true,
+        cacheType: cached.cacheType
+      }];
+    }
     
     // Add human-like interaction before analysis
     await this.humanRead(page);
@@ -2891,7 +2944,15 @@ class BrowserIntelligence {
           bestConfidence: validatedResults[0]?.finalConfidence || 0
         });
         
+        // Cache successful discoveries for future use
+        await this.cacheDiscoveredSelectors(domain, targetField, validatedResults);
+        
         return validatedResults;
+      }
+      
+      // Cache non-validated discoveries as well
+      if (results.results && results.results.length > 0) {
+        await this.cacheDiscoveredSelectors(domain, targetField, results.results);
       }
       
       return results.results;
@@ -3705,6 +3766,102 @@ class BrowserIntelligence {
         embedded
       }
     };
+  }
+
+  /**
+   * Cache discovered selectors for future use
+   */
+  async cacheDiscoveredSelectors(domain, targetField, discoveredSelectors) {
+    try {
+      // Only cache high-confidence, validated selectors
+      const worthCaching = discoveredSelectors.filter(sel => 
+        sel.validated && 
+        sel.finalConfidence >= 70 && 
+        sel.selector
+      );
+      
+      if (worthCaching.length === 0) {
+        this.logger?.debug(`No high-confidence selectors to cache for ${targetField}`);
+        return;
+      }
+      
+      const bestSelector = worthCaching[0];
+      const alternatives = worthCaching.slice(1, 3).map(s => s.selector);
+      
+      const selectorData = {
+        selector: bestSelector.selector,
+        alternatives,
+        reliability: bestSelector.finalConfidence / 100,
+        discoveryMethod: bestSelector.source || 'browser-intelligence',
+        metadata: {
+          confidence: bestSelector.finalConfidence,
+          validated: bestSelector.validated,
+          interactiveValidation: bestSelector.interactive,
+          sample: bestSelector.sample,
+          discoveredAt: new Date().toISOString()
+        }
+      };
+      
+      await this.selectorCache.getOrDiscoverSelector(
+        domain,
+        targetField,
+        {
+          discoveryFn: async () => selectorData,
+          elementType: this.getElementTypeForField(targetField),
+          context: { 
+            confidence: bestSelector.finalConfidence,
+            validated: true 
+          }
+        }
+      );
+      
+      this.logger?.info(`Cached selector for ${domain}:${targetField} - ${bestSelector.selector}`);
+      
+    } catch (error) {
+      this.logger?.error(`Failed to cache selectors for ${targetField}:`, error);
+    }
+  }
+
+  /**
+   * Map target field to element type for cache categorization
+   */
+  getElementTypeForField(targetField) {
+    const fieldTypeMap = {
+      'title': 'text',
+      'price': 'price', 
+      'images': 'image',
+      'description': 'text',
+      'variants': 'options',
+      'size': 'options',
+      'color': 'options',
+      'availability': 'status',
+      'brand': 'text',
+      'sku': 'text',
+      'rating': 'text',
+      'reviews': 'text'
+    };
+    
+    return fieldTypeMap[targetField] || 'generic';
+  }
+
+  /**
+   * Update selector success/failure stats in cache
+   */
+  async updateSelectorResult(domain, targetField, selector, success, error = null) {
+    try {
+      await this.selectorCache.updateSelectorResult(domain, targetField, selector, success, error);
+    } catch (error) {
+      this.logger?.error(`Failed to update selector result:`, error);
+    }
+  }
+
+  /**
+   * Clean up cache resources
+   */
+  async close() {
+    if (this.selectorCache) {
+      await this.selectorCache.close();
+    }
   }
 }
 

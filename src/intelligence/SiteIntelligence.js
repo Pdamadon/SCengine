@@ -145,8 +145,8 @@ class SiteIntelligence {
 
   assessMobileResponsiveness(navigationIntelligence) {
     return navigationIntelligence.clickable_elements.some(el =>
-      el.text.toLowerCase().includes('menu') &&
-      el.classes.includes('mobile'),
+      el.text && el.text.toLowerCase().includes('menu') &&
+      el.classes && el.classes.includes('mobile'),
     );
   }
 

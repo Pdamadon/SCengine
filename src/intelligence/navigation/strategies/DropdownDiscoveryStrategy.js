@@ -152,17 +152,19 @@ class DropdownDiscoveryStrategy extends NavigationStrategy {
         try {
           const elements = document.querySelectorAll(selector);
           elements.forEach(element => {
-            const text = element.textContent.trim();
+            const fullText = element.textContent.trim();
+            const cleanText = fullText.replace(/\s+/g, ' '); // Normalize whitespace
+            const mainText = fullText.split('\n')[0].trim(); // Get main text before line breaks
             const url = element.href || '';
             
             // Skip if already processed
-            const key = text + url;
+            const key = mainText + url;
             if (processed.has(key)) return;
             processed.add(key);
             
             // Skip non-navigation items
             const skipPatterns = ['sign in', 'cart', 'search', 'account', 'help'];
-            if (skipPatterns.some(pattern => text.toLowerCase().includes(pattern))) {
+            if (skipPatterns.some(pattern => mainText.toLowerCase().includes(pattern))) {
               return;
             }
             
@@ -179,7 +181,8 @@ class DropdownDiscoveryStrategy extends NavigationStrategy {
             
             if (indicators.some(ind => ind)) {
               triggers.push({
-                text: text,
+                text: mainText, // Use cleaned main text
+                fullText: fullText, // Keep full text for reference
                 selector: selector,
                 elementId: element.id,
                 className: element.className,
@@ -208,10 +211,15 @@ class DropdownDiscoveryStrategy extends NavigationStrategy {
       
       if (trigger.elementId) {
         triggerElement = await page.locator(`#${trigger.elementId}`).first();
-      } else if (trigger.className) {
-        triggerElement = await page.locator(`.${trigger.className.split(' ')[0]}:has-text("${trigger.text}")`).first();
       } else {
-        triggerElement = await page.locator(`${trigger.selector}:has-text("${trigger.text}")`).first();
+        // Use getByText which is more reliable for complex text content
+        try {
+          // First try exact text match
+          triggerElement = await page.getByText(trigger.text, { exact: true }).first();
+        } catch {
+          // Fallback to partial match if exact fails
+          triggerElement = await page.getByText(trigger.text.split('\n')[0].trim()).first();
+        }
       }
       
       if (!await triggerElement.isVisible({ timeout: 1000 })) {
@@ -222,42 +230,50 @@ class DropdownDiscoveryStrategy extends NavigationStrategy {
       await triggerElement.hover();
       await page.waitForTimeout(500); // Wait for dropdown animation
       
-      // Extract dropdown content
+      // Extract dropdown content - simplified approach for now
       const dropdownData = await page.evaluate((triggerText) => {
-        // Find the dropdown menu that appeared
+        // Look for visible dropdown content with glasswingshop.com specific selectors
         const dropdownSelectors = [
+          '.dropdown-content',  // From your screenshot
           '.dropdown-menu',
           '.submenu',
           '.mega-menu',
           '[class*="dropdown"]',
           '[class*="submenu"]',
-          '[role="menu"]',
-          '.menu-panel'
+          '[role="menu"]'
         ];
         
         let dropdownElement = null;
         
+        // Try each selector to find visible dropdown content
         for (const selector of dropdownSelectors) {
           const elements = document.querySelectorAll(selector);
           for (const element of elements) {
             const rect = element.getBoundingClientRect();
             if (rect.width > 0 && rect.height > 0) {
-              dropdownElement = element;
-              break;
+              const links = element.querySelectorAll('a');
+              if (links.length > 0) {
+                dropdownElement = element;
+                break;
+              }
             }
           }
           if (dropdownElement) break;
         }
         
         if (!dropdownElement) {
-          // Try to find dropdown near the trigger
-          const trigger = Array.from(document.querySelectorAll('a, button'))
-            .find(el => el.textContent.trim() === triggerText);
-          
-          if (trigger) {
-            const parent = trigger.closest('li, .nav-item');
-            if (parent) {
-              dropdownElement = parent.querySelector('.dropdown, .submenu, [class*="dropdown"]');
+          // Look for any newly visible element with multiple links
+          const allElements = document.querySelectorAll('*');
+          for (const element of allElements) {
+            const rect = element.getBoundingClientRect();
+            const style = window.getComputedStyle(element);
+            if (rect.width > 100 && rect.height > 50 && 
+                style.display !== 'none' && style.visibility !== 'hidden') {
+              const links = element.querySelectorAll('a');
+              if (links.length >= 5) { // Multiple links suggest dropdown content
+                dropdownElement = element;
+                break;
+              }
             }
           }
         }
@@ -269,16 +285,18 @@ class DropdownDiscoveryStrategy extends NavigationStrategy {
         const links = dropdownElement.querySelectorAll('a');
         
         links.forEach(link => {
-          const text = link.textContent.trim();
+          const fullText = link.textContent.trim();
+          const mainText = fullText.split('\n')[0].trim();
           const url = link.href;
           
-          if (text && url) {
+          if (mainText && mainText.length > 0 && url && url !== '#' && url !== 'javascript:void(0)') {
             items.push({
-              name: text,
+              name: mainText,
               url: url,
               type: 'dropdown_item',
               parent: triggerText,
-              level: 2
+              level: 2,
+              fullText: fullText
             });
           }
         });

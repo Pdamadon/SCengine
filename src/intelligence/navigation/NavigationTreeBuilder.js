@@ -11,15 +11,34 @@
  */
 
 const { chromium } = require('playwright');
+const ProductCatalogStrategy = require('./strategies/ProductCatalogStrategy');
 
 class NavigationTreeBuilder {
-  constructor(logger) {
+  constructor(logger, productCatalogCache = null) {
     this.logger = logger;
     this.visitedUrls = new Set();
     this.maxDepth = 4; // Maximum tree depth to prevent infinite recursion
     this.maxBranchWidth = 20; // Max items per level to explore
     this.browser = null;
     this.context = null;
+    
+    // Product discovery integration
+    this.productCatalogCache = productCatalogCache;
+    this.productCatalogStrategy = new ProductCatalogStrategy(logger, {
+      productDetectionThreshold: 3,
+      maxProductsPerPage: 500,
+      enableInfiniteScroll: true,
+      enableLoadMoreButtons: true,
+      enableTraditionalPagination: false // Avoid complex navigation during tree building
+    });
+    
+    // Statistics tracking
+    this.stats = {
+      totalNodes: 0,
+      productRichNodes: 0,
+      totalProducts: 0,
+      startTime: null
+    };
   }
 
   /**
@@ -27,12 +46,20 @@ class NavigationTreeBuilder {
    */
   async buildNavigationTree(baseUrl, initialNavigation, options = {}) {
     const startTime = Date.now();
-    this.logger.info('🌳 Building hierarchical navigation tree', { baseUrl });
+    this.logger.info('🌳 Building hierarchical navigation tree with product discovery', { baseUrl });
 
     // Reset state
     this.visitedUrls.clear();
     this.maxDepth = options.maxDepth || 4;
     this.maxBranchWidth = options.maxBranchWidth || 20;
+    
+    // Initialize statistics
+    this.stats = {
+      totalNodes: 0,
+      productRichNodes: 0,
+      totalProducts: 0,
+      startTime: startTime
+    };
 
     try {
       // Initialize browser if not provided
@@ -82,10 +109,22 @@ class NavigationTreeBuilder {
       }
 
       const duration = Date.now() - startTime;
-      this.logger.info(`✅ Navigation tree built in ${duration}ms`, {
+      
+      // Add product statistics to tree metadata
+      tree.metadata.product_stats = {
+        total_products: this.stats.totalProducts,
+        product_rich_nodes: this.stats.productRichNodes,
+        total_nodes: this.stats.totalNodes,
+        product_coverage: this.stats.totalNodes > 0 ? (this.stats.productRichNodes / this.stats.totalNodes * 100).toFixed(1) : 0
+      };
+      
+      this.logger.info(`✅ Enhanced navigation tree built in ${duration}ms`, {
         total_nodes: tree.metadata.total_items,
         max_depth: tree.metadata.max_depth_reached,
-        main_categories: tree.children.length
+        main_categories: tree.children.length,
+        total_products: this.stats.totalProducts,
+        product_rich_nodes: this.stats.productRichNodes,
+        product_coverage: tree.metadata.product_stats.product_coverage + '%'
       });
 
       return tree;
@@ -142,10 +181,37 @@ class NavigationTreeBuilder {
         }
       }
     }
-    // Otherwise, visit the URL to discover children
+    // Otherwise, visit the URL to discover children AND products
     else if (itemUrl && itemUrl !== '#' && this.shouldVisitUrl(itemUrl)) {
       try {
-        const children = await this.discoverChildren(itemUrl, depth);
+        // Discover children navigation
+        const childrenResult = await this.discoverChildrenAndProducts(itemUrl, depth, node);
+        const children = childrenResult.children;
+        
+        // Add products to node if discovered
+        if (childrenResult.products && childrenResult.products.length > 0) {
+          node.products = childrenResult.products;
+          node.productCount = childrenResult.products.length;
+          node.isProductRich = true;
+          node.productAnalysis = childrenResult.productAnalysis;
+          
+          // Update statistics
+          this.stats.productRichNodes++;
+          this.stats.totalProducts += childrenResult.products.length;
+          
+          this.logger.info(`🛍️ ${node.name}: Found ${childrenResult.products.length} products`);
+          
+          // Store products if cache available
+          if (this.productCatalogCache) {
+            try {
+              const domain = new URL(baseUrl).hostname;
+              await this.productCatalogCache.storeProducts(domain, node);
+            } catch (cacheError) {
+              this.logger.warn('Failed to cache products:', cacheError.message);
+            }
+          }
+        }
+        
         this.logger.debug(`Found ${children.length} children for ${node.name}`);
         
         // Recursively explore children
@@ -161,13 +227,16 @@ class NavigationTreeBuilder {
       }
     }
 
+    // Update statistics
+    this.stats.totalNodes++;
+
     return node;
   }
 
   /**
-   * Discover child navigation by visiting a URL
+   * Discover child navigation AND products by visiting a URL
    */
-  async discoverChildren(url, currentDepth) {
+  async discoverChildrenAndProducts(url, currentDepth, parentNode) {
     const page = await this.context.newPage();
     
     try {
@@ -237,11 +306,31 @@ class NavigationTreeBuilder {
         return items;
       });
 
-      return children;
+      // NEW: Product discovery on this page
+      let productResult = null;
+      try {
+        this.logger.debug(`Running product discovery on ${url}`);
+        productResult = await this.productCatalogStrategy.execute(page);
+      } catch (productError) {
+        this.logger.warn(`Product discovery failed for ${url}: ${productError.message}`);
+        productResult = { items: [], confidence: 0, metadata: { error: productError.message } };
+      }
+
+      return {
+        children,
+        products: productResult.items || [],
+        productAnalysis: productResult.metadata || {},
+        productConfidence: productResult.confidence || 0
+      };
 
     } catch (error) {
       this.logger.debug(`Failed to discover children for ${url}: ${error.message}`);
-      return [];
+      return {
+        children: [],
+        products: [],
+        productAnalysis: { error: error.message },
+        productConfidence: 0
+      };
     } finally {
       await page.close();
     }

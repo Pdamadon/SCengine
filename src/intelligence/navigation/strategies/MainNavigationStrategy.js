@@ -55,18 +55,32 @@ class MainNavigationStrategy extends NavigationStrategy {
               return false;
             }
             
-            // Main department patterns
+            // Main department patterns (more flexible matching)
             const mainDepartments = [
-              'women', 'men', 'kids', 'girls', 'boys', 'baby', 'toddler',
+              'women', 'woman', 'men', 'man', 'kids', 'children', 'girls', 'boys', 'baby', 'toddler',
               'home', 'furniture', 'decor', 'kitchen', 'bedding', 'bath',
-              'shoes', 'clothing', 'accessories', 'jewelry', 'handbags',
+              'shoes', 'clothing', 'accessories', 'jewelry', 'handbags', 'bags',
               'beauty', 'fragrance', 'makeup', 'skincare',
               'electronics', 'toys', 'sports', 'outdoor',
-              'sale', 'clearance', 'new arrivals', 'brands'
+              'sale', 'clearance', 'new arrivals', 'brands', 'collections'
             ];
             
-            // Check if it's a main department
-            return mainDepartments.some(dept => lowerText === dept || lowerText === dept + 's');
+            // Check if it's a main department (flexible matching)
+            const isDepartment = mainDepartments.some(dept => 
+              lowerText === dept || 
+              lowerText === dept + 's' || 
+              lowerText.includes(dept) ||
+              dept.includes(lowerText)
+            );
+            
+            // Also consider any link in main navigation areas as potentially valid
+            // if it's in a navigation container and not explicitly excluded
+            const inNavigation = url.includes('/collection') || 
+                                url.includes('/category') || 
+                                url.includes('/department') ||
+                                text.length >= 3; // Any reasonable length text
+            
+            return isDepartment || (inNavigation && text.length >= 3);
           };
           
           // Helper to extract clean text
@@ -84,9 +98,11 @@ class MainNavigationStrategy extends NavigationStrategy {
           const navSelectors = [
             // Specific IDs and classes for main nav
             '#mainNavigation > li > a',
+            '#nav-menu > li > a',
             '#main-nav > li > a',
             '#primary-nav > li > a',
             '.main-navigation > li > a',
+            '.nav-menu > li > a',        // glasswingshop specific
             '.primary-navigation > li > a',
             '.site-navigation > li > a',
             
@@ -95,6 +111,12 @@ class MainNavigationStrategy extends NavigationStrategy {
             'nav > div > a',
             '[role="navigation"] > ul > li > a',
             
+            // glasswingshop specific patterns from screenshot
+            '.dropdown-toggle',           // Main navigation triggers
+            'li > .dropdown-toggle',
+            '.nav-menu li > a',
+            '#nav-menu li > a',
+            
             // Header navigation (first level)
             'header nav > ul > li > a',
             'header .navigation > ul > li > a',
@@ -102,13 +124,17 @@ class MainNavigationStrategy extends NavigationStrategy {
             
             // Common patterns (but only direct children)
             '.nav-list > li > a',
-            '.nav-menu > li > a',
             'ul.menu > li > a',
             
             // Specific store patterns
             '.nav-item > a:first-child', // First link in nav item
             '[class*="department"] > a',
-            '[class*="category-nav"] > li > a'
+            '[class*="category-nav"] > li > a',
+            
+            // More flexible patterns for glasswingshop
+            'nav a[href*="/collections"]',
+            'nav a[href*="/category"]',
+            'nav a[href*="/collection"]'
           ];
           
           // Process each selector

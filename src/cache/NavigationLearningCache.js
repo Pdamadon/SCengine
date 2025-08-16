@@ -5,12 +5,12 @@
  * Handles recursive navigation discovery and caching at each level
  */
 
-const RedisCache = require('./RedisCache');
+const RedisCacheFactory = require('./RedisCacheFactory');
 
 class NavigationLearningCache {
   constructor(logger) {
     this.logger = logger;
-    this.cache = new RedisCache(logger);
+    this.cache = RedisCacheFactory.getInstance(logger, 'NavigationLearningCache');
     this.learningData = new Map(); // Track success rates and patterns
   }
 

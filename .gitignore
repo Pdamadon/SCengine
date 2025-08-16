@@ -120,3 +120,6 @@ test-*.js
 *-results.json
 *-urls-*.json
 site_intelligence_*.json
+
+# Zen MCP Server (external tool)
+tools/zen-mcp-server/

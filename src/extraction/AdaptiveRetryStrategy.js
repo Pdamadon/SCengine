@@ -5,11 +5,15 @@
  * for selector discovery and validation.
  */
 
+const SelectorCacheSingleton = require('../cache/SelectorCacheSingleton');
+
 class AdaptiveRetryStrategy {
   constructor(logger) {
     this.logger = logger;
     this.attemptHistory = new Map(); // domain -> attempts
     this.learnedPatterns = new Map(); // domain -> patterns
+    this.selectorCache = SelectorCacheSingleton.getInstance();
+    this.cacheInitialized = false;
     
     this.config = {
       maxRetryAttempts: 3,
@@ -18,6 +22,17 @@ class AdaptiveRetryStrategy {
       interactionMethods: ['click', 'hover', 'select', 'focus'],
       waitTimes: [500, 1000, 1500, 2000], // Different wait times to try
     };
+  }
+
+  /**
+   * Initialize cache connection
+   */
+  async initializeCache() {
+    if (!this.cacheInitialized) {
+      await this.selectorCache.initialize(this.logger);
+      this.cacheInitialized = true;
+      this.logger?.debug('AdaptiveRetryStrategy singleton cache initialized');
+    }
   }
 
   /**
@@ -345,7 +360,7 @@ class AdaptiveRetryStrategy {
   /**
    * Learn from a completed attempt
    */
-  learnFromAttempt(domain, attempt) {
+  async learnFromAttempt(domain, attempt) {
     if (!this.attemptHistory.has(domain)) {
       this.attemptHistory.set(domain, []);
     }
@@ -360,11 +375,49 @@ class AdaptiveRetryStrategy {
     const patterns = this.extractPatterns(attempts);
     this.learnedPatterns.set(domain, patterns);
 
+    // Cache working selectors from learned patterns
+    await this.cacheLearnedPatterns(domain, patterns);
+
     this.logger?.debug(`Learned from attempt for ${domain}:`, {
       totalAttempts: attempts.length,
       workingSelectors: patterns.workingSelectors.length,
       workingFields: patterns.workingFieldTypes.size
     });
+  }
+
+  /**
+   * Cache selectors from learned patterns
+   */
+  async cacheLearnedPatterns(domain, patterns) {
+    try {
+      await this.initializeCache();
+      
+      for (const workingSelector of patterns.workingSelectors) {
+        if (workingSelector.confidence > this.config.learningThreshold) {
+          await this.selectorCache.getOrDiscoverSelector(
+            domain,
+            workingSelector.field,
+            {
+              discoveryFn: async () => ({
+                selector: workingSelector.selector,
+                alternatives: [],
+                reliability: workingSelector.confidence,
+                discoveryMethod: 'pattern_learning',
+                metadata: {
+                  source: workingSelector.source,
+                  validated: true,
+                  learnedFromAttempts: true
+                }
+              }),
+              elementType: this.getElementTypeForField(workingSelector.field),
+              context: { domain }
+            }
+          );
+        }
+      }
+    } catch (error) {
+      this.logger?.error('Failed to cache learned patterns:', error);
+    }
   }
 
   /**
@@ -408,20 +461,116 @@ class AdaptiveRetryStrategy {
    * Execute a retry attempt based on strategy
    */
   async executeRetryStrategy(page, strategy, targetField, browserIntelligence) {
+    await this.initializeCache();
+    
+    const domain = new URL(page.url()).hostname;
+    
+    // Check cache first for proven selectors
+    try {
+      const cached = await this.selectorCache.getOrDiscoverSelector(
+        domain,
+        targetField,
+        {
+          elementType: this.getElementTypeForField(targetField),
+          context: { url: page.url() }
+        }
+      );
+      
+      if (cached && cached.selector && cached.fromCache) {
+        this.logger?.debug(`Using cached selector for ${domain}:${targetField}: ${cached.selector}`);
+        return [{
+          selector: cached.selector,
+          confidence: cached.reliability || 0.8,
+          source: 'cache',
+          validated: true
+        }];
+      }
+    } catch (error) {
+      this.logger?.warn('Cache lookup failed, continuing with strategy:', error.message);
+    }
+    
+    // Execute original strategy
+    let results = [];
     switch (strategy.method) {
       case 'proximity_search':
-        return await this.findNearbySelectors(page, strategy.workingSelectors, targetField);
+        results = await this.findNearbySelectors(page, strategy.workingSelectors, targetField);
+        break;
         
       case 'interaction_discovery':
-        return await this.discoverThroughInteraction(page, targetField, browserIntelligence);
+        results = await this.discoverThroughInteraction(page, targetField, browserIntelligence);
+        break;
         
       case 'alternative_interactions':
         const basicSelectors = await browserIntelligence.discoverSelectors(page, targetField);
-        return await this.tryAlternativeInteractions(page, basicSelectors.map(s => s.selector), browserIntelligence);
+        results = await this.tryAlternativeInteractions(page, basicSelectors.map(s => s.selector), browserIntelligence);
+        break;
         
       default:
-        return [];
+        results = [];
     }
+    
+    // Cache successful discoveries
+    if (results && results.length > 0) {
+      await this.cacheSuccessfulSelectors(domain, targetField, results);
+    }
+    
+    return results;
+  }
+
+  /**
+   * Cache successful selector discoveries
+   */
+  async cacheSuccessfulSelectors(domain, targetField, results) {
+    try {
+      const highConfidenceResults = results.filter(r => 
+        r.confidence && r.confidence > this.config.learningThreshold
+      );
+      
+      for (const result of highConfidenceResults) {
+        if (result.selector) {
+          await this.selectorCache.getOrDiscoverSelector(
+            domain,
+            targetField,
+            {
+              discoveryFn: async () => ({
+                selector: result.selector,
+                alternatives: results.filter(r => r !== result).map(r => r.selector),
+                reliability: result.confidence,
+                discoveryMethod: result.source || 'adaptive_retry',
+                metadata: {
+                  validated: result.validated || false,
+                  interactionMethod: result.interactionMethod,
+                  patterns: result.patterns
+                }
+              }),
+              elementType: this.getElementTypeForField(targetField),
+              context: { domain }
+            }
+          );
+        }
+      }
+    } catch (error) {
+      this.logger?.error('Failed to cache selectors:', error);
+    }
+  }
+
+  /**
+   * Helper to map field to element type
+   */
+  getElementTypeForField(field) {
+    const typeMap = {
+      'title': 'text',
+      'price': 'price', 
+      'image': 'image',
+      'variants': 'options',
+      'color': 'options',
+      'size': 'options',
+      'availability': 'status',
+      'description': 'text',
+      'specifications': 'list'
+    };
+    
+    return typeMap[field] || 'generic';
   }
 }
 

@@ -1,11 +1,11 @@
-const RedisCache = require('../cache/RedisCache');
+const RedisCacheFactory = require('../cache/RedisCacheFactory');
 const mongoDBClient = require('../database/MongoDBClient');
 const { collections } = require('../config/mongodb');
 
 class WorldModel {
   constructor(logger) {
     this.logger = logger;
-    this.cache = new RedisCache(logger);
+    this.cache = RedisCacheFactory.getInstance(logger, 'WorldModel');
     this.mongoClient = mongoDBClient;
     this.db = null;
     this.collections = {};
@@ -674,6 +674,342 @@ class WorldModel {
     if (/\.(product|item|card)/.test(selector)) confidence += 0.1;
     
     return Math.min(confidence, 1.0);
+  }
+
+  // =====================================================
+  // CATEGORY TREE STORAGE METHODS (NEW)
+  // =====================================================
+
+  /**
+   * Store complete category tree from CategoryTreeBuilder
+   */
+  async storeCategoryTree(domain, categoryTree) {
+    if (!this.db) {
+      this.logger.warn('MongoDB not connected, cannot store category tree');
+      return false;
+    }
+
+    try {
+      // Store hierarchical tree structure
+      const treeDoc = {
+        domain,
+        tree_type: 'category_hierarchy',
+        tree_data: categoryTree,
+        total_categories: categoryTree.metadata?.total_categories || 0,
+        max_depth: categoryTree.metadata?.max_depth_reached || 0,
+        discovery_stats: categoryTree.metadata?.discovery_stats || {},
+        created_at: new Date(),
+        updated_at: new Date()
+      };
+
+      await this.db.collection('category_trees').replaceOne(
+        { domain, tree_type: 'category_hierarchy' },
+        treeDoc,
+        { upsert: true }
+      );
+
+      // Also store flattened structure for efficient querying
+      const flatCategories = this.flattenCategoryTree(categoryTree, domain);
+      
+      if (flatCategories.length > 0) {
+        // Remove existing flat categories for this domain
+        await this.db.collection('category_flat').deleteMany({ domain });
+        
+        // Insert new flat categories
+        await this.db.collection('category_flat').insertMany(flatCategories);
+      }
+
+      this.logger.info(`Stored category tree for ${domain}`, {
+        total_categories: categoryTree.metadata?.total_categories || 0,
+        flat_categories: flatCategories.length,
+        max_depth: categoryTree.metadata?.max_depth_reached || 0
+      });
+
+      return true;
+    } catch (error) {
+      this.logger.error('Failed to store category tree:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Get stored category tree
+   */
+  async getCategoryTree(domain) {
+    if (!this.db) {
+      return null;
+    }
+
+    try {
+      const treeDoc = await this.db.collection('category_trees').findOne({
+        domain,
+        tree_type: 'category_hierarchy'
+      });
+
+      return treeDoc ? treeDoc.tree_data : null;
+    } catch (error) {
+      this.logger.error('Failed to get category tree:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Get leaf categories for product discovery
+   */
+  async getCategoryLeafNodes(domain) {
+    if (!this.db) {
+      return [];
+    }
+
+    try {
+      // Get categories with no children or few children (likely to have products)
+      const leafCategories = await this.db.collection('category_flat').find({
+        domain,
+        $or: [
+          { is_leaf: true },
+          { child_count: { $lte: 2 } },
+          { depth: { $gte: 3 } }
+        ]
+      }).sort({ depth: -1, name: 1 }).toArray();
+
+      return leafCategories.map(cat => ({
+        name: cat.name,
+        url: cat.url,
+        depth: cat.depth,
+        type: cat.type,
+        category_id: cat.category_id,
+        parent_path: cat.parent_path
+      }));
+    } catch (error) {
+      this.logger.error('Failed to get category leaf nodes:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Initialize product discovery progress tracking
+   */
+  async initializeProductDiscoveryProgress(domain, categories) {
+    if (!this.db) {
+      return false;
+    }
+
+    try {
+      // Clear existing progress for this domain
+      await this.db.collection('product_discovery_progress').deleteMany({ domain });
+
+      // Insert initial progress records
+      const progressRecords = categories.map(cat => ({
+        domain,
+        category_url: cat.url,
+        category_name: cat.name,
+        category_depth: cat.depth,
+        status: 'pending',
+        products_found: 0,
+        start_time: null,
+        end_time: null,
+        error_message: null,
+        created_at: new Date(),
+        updated_at: new Date()
+      }));
+
+      if (progressRecords.length > 0) {
+        await this.db.collection('product_discovery_progress').insertMany(progressRecords);
+      }
+
+      this.logger.info(`Initialized product discovery progress for ${domain} with ${categories.length} categories`);
+      return true;
+    } catch (error) {
+      this.logger.error('Failed to initialize product discovery progress:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Mark category as processed during product discovery
+   */
+  async markCategoryProcessed(domain, categoryUrl, statusData) {
+    if (!this.db) {
+      return false;
+    }
+
+    try {
+      const updateData = {
+        status: statusData.status,
+        updated_at: new Date()
+      };
+
+      if (statusData.status === 'completed') {
+        updateData.products_found = statusData.products_found || 0;
+        updateData.end_time = new Date();
+      } else if (statusData.status === 'failed') {
+        updateData.error_message = statusData.error;
+        updateData.end_time = new Date();
+      } else if (statusData.status === 'in_progress') {
+        updateData.start_time = new Date();
+      }
+
+      const result = await this.db.collection('product_discovery_progress').updateOne(
+        { domain, category_url: categoryUrl },
+        { $set: updateData }
+      );
+
+      return result.modifiedCount > 0;
+    } catch (error) {
+      this.logger.error('Failed to mark category processed:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Store discovered products with category information
+   */
+  async storeDiscoveredProducts(domain, category, products) {
+    if (!this.db || !this.collections.products) {
+      this.logger.warn('MongoDB not connected, cannot store discovered products');
+      return false;
+    }
+
+    try {
+      const productDocs = products.map(product => ({
+        ...product,
+        domain,
+        product_id: product.product_id || `${domain}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        source_url: product.url,
+        
+        // Category relationship information
+        primary_category: {
+          name: category.name,
+          url: category.url,
+          depth: category.depth,
+          type: category.type,
+          discovery_path: product.category_info?.discovery_path || {}
+        },
+        
+        // Enhanced category information if available
+        category_info: product.category_info || {
+          category_name: category.name,
+          category_url: category.url,
+          category_depth: category.depth,
+          category_type: category.type
+        },
+        
+        // Timestamps
+        discovered_at: new Date(),
+        created_at: new Date(),
+        updated_at: new Date(),
+        scraped_at: new Date()
+      }));
+
+      // Bulk upsert products
+      const bulkOps = productDocs.map(product => ({
+        replaceOne: {
+          filter: { source_url: product.source_url, domain },
+          replacement: product,
+          upsert: true
+        }
+      }));
+
+      if (bulkOps.length > 0) {
+        const result = await this.collections.products.bulkWrite(bulkOps);
+        
+        this.logger.info(`Stored ${productDocs.length} products for category ${category.name}`, {
+          inserted: result.upsertedCount,
+          modified: result.modifiedCount
+        });
+      }
+
+      return true;
+    } catch (error) {
+      this.logger.error('Failed to store discovered products:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Get product discovery progress summary
+   */
+  async getProductDiscoveryProgress(domain) {
+    if (!this.db) {
+      return null;
+    }
+
+    try {
+      const [progressStats, recentProgress] = await Promise.all([
+        this.db.collection('product_discovery_progress').aggregate([
+          { $match: { domain } },
+          {
+            $group: {
+              _id: '$status',
+              count: { $sum: 1 },
+              total_products: { $sum: '$products_found' }
+            }
+          }
+        ]).toArray(),
+        
+        this.db.collection('product_discovery_progress').find({ domain })
+          .sort({ updated_at: -1 })
+          .limit(10)
+          .toArray()
+      ]);
+
+      const summary = {
+        domain,
+        stats: {},
+        total_categories: 0,
+        total_products_found: 0,
+        recent_activity: recentProgress
+      };
+
+      progressStats.forEach(stat => {
+        summary.stats[stat._id] = stat.count;
+        summary.total_categories += stat.count;
+        summary.total_products_found += stat.total_products;
+      });
+
+      return summary;
+    } catch (error) {
+      this.logger.error('Failed to get product discovery progress:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Helper: Flatten category tree for efficient querying
+   */
+  flattenCategoryTree(tree, domain, parentPath = []) {
+    const flatCategories = [];
+    
+    const flatten = (node, path = []) => {
+      if (node.type !== 'root') {
+        const currentPath = [...path, node.name];
+        
+        flatCategories.push({
+          domain,
+          category_id: `${domain}_${node.url}`,
+          name: node.name,
+          url: node.url,
+          type: node.type,
+          depth: node.depth,
+          parent_path: path,
+          full_path: currentPath,
+          is_leaf: !node.children || node.children.length === 0,
+          child_count: node.children ? node.children.length : 0,
+          has_products: node.productCount > 0 || false,
+          product_count: node.productCount || 0,
+          created_at: new Date()
+        });
+        
+        path = currentPath;
+      }
+      
+      if (node.children) {
+        node.children.forEach(child => flatten(child, path));
+      }
+    };
+    
+    flatten(tree);
+    return flatCategories;
   }
 
   // =====================================================

@@ -12,7 +12,7 @@
  */
 
 const WorldModel = require('../intelligence/WorldModel');
-const RedisCache = require('../cache/RedisCache');
+const RedisCacheFactory = require('../cache/RedisCacheFactory');
 
 class StateManager {
   constructor(logger) {
@@ -20,7 +20,7 @@ class StateManager {
     
     // Initialize storage backends
     this.worldModel = new WorldModel(logger);
-    this.cache = new RedisCache(logger);
+    this.cache = RedisCacheFactory.getInstance(logger, 'StateManager');
     
     // In-memory state for active sessions
     this.activeStates = new Map();
