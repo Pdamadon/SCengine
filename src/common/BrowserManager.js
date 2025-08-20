@@ -110,32 +110,35 @@ class BrowserManager {
       launch: {
         headless: true,
         args: [
-          '--no-first-run',
-          '--no-default-browser-check', 
-          '--disable-default-apps',
-          '--disable-popup-blocking',
-          '--disable-translate',
-          '--disable-background-timer-throttling',
-          '--disable-renderer-backgrounding',
-          '--disable-device-discovery-notifications',
-          '--disable-features=TranslateUI',
-          '--disable-ipc-flooding-protection',
-          '--disable-backgrounding-occluded-windows',
-          '--disable-blink-features=AutomationControlled',
-          '--exclude-switches=enable-automation',
-          '--disable-useragent-freeze',
-          '--disable-component-extensions-with-background-pages',
-          '--disable-extensions',
           '--no-sandbox',
           '--disable-setuid-sandbox',
           '--disable-dev-shm-usage',
-          '--disable-accelerated-2d-canvas',
           '--disable-gpu',
-          '--disable-gpu-sandbox',
-          // Railway/Docker specific args
-          ...(process.env.RAILWAY_ENVIRONMENT ? [
-            '--disable-software-rasterizer'
-          ] : ['--no-zygote', '--single-process']),
+          '--disable-blink-features=AutomationControlled',
+          '--disable-web-security',
+          '--disable-crashpad',  // Fix for Railway crashpad_handler error
+          // Railway/Docker specific - use minimal args
+          ...(process.env.RAILWAY_ENVIRONMENT ? [] : [
+            '--no-first-run',
+            '--no-default-browser-check', 
+            '--disable-default-apps',
+            '--disable-popup-blocking',
+            '--disable-translate',
+            '--disable-background-timer-throttling',
+            '--disable-renderer-backgrounding',
+            '--disable-device-discovery-notifications',
+            '--disable-features=TranslateUI',
+            '--disable-ipc-flooding-protection',
+            '--disable-backgrounding-occluded-windows',
+            '--exclude-switches=enable-automation',
+            '--disable-useragent-freeze',
+            '--disable-component-extensions-with-background-pages',
+            '--disable-extensions',
+            '--disable-accelerated-2d-canvas',
+            '--disable-gpu-sandbox',
+            '--no-zygote', 
+            '--single-process'
+          ]),
           // Add certificate error handling for proxy
           ...(proxyConfig ? ['--ignore-certificate-errors', '--ignore-certificate-errors-spki-list'] : [])
         ]
@@ -172,17 +175,8 @@ class BrowserManager {
           ...baseConfig,
           launch: {
             ...baseConfig.launch,
-            headless: false,  // ✅ Run with visible browser to avoid headless detection
-            args: [
-              ...baseConfig.launch.args,
-              '--disable-blink-features=AutomationControlled',
-              '--disable-dev-shm-usage',
-              '--no-sandbox',
-              '--disable-setuid-sandbox',
-              '--disable-background-timer-throttling',
-              '--disable-backgrounding-occluded-windows',
-              '--disable-renderer-backgrounding'
-            ]
+            headless: process.env.RAILWAY_ENVIRONMENT ? true : false,  // Headless in Railway, visible locally
+            args: baseConfig.launch.args  // Don't duplicate args
           },
           stealth: {
             ...baseConfig.stealth,
