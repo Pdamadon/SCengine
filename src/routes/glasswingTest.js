@@ -5,7 +5,8 @@
 
 const express = require('express');
 const router = express.Router();
-const PipelineOrchestrator = require('../core/PipelineOrchestrator');
+const BrowserManager = require('../common/BrowserManager');
+const ProductCatalogStrategy = require('../core/collection/strategies/ProductCatalogStrategy');
 const { logger } = require('../utils/logger');
 
 /**
@@ -19,25 +20,20 @@ router.get('/glasswing', async (req, res) => {
   const testUrl = req.query.url || "https://glasswingshop.com/collections/clothing-collection";
   
   const startTime = Date.now();
-  let orchestrator;
+  let browserManager;
+  let browserSession;
   
   try {
-    // Create pipeline orchestrator
-    orchestrator = new PipelineOrchestrator(logger, {
-      enableNavigation: false,  // Skip navigation discovery
-      enableCollection: true,   // Enable product collection
-      enableExtraction: false,  // Skip full extraction for speed
-      persistResults: false,
-      maxConcurrency: 1
-    });
+    // Create browser manager and product catalog strategy directly (no Redis deps)
+    browserManager = new BrowserManager();
+    const productCatalogStrategy = new ProductCatalogStrategy(logger);
     
-    logger.info('Initializing pipeline orchestrator...');
-    await orchestrator.initialize();
-    
-    // Use ProductCatalogStrategy directly for collection
-    const { page, close } = await orchestrator.browserManager.createBrowser('stealth', {
+    logger.info('Creating browser with stealth profile...');
+    browserSession = await browserManager.createBrowser('stealth', {
       headless: true
     });
+    
+    const { page } = browserSession;
     
     try {
       logger.info(`Navigating to: ${testUrl}`);
@@ -47,7 +43,7 @@ router.get('/glasswing', async (req, res) => {
       });
       
       // Use ProductCatalogStrategy to collect products
-      const result = await orchestrator.productCatalogStrategy.execute(page);
+      const result = await productCatalogStrategy.execute(page);
       
       const duration = Date.now() - startTime;
       
@@ -77,7 +73,9 @@ router.get('/glasswing', async (req, res) => {
       res.json(response);
       
     } finally {
-      await close();
+      if (browserSession && browserSession.close) {
+        await browserSession.close();
+      }
     }
     
   } catch (error) {
@@ -96,8 +94,8 @@ router.get('/glasswing', async (req, res) => {
     });
     
   } finally {
-    if (orchestrator) {
-      await orchestrator.close();
+    if (browserManager) {
+      await browserManager.closeAll();
     }
   }
 });
