@@ -180,8 +180,8 @@ class BrowserManager {
           ...baseConfig,
           launch: {
             ...baseConfig.launch,
-            // Use new headless mode on Railway, visible browser locally
-            headless: process.env.RAILWAY_ENVIRONMENT ? 'new' : false,
+            // Always use headless: true on Railway (container), false locally
+            headless: process.env.RAILWAY_ENVIRONMENT ? true : false,
             args: baseConfig.launch.args  // Don't duplicate args
           },
           stealth: {
