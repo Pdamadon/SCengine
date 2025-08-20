@@ -77,7 +77,7 @@ class AIShoppingScraper {
   setupMiddleware() {
     // Trust proxy for accurate IP addresses (must be first)
     // Always trust proxy on Railway, or when TRUST_PROXY is set
-    this.app.set('trust proxy', process.env.RAILWAY_ENVIRONMENT || process.env.TRUST_PROXY === 'true');
+    this.app.set('trust proxy', !!process.env.RAILWAY_ENVIRONMENT || process.env.TRUST_PROXY === 'true');
 
     // Initialize comprehensive security middleware
     initializeSecurity(this.app);
