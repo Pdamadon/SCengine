@@ -9,7 +9,7 @@
  */
 
 const NavigationMapper = require('./discovery/NavigationMapper');
-const ProductCatalogStrategy = require('./collection/ProductCatalogStrategy');
+const ProductCatalogStrategy = require('./collection/strategies/ProductCatalogStrategy');
 const ExtractorIntelligence = require('./extraction/ExtractorIntelligence');
 const WorldModel = require('../data/WorldModel');
 const BrowserManager = require('../common/BrowserManager');
