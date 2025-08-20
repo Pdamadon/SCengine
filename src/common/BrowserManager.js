@@ -117,6 +117,11 @@ class BrowserManager {
           '--disable-blink-features=AutomationControlled',
           '--disable-web-security',
           '--disable-crashpad',  // Fix for Railway crashpad_handler error
+          // Additional anti-detection flags
+          '--disable-features=IsolateOrigins,site-per-process',
+          '--flag-switches-begin',
+          '--flag-switches-end',
+          '--origin-trial-disabled-features=WebGPU',
           // Railway/Docker specific - use minimal args
           ...(process.env.RAILWAY_ENVIRONMENT ? [] : [
             '--no-first-run',
@@ -175,7 +180,8 @@ class BrowserManager {
           ...baseConfig,
           launch: {
             ...baseConfig.launch,
-            headless: process.env.RAILWAY_ENVIRONMENT ? true : false,  // Headless in Railway, visible locally
+            // Use new headless mode on Railway, visible browser locally
+            headless: process.env.RAILWAY_ENVIRONMENT ? 'new' : false,
             args: baseConfig.launch.args  // Don't duplicate args
           },
           stealth: {
