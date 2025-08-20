@@ -130,9 +130,12 @@ class BrowserManager {
           '--disable-setuid-sandbox',
           '--disable-dev-shm-usage',
           '--disable-accelerated-2d-canvas',
-          '--no-zygote',
-          '--single-process', // Helps avoid detection
+          '--disable-gpu',
           '--disable-gpu-sandbox',
+          // Railway/Docker specific args
+          ...(process.env.RAILWAY_ENVIRONMENT ? [
+            '--disable-software-rasterizer'
+          ] : ['--no-zygote', '--single-process']),
           // Add certificate error handling for proxy
           ...(proxyConfig ? ['--ignore-certificate-errors', '--ignore-certificate-errors-spki-list'] : [])
         ]
