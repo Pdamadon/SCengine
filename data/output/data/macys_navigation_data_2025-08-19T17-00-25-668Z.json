@@ -1,0 +1,1010 @@
+{
+  "metadata": {
+    "site": "macys.com",
+    "extractedAt": "2025-08-19T17:00:18.963Z",
+    "pattern": "macys-megamenu",
+    "totalMainNavItems": 14,
+    "categoriesExtracted": 2
+  },
+  "mainNavigation": [
+    {
+      "text": "Women",
+      "index": 1
+    },
+    {
+      "text": "Men",
+      "index": 2
+    }
+  ],
+  "categoryData": {
+    "Women": {
+      "categoryName": "Women",
+      "extractionMethod": "hover",
+      "success": true,
+      "itemCount": 79,
+      "items": [
+        {
+          "id": 1,
+          "text": "All Women's Clothing",
+          "url": "https://www.macys.com/shop/womens/clothing?id=188851",
+          "isVisible": true
+        },
+        {
+          "id": 2,
+          "text": "Activewear & Workout",
+          "url": "https://www.macys.com/shop/womens/clothing/activewear?id=29891",
+          "isVisible": true
+        },
+        {
+          "id": 3,
+          "text": "Blazers",
+          "url": "https://www.macys.com/shop/womens/clothing/blazers?id=55429",
+          "isVisible": true
+        },
+        {
+          "id": 4,
+          "text": "Bras, Underwear & Lingerie",
+          "url": "https://www.macys.com/shop/womens/clothing/intimates?id=59459",
+          "isVisible": true
+        },
+        {
+          "id": 5,
+          "text": "Cashmere",
+          "url": "https://www.macys.com/shop/womens/clothing/sweaters/cashmere?id=262",
+          "isVisible": true
+        },
+        {
+          "id": 6,
+          "text": "Coats & Jackets",
+          "url": "https://www.macys.com/shop/womens/clothing/coats?id=269",
+          "isVisible": true
+        },
+        {
+          "id": 7,
+          "text": "Dresses",
+          "url": "https://www.macys.com/shop/womens/clothing/dresses?id=5449",
+          "isVisible": true
+        },
+        {
+          "id": 8,
+          "text": "Hoodies & Sweatshirts",
+          "url": "https://www.macys.com/shop/womens/clothing/hoodies-sweatshirts?id=293359",
+          "isVisible": true
+        },
+        {
+          "id": 9,
+          "text": "Jeans & Denim",
+          "url": "https://www.macys.com/shop/womens/clothing/jeans?id=3111",
+          "isVisible": true
+        },
+        {
+          "id": 10,
+          "text": "Jumpsuits & Rompers",
+          "url": "https://www.macys.com/shop/womens/clothing/jumpsuits?id=50684",
+          "isVisible": true
+        },
+        {
+          "id": 11,
+          "text": "Matching Sets",
+          "url": "https://www.macys.com/shop/womens/clothing/matching-sets?id=297256",
+          "isVisible": true
+        },
+        {
+          "id": 12,
+          "text": "Outdoor Clothing",
+          "url": "https://www.macys.com/shop/womens-clothing/all-womens-clothing/womens-activewear/outdoor-camping?id=197368",
+          "isVisible": true
+        },
+        {
+          "id": 13,
+          "text": "Pajamas & Robes",
+          "url": "https://www.macys.com/shop/womens/clothing/pajamas?id=59737",
+          "isVisible": true
+        },
+        {
+          "id": 14,
+          "text": "Pants & Leggings",
+          "url": "https://www.macys.com/shop/womens/clothing/pants?id=157",
+          "isVisible": true
+        },
+        {
+          "id": 15,
+          "text": "Shorts",
+          "url": "https://www.macys.com/shop/womens-clothing/all-womens-clothing/womens-shorts?id=5344",
+          "isVisible": true
+        },
+        {
+          "id": 16,
+          "text": "Skirts",
+          "url": "https://www.macys.com/shop/womens/clothing/skirts?id=131",
+          "isVisible": true
+        },
+        {
+          "id": 17,
+          "text": "Suits & Suit Separates",
+          "url": "https://www.macys.com/shop/womens/clothing/suits?id=67592",
+          "isVisible": true
+        },
+        {
+          "id": 18,
+          "text": "Sweaters",
+          "url": "https://www.macys.com/shop/womens/clothing/sweaters?id=260",
+          "isVisible": true
+        },
+        {
+          "id": 19,
+          "text": "Swimsuits & Cover-Ups",
+          "url": "https://www.macys.com/shop/womens/clothing/swimwear?id=8699",
+          "isVisible": true
+        },
+        {
+          "id": 20,
+          "text": "Tops",
+          "url": "https://www.macys.com/shop/womens/clothing/tops?id=255",
+          "isVisible": true
+        },
+        {
+          "id": 21,
+          "text": "Plus Sizes",
+          "url": "https://www.macys.com/shop/womens/plus-size?id=188853",
+          "isVisible": true
+        },
+        {
+          "id": 22,
+          "text": "Petites (5'4\" and under)",
+          "url": "https://www.macys.com/shop/womens/petites?id=188854",
+          "isVisible": true
+        },
+        {
+          "id": 23,
+          "text": "Juniors & Young Adult",
+          "url": "https://www.macys.com/shop/junior-clothing/shop-all-juniors-apparel?id=60983",
+          "isVisible": true
+        },
+        {
+          "id": 24,
+          "text": "Maternity",
+          "url": "https://www.macys.com/shop/womens/maternity?id=66718",
+          "isVisible": true
+        },
+        {
+          "id": 25,
+          "text": "Formal Gowns",
+          "url": "https://www.macys.com/shop/womens/clothing/dresses/formal?id=339414",
+          "isVisible": true
+        },
+        {
+          "id": 26,
+          "text": "Cocktail & Party",
+          "url": "https://www.macys.com/shop/womens/clothing/dresses/cocktail?id=339107",
+          "isVisible": true
+        },
+        {
+          "id": 27,
+          "text": "Homecoming",
+          "url": "https://www.macys.com/shop/junior-clothing/shop-all-juniors-apparel/junior-dresses/junior-homecoming-dresses?id=197151",
+          "isVisible": true
+        },
+        {
+          "id": 28,
+          "text": "Summer Dresses",
+          "url": "https://www.macys.com/shop/womens-clothing/all-womens-clothing/dresses/seasonal-dresses/summer-dresses?id=339666",
+          "isVisible": true
+        },
+        {
+          "id": 29,
+          "text": "Casual Dresses",
+          "url": "https://www.macys.com/shop/womens-clothing/all-womens-clothing/dresses/casual-dresses?id=298457",
+          "isVisible": true
+        },
+        {
+          "id": 30,
+          "text": "Work Dresses",
+          "url": "https://www.macys.com/shop/womens-clothing/all-womens-clothing/dresses/work-dresses?id=339346",
+          "isVisible": true
+        },
+        {
+          "id": 31,
+          "text": "Wedding Guest",
+          "url": "https://www.macys.com/shop/womens/clothing/dresses/occasion/wedding-guest?id=280756",
+          "isVisible": true
+        },
+        {
+          "id": 32,
+          "text": "One-Pieces",
+          "url": "https://www.macys.com/shop/womens-clothing/all-womens-clothing/womens-swimwear/one-piece?id=177646",
+          "isVisible": true
+        },
+        {
+          "id": 33,
+          "text": "Bikinis",
+          "url": "https://www.macys.com/shop/womens-clothing/all-womens-clothing/womens-swimwear/bikinis?id=177645",
+          "isVisible": true
+        },
+        {
+          "id": 34,
+          "text": "Tankinis",
+          "url": "https://www.macys.com/shop/womens-clothing/all-womens-clothing/womens-swimwear/tankini?id=122942",
+          "isVisible": true
+        },
+        {
+          "id": 35,
+          "text": "Cover-Ups",
+          "url": "https://www.macys.com/shop/womens-clothing/all-womens-clothing/womens-swimwear/coverups?id=158944",
+          "isVisible": true
+        },
+        {
+          "id": 36,
+          "text": "All Women's Brands",
+          "url": "https://www.macys.com/shop/all-brands/womens?id=63539",
+          "isVisible": true
+        },
+        {
+          "id": 37,
+          "text": "Anne Klein",
+          "url": "https://www.macys.com/shop/brands/anne-klein/anne-klein-womens-clothing?id=18413",
+          "isVisible": true
+        },
+        {
+          "id": 38,
+          "text": "Calvin Klein",
+          "url": "https://www.macys.com/shop/brands/calvin-klein/calvin-klein-womens-clothing?id=13156",
+          "isVisible": true
+        },
+        {
+          "id": 39,
+          "text": "CeCe",
+          "url": "https://www.macys.com/shop/brands/cece?id=71115",
+          "isVisible": true
+        },
+        {
+          "id": 40,
+          "text": "DKNY",
+          "url": "https://www.macys.com/shop/brands/dkny?id=39116",
+          "isVisible": true
+        },
+        {
+          "id": 41,
+          "text": "Donna Karan New York",
+          "url": "https://www.macys.com/shop/brands/donna-karan/donna-karan-womens-clothing?id=125742",
+          "isVisible": true
+        },
+        {
+          "id": 42,
+          "text": "Free People",
+          "url": "https://www.macys.com/shop/brands/free-people-clothing?id=44498",
+          "isVisible": true
+        },
+        {
+          "id": 43,
+          "text": "KARL LAGERFELD PARIS",
+          "url": "https://www.macys.com/shop/brands/karl-lagerfeld/karl-lagerfeld-womens-clothing?id=317157",
+          "isVisible": true
+        },
+        {
+          "id": 44,
+          "text": "Lauren Ralph Lauren",
+          "url": "https://www.macys.com/shop/brands/ralph-lauren/womens-ralph-lauren/lauren-ralph-lauren-womens-clothing?id=3485",
+          "isVisible": true
+        },
+        {
+          "id": 45,
+          "text": "Levi's",
+          "url": "https://www.macys.com/shop/brands/levis/levis-womens-clothing?id=30760",
+          "isVisible": true
+        },
+        {
+          "id": 46,
+          "text": "MANGO",
+          "url": "https://www.macys.com/shop/brands/mango/womens-mango?id=240544",
+          "isVisible": true
+        },
+        {
+          "id": 47,
+          "text": "Nike",
+          "url": "https://www.macys.com/shop/brands/nike/nike-womens-clothing?id=6218",
+          "isVisible": true
+        },
+        {
+          "id": 48,
+          "text": "Polo Ralph Lauren",
+          "url": "https://www.macys.com/shop/brands/ralph-lauren/womens-ralph-lauren/womens-polo-ralph-lauren?id=355666",
+          "isVisible": true
+        },
+        {
+          "id": 49,
+          "text": "Tommy Hilfiger",
+          "url": "https://www.macys.com/shop/brands/tommy-hilfiger/tommy-hilfiger-clothing?id=37281",
+          "isVisible": true
+        },
+        {
+          "id": 50,
+          "text": "Vince Camuto",
+          "url": "https://www.macys.com/shop/brands/vince-camuto/vince-camuto-womens-clothing?id=59981",
+          "isVisible": true
+        },
+        {
+          "id": 51,
+          "text": "I.N.C International Concepts",
+          "url": "https://www.macys.com/shop/brands/inc-international-concepts/inc-international-concepts-womens-clothing?id=3481",
+          "isVisible": true
+        },
+        {
+          "id": 52,
+          "text": "On 34th",
+          "url": "https://www.macys.com/shop/brands/on-34th/on-34th-womens-clothing?id=83142",
+          "isVisible": true
+        },
+        {
+          "id": 53,
+          "text": "Style & Co",
+          "url": "https://www.macys.com/shop/brands/style-and-co/style-co-womens-clothing?id=29630",
+          "isVisible": true
+        },
+        {
+          "id": 54,
+          "text": "Shoes",
+          "url": "https://www.macys.com/shop/womens/all-womens-shoes?id=56233",
+          "isVisible": true
+        },
+        {
+          "id": 55,
+          "text": "Handbags & Wallets",
+          "url": "https://www.macys.com/shop/womens/handbags-wallets?id=203051",
+          "isVisible": true
+        },
+        {
+          "id": 56,
+          "text": "Accessories",
+          "url": "https://www.macys.com/shop/womens/accessories?id=29440",
+          "isVisible": true
+        },
+        {
+          "id": 57,
+          "text": "Sunglasses by Sunglass Hut",
+          "url": "https://www.macys.com/shop/womens-clothing/accessories/womens-sunglasses?id=28295",
+          "isVisible": true
+        },
+        {
+          "id": 58,
+          "text": "Jewelry & Watches",
+          "url": "https://www.macys.com/shop/jewelry-watches?id=544",
+          "isVisible": true
+        },
+        {
+          "id": 59,
+          "text": "Beauty & Fragrance",
+          "url": "https://www.macys.com/shop/makeup-and-perfume/all-beauty-category?id=290756",
+          "isVisible": true
+        },
+        {
+          "id": 60,
+          "text": "Tights & Hosiery",
+          "url": "https://www.macys.com/shop/womens-clothing/all-womens-clothing/shop-all-lingerie/shop-tights-pantyhose?id=121446",
+          "isVisible": true
+        },
+        {
+          "id": 61,
+          "text": "Socks",
+          "url": "https://www.macys.com/shop/womens-clothing/all-womens-clothing/shop-all-lingerie/shop-socks?id=121445",
+          "isVisible": true
+        },
+        {
+          "id": 62,
+          "text": "Back to School",
+          "url": "https://www.macys.com/shop/back-to-school-essentials?id=292556&cm_kws=back-to-school",
+          "isVisible": true
+        },
+        {
+          "id": 63,
+          "text": "Evening",
+          "url": "https://www.macys.com/shop/womens/occasion/evening-wear?id=260267",
+          "isVisible": true
+        },
+        {
+          "id": 64,
+          "text": "Homecoming",
+          "url": "https://www.macys.com/shop/junior-clothing/shop-all-juniors-apparel/junior-dresses/junior-homecoming-dresses?id=197151",
+          "isVisible": true
+        },
+        {
+          "id": 65,
+          "text": "Wedding",
+          "url": "https://www.macys.com/shop/womens/occasion/wedding?id=260270",
+          "isVisible": true
+        },
+        {
+          "id": 66,
+          "text": "Work",
+          "url": "https://www.macys.com/shop/womens/occasion/workwear?id=39096",
+          "isVisible": true
+        },
+        {
+          "id": 67,
+          "text": "Today! Juniors' Buy 1, Get 1 Free",
+          "url": "https://www.macys.com/shop/sale/today-only-flash-sale/Business_category/Women%27s%20Clothing?id=160842",
+          "isVisible": true
+        },
+        {
+          "id": 68,
+          "text": "Up to 70% Off Clearance",
+          "url": "https://www.macys.com/shop/sale/clearance-closeout/clearance-deals-for-women/womens-clothing-clearance/Price_discount_range/40_PERCENT_%20off%20%26%20more?id=341200",
+          "isVisible": true
+        },
+        {
+          "id": 69,
+          "text": "Sale & Clearance",
+          "url": "https://www.macys.com/shop/sale/womens-sale/womens-clothing-sale?id=338161",
+          "isVisible": true
+        },
+        {
+          "id": 70,
+          "text": "New Arrivals",
+          "url": "https://www.macys.com/shop/new-trending/new-at-macys/womens-new-arrivals/new-womens-clothing?id=68514",
+          "isVisible": true
+        },
+        {
+          "id": 71,
+          "text": "Off to College Looks for Her",
+          "url": "https://www.macys.com/shop/junior-clothing/juniors-back-to-school-clothes?id=60863",
+          "isVisible": true
+        },
+        {
+          "id": 72,
+          "text": "The Denim Guide",
+          "url": "https://www.macys.com/shop/womens/clothing/jeans/denim-guide-for-her?id=376268",
+          "isVisible": true
+        },
+        {
+          "id": 73,
+          "text": "Contemporary Trends",
+          "url": "https://www.macys.com/shop/new-trending/womens-contemporary-apparel?id=315756",
+          "isVisible": true
+        },
+        {
+          "id": 74,
+          "text": "New! On 34th X Alix",
+          "url": "https://www.macys.com/shop/brands/on-34th/on-34th-womens-clothing/on-34th-alix-collection?id=373668",
+          "isVisible": true
+        },
+        {
+          "id": 75,
+          "text": "New! Good American",
+          "url": "https://www.macys.com/shop/brands/good-american?id=358272&cm_kws=good-american&cm_kws_ac=good%20american",
+          "isVisible": true
+        },
+        {
+          "id": 76,
+          "text": "New! LIONESS",
+          "url": "https://www.macys.com/shop/featured/lioness?cm_kws_ac=lioness&ss=true",
+          "isVisible": true
+        },
+        {
+          "id": 77,
+          "text": "Sports Fan Shop by Lids",
+          "url": "https://www.macys.com/shop/sports-fan-shop/womens-sports-fan-apparel-accessories?id=96742",
+          "isVisible": true
+        },
+        {
+          "id": 78,
+          "text": "Ralph Lauren Summer Essentials",
+          "url": "https://www.macys.com/shop/brands/ralph-lauren/womens-ralph-lauren?id=355665",
+          "isVisible": true
+        },
+        {
+          "id": 79,
+          "text": "Shop Juniors' Buy 1, Get 1 Free",
+          "url": "https://www.macys.com/shop/sale/today-only-flash-sale/Business_category/Women%27s%20Clothing?id=160842",
+          "isVisible": true
+        }
+      ]
+    },
+    "Men": {
+      "categoryName": "Men",
+      "extractionMethod": "hover",
+      "success": true,
+      "itemCount": 82,
+      "items": [
+        {
+          "id": 1,
+          "text": "All Men's Clothing",
+          "url": "https://www.macys.com/shop/mens/clothing?id=197651",
+          "isVisible": true
+        },
+        {
+          "id": 2,
+          "text": "Activewear & Workout",
+          "url": "https://www.macys.com/shop/mens/clothing/activewear?id=3296",
+          "isVisible": true
+        },
+        {
+          "id": 3,
+          "text": "Big & Tall Clothing",
+          "url": "https://www.macys.com/shop/mens/big-and-tall?id=45758",
+          "isVisible": true
+        },
+        {
+          "id": 4,
+          "text": "Blazers & Sportcoats",
+          "url": "https://www.macys.com/shop/mens/clothing/blazers-sport-coats?id=16499",
+          "isVisible": true
+        },
+        {
+          "id": 5,
+          "text": "Coats & Jackets",
+          "url": "https://www.macys.com/shop/mens/clothing/coats?id=3763",
+          "isVisible": true
+        },
+        {
+          "id": 6,
+          "text": "Dress Shirts",
+          "url": "https://www.macys.com/shop/mens/clothing/shirts/dress-shirts?id=20635",
+          "isVisible": true
+        },
+        {
+          "id": 7,
+          "text": "Hoodies & Sweatshirts",
+          "url": "https://www.macys.com/shop/mens/clothing/sweatshirts?id=25995",
+          "isVisible": true
+        },
+        {
+          "id": 8,
+          "text": "Jeans & Denim",
+          "url": "https://www.macys.com/shop/mens/clothing/jeans?id=11221",
+          "isVisible": true
+        },
+        {
+          "id": 9,
+          "text": "Matching Sets",
+          "url": "https://www.macys.com/shop/mens/clothing/matching-sets?id=149952",
+          "isVisible": true
+        },
+        {
+          "id": 10,
+          "text": "Outdoor Apparel & Shoes",
+          "url": "https://www.macys.com/shop/mens/clothing/activewear/outdoor?id=159271",
+          "isVisible": true
+        },
+        {
+          "id": 11,
+          "text": "Pajamas & Robes",
+          "url": "https://www.macys.com/shop/mens/clothing/pajamas?id=16295",
+          "isVisible": true
+        },
+        {
+          "id": 12,
+          "text": "Pants",
+          "url": "https://www.macys.com/shop/mens/clothing/pants?id=89",
+          "isVisible": true
+        },
+        {
+          "id": 13,
+          "text": "Polo Shirts",
+          "url": "https://www.macys.com/shop/mens/clothing/shirts/polos?id=20640",
+          "isVisible": true
+        },
+        {
+          "id": 14,
+          "text": "Shirts & T-shirts",
+          "url": "https://www.macys.com/shop/mens/clothing/shirts?id=20626",
+          "isVisible": true
+        },
+        {
+          "id": 15,
+          "text": "Shorts",
+          "url": "https://www.macys.com/shop/mens/clothing/shorts?id=3310",
+          "isVisible": true
+        },
+        {
+          "id": 16,
+          "text": "Suits & Tuxedos",
+          "url": "https://www.macys.com/shop/mens/clothing/suits?id=17788",
+          "isVisible": true
+        },
+        {
+          "id": 17,
+          "text": "Sweaters",
+          "url": "https://www.macys.com/shop/mens/clothing/sweaters?id=4286",
+          "isVisible": true
+        },
+        {
+          "id": 18,
+          "text": "Swimwear",
+          "url": "https://www.macys.com/shop/mens/clothing/swimwear?id=3291",
+          "isVisible": true
+        },
+        {
+          "id": 19,
+          "text": "Underwear & Socks",
+          "url": "https://www.macys.com/shop/mens/clothing/underwear?id=57",
+          "isVisible": true
+        },
+        {
+          "id": 20,
+          "text": "All Men's Shoes",
+          "url": "https://www.macys.com/shop/mens/shop-all-mens-shoes?id=55822",
+          "isVisible": true
+        },
+        {
+          "id": 21,
+          "text": "Athletic Shoes & Sneakers",
+          "url": "https://www.macys.com/shop/mens/shop-all-mens-shoes/mens-sneakers?id=55642",
+          "isVisible": true
+        },
+        {
+          "id": 22,
+          "text": "Boat Shoes",
+          "url": "https://www.macys.com/shop/mens/shop-all-mens-shoes/mens-boat-shoes?id=55636",
+          "isVisible": true
+        },
+        {
+          "id": 23,
+          "text": "Casual Shoes",
+          "url": "https://www.macys.com/shop/mens/shop-all-mens-shoes/mens-casual-shoes?id=59851",
+          "isVisible": true
+        },
+        {
+          "id": 24,
+          "text": "Sandals & Slides",
+          "url": "https://www.macys.com/shop/mens/shop-all-mens-shoes/mens-sandals?id=55640",
+          "isVisible": true
+        },
+        {
+          "id": 25,
+          "text": "Designer Shoes",
+          "url": "https://www.macys.com/shop/mens/shop-all-mens-shoes/mens-designer-shoes?id=55639",
+          "isVisible": true
+        },
+        {
+          "id": 26,
+          "text": "Dress Shoes",
+          "url": "https://www.macys.com/shop/mens/shop-all-mens-shoes/dress-shoes?id=70405",
+          "isVisible": true
+        },
+        {
+          "id": 27,
+          "text": "Loafers & Drivers",
+          "url": "https://www.macys.com/shop/mens/shop-all-mens-shoes/drivers?id=79687",
+          "isVisible": true
+        },
+        {
+          "id": 28,
+          "text": "Boots",
+          "url": "https://www.macys.com/shop/mens/shop-all-mens-shoes/mens-boots?id=55637",
+          "isVisible": true
+        },
+        {
+          "id": 29,
+          "text": "Finish Line Men's Shoes",
+          "url": "https://www.macys.com/shop/brands/finish-line/finish-line-mens-shoes?id=63266",
+          "isVisible": true
+        },
+        {
+          "id": 30,
+          "text": "Suit Fit Guide",
+          "url": "https://www.macys.com/s/how-to-buy-a-suit/",
+          "isVisible": true
+        },
+        {
+          "id": 31,
+          "text": "Suits & Tuxedos",
+          "url": "https://www.macys.com/shop/mens/clothing/suits?id=17788",
+          "isVisible": true
+        },
+        {
+          "id": 32,
+          "text": "Blazers & Sportcoats",
+          "url": "https://www.macys.com/shop/mens/clothing/blazers-sport-coats?id=16499",
+          "isVisible": true
+        },
+        {
+          "id": 33,
+          "text": "Dress Shirts",
+          "url": "https://www.macys.com/shop/mens/clothing/shirts/dress-shirts?id=20635",
+          "isVisible": true
+        },
+        {
+          "id": 34,
+          "text": "Dress Pants",
+          "url": "https://www.macys.com/shop/mens/clothing/pants/dress-pants?id=148343",
+          "isVisible": true
+        },
+        {
+          "id": 35,
+          "text": "Ties & Pocket Squares",
+          "url": "https://www.macys.com/shop/mens/accessories/ties?id=53239",
+          "isVisible": true
+        },
+        {
+          "id": 36,
+          "text": "Belts & Suspenders",
+          "url": "https://www.macys.com/shop/mens/accessories/belts?id=47673",
+          "isVisible": true
+        },
+        {
+          "id": 37,
+          "text": "Jewelry & Cufflinks",
+          "url": "https://www.macys.com/shop/jewelry-watches/mens?id=43877",
+          "isVisible": true
+        },
+        {
+          "id": 38,
+          "text": "All Men's Brands",
+          "url": "https://www.macys.com/shop/all-brands/mens?id=63581",
+          "isVisible": true
+        },
+        {
+          "id": 39,
+          "text": "adidas",
+          "url": "https://www.macys.com/shop/brands/adidas/adidas-mens-clothing?id=60285",
+          "isVisible": true
+        },
+        {
+          "id": 40,
+          "text": "Calvin Klein",
+          "url": "https://www.macys.com/shop/brands/calvin-klein/calvin-klein-mens-clothing?id=28169",
+          "isVisible": true
+        },
+        {
+          "id": 41,
+          "text": "Cole Haan",
+          "url": "https://www.macys.com/shop/brands/cole-haan/cole-haan-mens-shoes?id=7048",
+          "isVisible": true
+        },
+        {
+          "id": 42,
+          "text": "Columbia",
+          "url": "https://www.macys.com/shop/brands/columbia/columbia-mens-clothing?id=42111",
+          "isVisible": true
+        },
+        {
+          "id": 43,
+          "text": "Dockers",
+          "url": "https://www.macys.com/shop/brands/dockers/dockers-mens-clothing?id=43145",
+          "isVisible": true
+        },
+        {
+          "id": 44,
+          "text": "GUESS",
+          "url": "https://www.macys.com/shop/brands/guess/guess-mens-clothing?id=29889",
+          "isVisible": true
+        },
+        {
+          "id": 45,
+          "text": "Hugo Boss",
+          "url": "https://www.macys.com/shop/brands/hugo-boss/hugo-boss-mens-clothing?id=58084",
+          "isVisible": true
+        },
+        {
+          "id": 46,
+          "text": "Lacoste",
+          "url": "https://www.macys.com/shop/brands/lacoste/lacoste-mens-clothing?id=36943",
+          "isVisible": true
+        },
+        {
+          "id": 47,
+          "text": "Levi's",
+          "url": "https://www.macys.com/shop/brands/levis/levis-mens-clothing?id=43141",
+          "isVisible": true
+        },
+        {
+          "id": 48,
+          "text": "Michael Kors",
+          "url": "https://www.macys.com/shop/brands/michael-kors/michael-kors-mens-clothing?id=67632",
+          "isVisible": true
+        },
+        {
+          "id": 49,
+          "text": "Nautica",
+          "url": "https://www.macys.com/shop/brands/nautica/nautica-mens-clothing?id=46108",
+          "isVisible": true
+        },
+        {
+          "id": 50,
+          "text": "Nike",
+          "url": "https://www.macys.com/shop/brands/nike/nike-mens-clothing?id=58432",
+          "isVisible": true
+        },
+        {
+          "id": 51,
+          "text": "Polo Ralph Lauren",
+          "url": "https://www.macys.com/shop/brands/ralph-lauren/polo-ralph-lauren-mens-clothing?id=3304",
+          "isVisible": true
+        },
+        {
+          "id": 52,
+          "text": "The North Face",
+          "url": "https://www.macys.com/shop/brands/the-north-face/the-north-face-mens-clothing?id=18253",
+          "isVisible": true
+        },
+        {
+          "id": 53,
+          "text": "Tommy Hilfiger",
+          "url": "https://www.macys.com/shop/brands/tommy-hilfiger/mens-tommy-hilfiger?id=2519",
+          "isVisible": true
+        },
+        {
+          "id": 54,
+          "text": "Under Armour",
+          "url": "https://www.macys.com/shop/brands/under-armour/under-armour-mens-clothing?id=64998",
+          "isVisible": true
+        },
+        {
+          "id": 55,
+          "text": "Exclusively at Macy's",
+          "url": "https://www.macys.com/shop/new-trending/macys-exclusives/macys-exclusives-for-men?id=364266",
+          "isVisible": true
+        },
+        {
+          "id": 56,
+          "text": "Alfani",
+          "url": "https://www.macys.com/shop/brands/alfani/alfani-mens-clothing?id=29415",
+          "isVisible": true
+        },
+        {
+          "id": 57,
+          "text": "Club Room",
+          "url": "https://www.macys.com/shop/brands/club-room?id=29414",
+          "isVisible": true
+        },
+        {
+          "id": 58,
+          "text": "Mode of One",
+          "url": "https://www.macys.com/shop/brands/mode-of-one?id=343156",
+          "isVisible": true
+        },
+        {
+          "id": 59,
+          "text": "Sun + Stone",
+          "url": "https://www.macys.com/shop/brands/sun-and-stone?id=280556",
+          "isVisible": true
+        },
+        {
+          "id": 60,
+          "text": "All Accessories",
+          "url": "https://www.macys.com/shop/mens/accessories?id=47665",
+          "isVisible": true
+        },
+        {
+          "id": 61,
+          "text": "Bags & Backpacks",
+          "url": "https://www.macys.com/shop/mens/accessories/bags?id=45016",
+          "isVisible": true
+        },
+        {
+          "id": 62,
+          "text": "Belts",
+          "url": "https://www.macys.com/shop/mens/accessories/belts?id=47673",
+          "isVisible": true
+        },
+        {
+          "id": 63,
+          "text": "Hats & Caps",
+          "url": "https://www.macys.com/shop/mens/accessories/hats?id=176642",
+          "isVisible": true
+        },
+        {
+          "id": 64,
+          "text": "Wallets",
+          "url": "https://www.macys.com/shop/mens/accessories/wallets?id=47697",
+          "isVisible": true
+        },
+        {
+          "id": 65,
+          "text": "Watches",
+          "url": "https://www.macys.com/shop/jewelry-watches/watches/mens?id=57386",
+          "isVisible": true
+        },
+        {
+          "id": 66,
+          "text": "Back to School",
+          "url": "https://www.macys.com/shop/mens/school-clothes?id=64877",
+          "isVisible": true
+        },
+        {
+          "id": 67,
+          "text": "Business Casual",
+          "url": "https://www.macys.com/shop/mens/business-casual-attire?id=75897",
+          "isVisible": true
+        },
+        {
+          "id": 68,
+          "text": "Golf Shop",
+          "url": "https://www.macys.com/shop/mens/golf?id=367470",
+          "isVisible": true
+        },
+        {
+          "id": 69,
+          "text": "Vacation",
+          "url": "https://www.macys.com/shop/mens/vacation?id=219991",
+          "isVisible": true
+        },
+        {
+          "id": 70,
+          "text": "Wedding",
+          "url": "https://www.macys.com/shop/mens/wedding?id=209658",
+          "isVisible": true
+        },
+        {
+          "id": 71,
+          "text": "Cologne & Grooming",
+          "url": "https://www.macys.com/shop/mens-clothing/Business_category/Beauty?id=1#canvas",
+          "isVisible": true
+        },
+        {
+          "id": 72,
+          "text": "Sunglasses by Sunglass Hut",
+          "url": "https://www.macys.com/shop/mens/accessories/sunglasses?id=58262",
+          "isVisible": true
+        },
+        {
+          "id": 73,
+          "text": "Today Only! BOGO Back to School",
+          "url": "https://www.macys.com/shop/sale/today-only-flash-sale/Gender/Men?id=160842",
+          "isVisible": true
+        },
+        {
+          "id": 74,
+          "text": "Up to 60% Off Clearance",
+          "url": "https://www.macys.com/shop/sale/clearance-closeout/clearance-for-men/Price_discount_range/20_PERCENT_%20off%20%26%20more?id=341613",
+          "isVisible": true
+        },
+        {
+          "id": 75,
+          "text": "Sale & Clearance",
+          "url": "https://www.macys.com/shop/sale/mens-sale?id=9559",
+          "isVisible": true
+        },
+        {
+          "id": 76,
+          "text": "New Arrivals",
+          "url": "https://www.macys.com/shop/new-trending/new-at-macys/mens-new-arrivals?id=357989",
+          "isVisible": true
+        },
+        {
+          "id": 77,
+          "text": "Contemporary",
+          "url": "https://www.macys.com/shop/new-trending/trending/contemporary?id=315757",
+          "isVisible": true
+        },
+        {
+          "id": 78,
+          "text": "The Linen Shop",
+          "url": "https://www.macys.com/shop/new-trending/spring-trends/sm-assort-spring-must-haves-for-him/mens-linen?id=358785",
+          "isVisible": true
+        },
+        {
+          "id": 79,
+          "text": "Summer Sport Jerseys",
+          "url": "https://www.macys.com/shop/sports-fan-shop/sports-fan-apparel-accessories/sports-fan-jerseys/Gender,Sleeve_length/Men,Short%20Sleeve%7CSleeveless?id=66212",
+          "isVisible": true
+        },
+        {
+          "id": 80,
+          "text": "Sports Fan Shop by Lids",
+          "url": "https://www.macys.com/s/sports-fan-shop/",
+          "isVisible": true
+        },
+        {
+          "id": 81,
+          "text": "New! Nike Sunglasses",
+          "url": "https://www.macys.com/shop/mens-clothing/mens-accessories/mens-sunglasses/Brand/Nike?id=58262",
+          "isVisible": true
+        },
+        {
+          "id": 82,
+          "text": "Shop Young Mens Buy 1, Get 1 Free",
+          "url": "https://www.macys.com/shop/sale/today-only-flash-sale/Gender/Men?id=160842",
+          "isVisible": true
+        }
+      ]
+    }
+  },
+  "summary": {
+    "totalItemsExtracted": 161,
+    "categoriesSuccessful": 2,
+    "categoriesTotal": 2,
+    "successRate": 100,
+    "averageItemsPerCategory": 80.5
+  }
+}

@@ -1,0 +1,1371 @@
+{
+  "actualProducts": [
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-cocoon-dress-shirt-off-white",
+      "text": "",
+      "containerClass": "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+      "linkClass": "flex absolute inset-0 w-full h-full flex-col justify-center items-center lg:bg-black lg:bg-opacity-50",
+      "parentClasses": [
+        "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+        " aspect-[3/4] relative flex flex-col justify-center items-center"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-cocoon-dress-shirt-off-white",
+      "text": "7115 by Szeki Cocoon Dress Shirt Unisex, Off-White",
+      "containerClass": "mt-[8px]",
+      "linkClass": "text-sm font-normal uppercase hover:opacity-60 cursor-pointer tracking-[1.5px] leading-[130%]",
+      "parentClasses": [
+        "mt-[8px]",
+        "col-span-1 scroll-animate active"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-cocoon-dress-shirt-off-white",
+      "text": "Go to product page >",
+      "containerClass": "w-1/2 flex flex-col justify-center",
+      "linkClass": "uppercase text-xs font-bold tracking-widest hover:underline underline-offset-4",
+      "parentClasses": [
+        "w-1/2 flex flex-col justify-center",
+        "flex flex-row space-x-6",
+        "dialog-content p-10 bg-tan max-w-[768px]"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-duster-coat-black",
+      "text": "",
+      "containerClass": "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+      "linkClass": "flex absolute inset-0 w-full h-full flex-col justify-center items-center lg:bg-black lg:bg-opacity-50",
+      "parentClasses": [
+        "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+        " aspect-[3/4] relative flex flex-col justify-center items-center"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-duster-coat-black",
+      "text": "7115 by Szeki Signature Duster Coat Unisex, Black",
+      "containerClass": "mt-[8px]",
+      "linkClass": "text-sm font-normal uppercase hover:opacity-60 cursor-pointer tracking-[1.5px] leading-[130%]",
+      "parentClasses": [
+        "mt-[8px]",
+        "col-span-1 scroll-animate active"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-duster-coat-black",
+      "text": "Go to product page >",
+      "containerClass": "w-1/2 flex flex-col justify-center",
+      "linkClass": "uppercase text-xs font-bold tracking-widest hover:underline underline-offset-4",
+      "parentClasses": [
+        "w-1/2 flex flex-col justify-center",
+        "flex flex-row space-x-6",
+        "dialog-content p-10 bg-tan max-w-[768px]"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-duster-coat-olive-brown",
+      "text": "",
+      "containerClass": "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+      "linkClass": "flex absolute inset-0 w-full h-full flex-col justify-center items-center lg:bg-black lg:bg-opacity-50",
+      "parentClasses": [
+        "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+        " aspect-[3/4] relative flex flex-col justify-center items-center"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-duster-coat-olive-brown",
+      "text": "7115 by Szeki Signature Duster Coat Unisex, Olive Brown",
+      "containerClass": "mt-[8px]",
+      "linkClass": "text-sm font-normal uppercase hover:opacity-60 cursor-pointer tracking-[1.5px] leading-[130%]",
+      "parentClasses": [
+        "mt-[8px]",
+        "col-span-1 scroll-animate active"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-duster-coat-olive-brown",
+      "text": "Go to product page >",
+      "containerClass": "w-1/2 flex flex-col justify-center",
+      "linkClass": "uppercase text-xs font-bold tracking-widest hover:underline underline-offset-4",
+      "parentClasses": [
+        "w-1/2 flex flex-col justify-center",
+        "flex flex-row space-x-6",
+        "dialog-content p-10 bg-tan max-w-[768px]"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-panel-pockets-shirt-jacket-bone",
+      "text": "",
+      "containerClass": "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+      "linkClass": "flex absolute inset-0 w-full h-full flex-col justify-center items-center lg:bg-black lg:bg-opacity-50",
+      "parentClasses": [
+        "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+        " aspect-[3/4] relative flex flex-col justify-center items-center"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-panel-pockets-shirt-jacket-bone",
+      "text": "7115 by Szeki Signature Panel Pockets Shirt Jacket Unisex, Bone",
+      "containerClass": "mt-[8px]",
+      "linkClass": "text-sm font-normal uppercase hover:opacity-60 cursor-pointer tracking-[1.5px] leading-[130%]",
+      "parentClasses": [
+        "mt-[8px]",
+        "col-span-1 scroll-animate"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-panel-pockets-shirt-jacket-bone",
+      "text": "Go to product page >",
+      "containerClass": "w-1/2 flex flex-col justify-center",
+      "linkClass": "uppercase text-xs font-bold tracking-widest hover:underline underline-offset-4",
+      "parentClasses": [
+        "w-1/2 flex flex-col justify-center",
+        "flex flex-row space-x-6",
+        "dialog-content p-10 bg-tan max-w-[768px]"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-panel-pockets-shirt-jacket-navy",
+      "text": "",
+      "containerClass": "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+      "linkClass": "flex absolute inset-0 w-full h-full flex-col justify-center items-center lg:bg-black lg:bg-opacity-50",
+      "parentClasses": [
+        "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+        " aspect-[3/4] relative flex flex-col justify-center items-center"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-panel-pockets-shirt-jacket-navy",
+      "text": "7115 by Szeki Signature Panel Pockets Shirt Jacket Unisex, Navy",
+      "containerClass": "mt-[8px]",
+      "linkClass": "text-sm font-normal uppercase hover:opacity-60 cursor-pointer tracking-[1.5px] leading-[130%]",
+      "parentClasses": [
+        "mt-[8px]",
+        "col-span-1 scroll-animate"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-panel-pockets-shirt-jacket-navy",
+      "text": "Go to product page >",
+      "containerClass": "w-1/2 flex flex-col justify-center",
+      "linkClass": "uppercase text-xs font-bold tracking-widest hover:underline underline-offset-4",
+      "parentClasses": [
+        "w-1/2 flex flex-col justify-center",
+        "flex flex-row space-x-6",
+        "dialog-content p-10 bg-tan max-w-[768px]"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-sumo-puffer-chalk-brown",
+      "text": "",
+      "containerClass": "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+      "linkClass": "flex absolute inset-0 w-full h-full flex-col justify-center items-center lg:bg-black lg:bg-opacity-50",
+      "parentClasses": [
+        "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+        " aspect-[3/4] relative flex flex-col justify-center items-center"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-sumo-puffer-chalk-brown",
+      "text": "7115 by Szeki Signature Sumo Puffer Unisex, Chalk Brown",
+      "containerClass": "mt-[8px]",
+      "linkClass": "text-sm font-normal uppercase hover:opacity-60 cursor-pointer tracking-[1.5px] leading-[130%]",
+      "parentClasses": [
+        "mt-[8px]",
+        "col-span-1 scroll-animate"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-sumo-puffer-chalk-brown",
+      "text": "Go to product page >",
+      "containerClass": "w-1/2 flex flex-col justify-center",
+      "linkClass": "uppercase text-xs font-bold tracking-widest hover:underline underline-offset-4",
+      "parentClasses": [
+        "w-1/2 flex flex-col justify-center",
+        "flex flex-row space-x-6",
+        "dialog-content p-10 bg-tan max-w-[768px]"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-textured-flat-hem-shirt-black",
+      "text": "",
+      "containerClass": "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+      "linkClass": "flex absolute inset-0 w-full h-full flex-col justify-center items-center lg:bg-black lg:bg-opacity-50",
+      "parentClasses": [
+        "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+        " aspect-[3/4] relative flex flex-col justify-center items-center"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-textured-flat-hem-shirt-black",
+      "text": "7115 by Szeki Textured Flat Hem Shirt Unisex, Black",
+      "containerClass": "mt-[8px]",
+      "linkClass": "text-sm font-normal uppercase hover:opacity-60 cursor-pointer tracking-[1.5px] leading-[130%]",
+      "parentClasses": [
+        "mt-[8px]",
+        "col-span-1 scroll-animate"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-textured-flat-hem-shirt-black",
+      "text": "Go to product page >",
+      "containerClass": "w-1/2 flex flex-col justify-center",
+      "linkClass": "uppercase text-xs font-bold tracking-widest hover:underline underline-offset-4",
+      "parentClasses": [
+        "w-1/2 flex flex-col justify-center",
+        "flex flex-row space-x-6",
+        "dialog-content p-10 bg-tan max-w-[768px]"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-textured-flat-hem-shirt-kelp",
+      "text": "",
+      "containerClass": "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+      "linkClass": "flex absolute inset-0 w-full h-full flex-col justify-center items-center lg:bg-black lg:bg-opacity-50",
+      "parentClasses": [
+        "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+        " aspect-[3/4] relative flex flex-col justify-center items-center"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-textured-flat-hem-shirt-kelp",
+      "text": "7115 by Szeki Textured Flat Hem Shirt Unisex, Kelp",
+      "containerClass": "mt-[8px]",
+      "linkClass": "text-sm font-normal uppercase hover:opacity-60 cursor-pointer tracking-[1.5px] leading-[130%]",
+      "parentClasses": [
+        "mt-[8px]",
+        "col-span-1 scroll-animate"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-textured-flat-hem-shirt-kelp",
+      "text": "Go to product page >",
+      "containerClass": "w-1/2 flex flex-col justify-center",
+      "linkClass": "uppercase text-xs font-bold tracking-widest hover:underline underline-offset-4",
+      "parentClasses": [
+        "w-1/2 flex flex-col justify-center",
+        "flex flex-row space-x-6",
+        "dialog-content p-10 bg-tan max-w-[768px]"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-dolman-shirt-antique-white",
+      "text": "",
+      "containerClass": "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+      "linkClass": "flex absolute inset-0 w-full h-full flex-col justify-center items-center lg:bg-black lg:bg-opacity-50",
+      "parentClasses": [
+        "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+        " aspect-[3/4] relative flex flex-col justify-center items-center"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-dolman-shirt-antique-white",
+      "text": "7115 by Szeki Unisex Signature Dolman Shirt, Antique White",
+      "containerClass": "mt-[8px]",
+      "linkClass": "text-sm font-normal uppercase hover:opacity-60 cursor-pointer tracking-[1.5px] leading-[130%]",
+      "parentClasses": [
+        "mt-[8px]",
+        "col-span-1 scroll-animate"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-dolman-shirt-antique-white",
+      "text": "Go to product page >",
+      "containerClass": "w-1/2 flex flex-col justify-center",
+      "linkClass": "uppercase text-xs font-bold tracking-widest hover:underline underline-offset-4",
+      "parentClasses": [
+        "w-1/2 flex flex-col justify-center",
+        "flex flex-row space-x-6",
+        "dialog-content p-10 bg-tan max-w-[768px]"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-dolman-shirt-pewter-green",
+      "text": "",
+      "containerClass": "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+      "linkClass": "flex absolute inset-0 w-full h-full flex-col justify-center items-center lg:bg-black lg:bg-opacity-50",
+      "parentClasses": [
+        "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+        " aspect-[3/4] relative flex flex-col justify-center items-center"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-dolman-shirt-pewter-green",
+      "text": "7115 by Szeki Unisex Signature Dolman Shirt, Pewter Green",
+      "containerClass": "mt-[8px]",
+      "linkClass": "text-sm font-normal uppercase hover:opacity-60 cursor-pointer tracking-[1.5px] leading-[130%]",
+      "parentClasses": [
+        "mt-[8px]",
+        "col-span-1 scroll-animate"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-dolman-shirt-pewter-green",
+      "text": "Go to product page >",
+      "containerClass": "w-1/2 flex flex-col justify-center",
+      "linkClass": "uppercase text-xs font-bold tracking-widest hover:underline underline-offset-4",
+      "parentClasses": [
+        "w-1/2 flex flex-col justify-center",
+        "flex flex-row space-x-6",
+        "dialog-content p-10 bg-tan max-w-[768px]"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-elastic-pull-up-trouser-black",
+      "text": "",
+      "containerClass": "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+      "linkClass": "flex absolute inset-0 w-full h-full flex-col justify-center items-center lg:bg-black lg:bg-opacity-50",
+      "parentClasses": [
+        "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+        " aspect-[3/4] relative flex flex-col justify-center items-center"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-elastic-pull-up-trouser-black",
+      "text": "7115 by Szeki Unisex Signature Elastic Pull-Up Trouser, Black",
+      "containerClass": "mt-[8px]",
+      "linkClass": "text-sm font-normal uppercase hover:opacity-60 cursor-pointer tracking-[1.5px] leading-[130%]",
+      "parentClasses": [
+        "mt-[8px]",
+        "col-span-1 scroll-animate"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-elastic-pull-up-trouser-black",
+      "text": "Go to product page >",
+      "containerClass": "w-1/2 flex flex-col justify-center",
+      "linkClass": "uppercase text-xs font-bold tracking-widest hover:underline underline-offset-4",
+      "parentClasses": [
+        "w-1/2 flex flex-col justify-center",
+        "flex flex-row space-x-6",
+        "dialog-content p-10 bg-tan max-w-[768px]"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-everyday-tee-grey",
+      "text": "",
+      "containerClass": "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+      "linkClass": "flex absolute inset-0 w-full h-full flex-col justify-center items-center lg:bg-black lg:bg-opacity-50",
+      "parentClasses": [
+        "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+        " aspect-[3/4] relative flex flex-col justify-center items-center"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-everyday-tee-grey",
+      "text": "7115 by Szeki Unisex Signature Everyday Tee, Grey",
+      "containerClass": "mt-[8px]",
+      "linkClass": "text-sm font-normal uppercase hover:opacity-60 cursor-pointer tracking-[1.5px] leading-[130%]",
+      "parentClasses": [
+        "mt-[8px]",
+        "col-span-1 scroll-animate"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-everyday-tee-grey",
+      "text": "Go to product page >",
+      "containerClass": "w-1/2 flex flex-col justify-center",
+      "linkClass": "uppercase text-xs font-bold tracking-widest hover:underline underline-offset-4",
+      "parentClasses": [
+        "w-1/2 flex flex-col justify-center",
+        "flex flex-row space-x-6",
+        "dialog-content p-10 bg-tan max-w-[768px]"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-everyday-tee-oatmeal",
+      "text": "",
+      "containerClass": "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+      "linkClass": "flex absolute inset-0 w-full h-full flex-col justify-center items-center lg:bg-black lg:bg-opacity-50",
+      "parentClasses": [
+        "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+        " aspect-[3/4] relative flex flex-col justify-center items-center"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-everyday-tee-oatmeal",
+      "text": "7115 by Szeki Unisex Signature Everyday Tee, Oatmeal",
+      "containerClass": "mt-[8px]",
+      "linkClass": "text-sm font-normal uppercase hover:opacity-60 cursor-pointer tracking-[1.5px] leading-[130%]",
+      "parentClasses": [
+        "mt-[8px]",
+        "col-span-1 scroll-animate"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-everyday-tee-oatmeal",
+      "text": "Go to product page >",
+      "containerClass": "w-1/2 flex flex-col justify-center",
+      "linkClass": "uppercase text-xs font-bold tracking-widest hover:underline underline-offset-4",
+      "parentClasses": [
+        "w-1/2 flex flex-col justify-center",
+        "flex flex-row space-x-6",
+        "dialog-content p-10 bg-tan max-w-[768px]"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-pleated-trouser-faded-black",
+      "text": "",
+      "containerClass": "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+      "linkClass": "flex absolute inset-0 w-full h-full flex-col justify-center items-center lg:bg-black lg:bg-opacity-50",
+      "parentClasses": [
+        "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+        " aspect-[3/4] relative flex flex-col justify-center items-center"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-pleated-trouser-faded-black",
+      "text": "7115 by Szeki Unisex Signature Pleated Trouser, Faded Black",
+      "containerClass": "mt-[8px]",
+      "linkClass": "text-sm font-normal uppercase hover:opacity-60 cursor-pointer tracking-[1.5px] leading-[130%]",
+      "parentClasses": [
+        "mt-[8px]",
+        "col-span-1 scroll-animate"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-pleated-trouser-faded-black",
+      "text": "Go to product page >",
+      "containerClass": "w-1/2 flex flex-col justify-center",
+      "linkClass": "uppercase text-xs font-bold tracking-widest hover:underline underline-offset-4",
+      "parentClasses": [
+        "w-1/2 flex flex-col justify-center",
+        "flex flex-row space-x-6",
+        "dialog-content p-10 bg-tan max-w-[768px]"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-pleated-truser-textured-dijon",
+      "text": "",
+      "containerClass": "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+      "linkClass": "flex absolute inset-0 w-full h-full flex-col justify-center items-center lg:bg-black lg:bg-opacity-50",
+      "parentClasses": [
+        "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+        " aspect-[3/4] relative flex flex-col justify-center items-center"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-pleated-truser-textured-dijon",
+      "text": "7115 by Szeki Unisex Signature Pleated Trouser, Textured Dijon",
+      "containerClass": "mt-[8px]",
+      "linkClass": "text-sm font-normal uppercase hover:opacity-60 cursor-pointer tracking-[1.5px] leading-[130%]",
+      "parentClasses": [
+        "mt-[8px]",
+        "col-span-1 scroll-animate"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-by-szeki-signature-pleated-truser-textured-dijon",
+      "text": "Go to product page >",
+      "containerClass": "w-1/2 flex flex-col justify-center",
+      "linkClass": "uppercase text-xs font-bold tracking-widest hover:underline underline-offset-4",
+      "parentClasses": [
+        "w-1/2 flex flex-col justify-center",
+        "flex flex-row space-x-6",
+        "dialog-content p-10 bg-tan max-w-[768px]"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-signature-carry-all-commuter-heavy-canvas-bag-black",
+      "text": "",
+      "containerClass": "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+      "linkClass": "flex absolute inset-0 w-full h-full flex-col justify-center items-center lg:bg-black lg:bg-opacity-50",
+      "parentClasses": [
+        "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+        " aspect-[3/4] relative flex flex-col justify-center items-center"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-signature-carry-all-commuter-heavy-canvas-bag-black",
+      "text": "7115 Signature Carry All Commuter Heavy Canvas Bag, Black",
+      "containerClass": "mt-[8px]",
+      "linkClass": "text-sm font-normal uppercase hover:opacity-60 cursor-pointer tracking-[1.5px] leading-[130%]",
+      "parentClasses": [
+        "mt-[8px]",
+        "col-span-1 scroll-animate"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-signature-carry-all-commuter-heavy-canvas-bag-black",
+      "text": "Go to product page >",
+      "containerClass": "w-1/2 flex flex-col justify-center",
+      "linkClass": "uppercase text-xs font-bold tracking-widest hover:underline underline-offset-4",
+      "parentClasses": [
+        "w-1/2 flex flex-col justify-center",
+        "flex flex-row space-x-6",
+        "dialog-content p-10 bg-tan max-w-[768px]"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-signature-carry-all-commuter-heavy-canvas-bag-sand-gray",
+      "text": "",
+      "containerClass": "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+      "linkClass": "flex absolute inset-0 w-full h-full flex-col justify-center items-center lg:bg-black lg:bg-opacity-50",
+      "parentClasses": [
+        "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+        " aspect-[3/4] relative flex flex-col justify-center items-center"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-signature-carry-all-commuter-heavy-canvas-bag-sand-gray",
+      "text": "7115 Signature Carry All Commuter Heavy Canvas Bag, Sand Gray",
+      "containerClass": "mt-[8px]",
+      "linkClass": "text-sm font-normal uppercase hover:opacity-60 cursor-pointer tracking-[1.5px] leading-[130%]",
+      "parentClasses": [
+        "mt-[8px]",
+        "col-span-1 scroll-animate"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-signature-carry-all-commuter-heavy-canvas-bag-sand-gray",
+      "text": "Go to product page >",
+      "containerClass": "w-1/2 flex flex-col justify-center",
+      "linkClass": "uppercase text-xs font-bold tracking-widest hover:underline underline-offset-4",
+      "parentClasses": [
+        "w-1/2 flex flex-col justify-center",
+        "flex flex-row space-x-6",
+        "dialog-content p-10 bg-tan max-w-[768px]"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-unisex-signature-everyday-tee-black",
+      "text": "",
+      "containerClass": "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+      "linkClass": "flex absolute inset-0 w-full h-full flex-col justify-center items-center lg:bg-black lg:bg-opacity-50",
+      "parentClasses": [
+        "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+        " aspect-[3/4] relative flex flex-col justify-center items-center"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-unisex-signature-everyday-tee-black",
+      "text": "7115 Unisex Signature Everyday Tee, Black",
+      "containerClass": "mt-[8px]",
+      "linkClass": "text-sm font-normal uppercase hover:opacity-60 cursor-pointer tracking-[1.5px] leading-[130%]",
+      "parentClasses": [
+        "mt-[8px]",
+        "col-span-1 scroll-animate"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-unisex-signature-everyday-tee-black",
+      "text": "Go to product page >",
+      "containerClass": "w-1/2 flex flex-col justify-center",
+      "linkClass": "uppercase text-xs font-bold tracking-widest hover:underline underline-offset-4",
+      "parentClasses": [
+        "w-1/2 flex flex-col justify-center",
+        "flex flex-row space-x-6",
+        "dialog-content p-10 bg-tan max-w-[768px]"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-unisex-everyday-tee-off-white",
+      "text": "",
+      "containerClass": "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+      "linkClass": "flex absolute inset-0 w-full h-full flex-col justify-center items-center lg:bg-black lg:bg-opacity-50",
+      "parentClasses": [
+        "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+        " aspect-[3/4] relative flex flex-col justify-center items-center"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-unisex-everyday-tee-off-white",
+      "text": "7115 Unisex Signature Everyday Tee, Off-White",
+      "containerClass": "mt-[8px]",
+      "linkClass": "text-sm font-normal uppercase hover:opacity-60 cursor-pointer tracking-[1.5px] leading-[130%]",
+      "parentClasses": [
+        "mt-[8px]",
+        "col-span-1 scroll-animate"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/7115-unisex-everyday-tee-off-white",
+      "text": "Go to product page >",
+      "containerClass": "w-1/2 flex flex-col justify-center",
+      "linkClass": "uppercase text-xs font-bold tracking-widest hover:underline underline-offset-4",
+      "parentClasses": [
+        "w-1/2 flex flex-col justify-center",
+        "flex flex-row space-x-6",
+        "dialog-content p-10 bg-tan max-w-[768px]"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/arpenteur-sidewalk-black",
+      "text": "",
+      "containerClass": "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+      "linkClass": "flex absolute inset-0 w-full h-full flex-col justify-center items-center lg:bg-black lg:bg-opacity-50",
+      "parentClasses": [
+        "flex flex-col justify-center items-center lg:opacity-0  lg:hover:opacity-100 z-10",
+        " aspect-[3/4] relative flex flex-col justify-center items-center"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/arpenteur-sidewalk-black",
+      "text": "Arpenteur Moonstar Sidewalk Sneaker, Black",
+      "containerClass": "mt-[8px]",
+      "linkClass": "text-sm font-normal uppercase hover:opacity-60 cursor-pointer tracking-[1.5px] leading-[130%]",
+      "parentClasses": [
+        "mt-[8px]",
+        "col-span-1 scroll-animate"
+      ]
+    },
+    {
+      "url": "https://glasswingshop.com/products/arpenteur-sidewalk-black",
+      "text": "Go to product page >",
+      "containerClass": "w-1/2 flex flex-col justify-center",
+      "linkClass": "uppercase text-xs font-bold tracking-widest hover:underline underline-offset-4",
+      "parentClasses": [
+        "w-1/2 flex flex-col justify-center",
+        "flex flex-row space-x-6",
+        "dialog-content p-10 bg-tan max-w-[768px]"
+      ]
+    }
+  ],
+  "navigationLinks": [
+    {
+      "url": "https://glasswingshop.com/collections/unisex",
+      "text": "Unisex"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/clothing-collection",
+      "text": "All Clothing"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/shoe-collection",
+      "text": "All Shoes"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/sale",
+      "text": "All Sale"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/7115-by-szeki-1",
+      "text": "7115 by Szeki"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/ayame-eyewear",
+      "text": "Ayame Eyewear"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/arpenteur",
+      "text": "Arpenteur"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/black-crane",
+      "text": "Black Crane"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/braindead",
+      "text": "Brain Dead"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/camiel-fortgens",
+      "text": "Camiel Fortgens"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/cawley",
+      "text": "Cawley"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/colbo",
+      "text": "Colbo"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/monica-cordera",
+      "text": "Cordera"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/engineered-garments",
+      "text": "Engineered Garments"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/evan-kinori",
+      "text": "Evan Kinori"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/henrik-vibskov-1",
+      "text": "Henrik Vibskov"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/hernan-herdez",
+      "text": "Hernán Herdez"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/history-industry",
+      "text": "History + Industry"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/illesteva",
+      "text": "Illesteva"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/jacques-soloviere",
+      "text": "Jacques Solovière"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/jan-jan-van-essche-collection",
+      "text": "Jan-Jan Van Essche"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/jesse-kamm",
+      "text": "jesse kamm"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/kapital",
+      "text": "Kapital"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/kara-yoo",
+      "text": "Kara Yoo"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/lady-white-mens",
+      "text": "Lady White Co."
+    },
+    {
+      "url": "https://glasswingshop.com/collections/the-la-paz-collection",
+      "text": "La Paz"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/lauren-manoogian",
+      "text": "Lauren Manoogian"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/lownn",
+      "text": "Lownn"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/man-tle-1",
+      "text": "MAN-TLE"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/merz-b-schwanen",
+      "text": "Merz b Schwanen"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/mijeong-park",
+      "text": "Mijeong Park"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/o-project-1",
+      "text": "O-Project"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/orslow",
+      "text": "orSlow"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/petrosolaum",
+      "text": "Petrosolaum"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/postalco",
+      "text": "Postalco"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/sillage",
+      "text": "Sillage"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/stutterheim",
+      "text": "Stutterheim"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/universal-works",
+      "text": "Universal Works"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/yoko-sakamoto-collection",
+      "text": "Yoko Sakamoto"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/zii-ropa",
+      "text": "Zii Ropa"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/tacoma-fuji-records",
+      "text": "Tacoma Fuji Records"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/new-arrivals-for-him",
+      "text": "New Arrivals"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/mens-collection",
+      "text": "Clothing"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/mens-shoes",
+      "text": "Shoes"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/mens-accessories",
+      "text": "Accessories"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/mens-sale",
+      "text": "Sale"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/shop-all-mens",
+      "text": "Shop All"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/7115-by-szeki-mens-collection",
+      "text": "7115 by Szeki"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/arpenteur",
+      "text": "Arpenteur"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/brain-dead-mens-collection",
+      "text": "Brain Dead"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/camiel-fortgens-mens-collection",
+      "text": "Camiel Fortgens"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/colbo-mens-collection",
+      "text": "Colbo"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/engineered-garments",
+      "text": "Engineered Garments"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/evan-kinori/EVAN-KINORI",
+      "text": "Evan Kinori"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/henrik-vibskov-mens-collection",
+      "text": "Henrik Vibskov"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/illesteva",
+      "text": "Illesteva"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/jacques-soloviere",
+      "text": "Jacques Solovière"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/jan-jan-van-essche/MENS",
+      "text": "Jan-Jan Van Essche"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/kapital-mens-collection",
+      "text": "Kapital"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/lady-white-mens",
+      "text": "Lady White Co."
+    },
+    {
+      "url": "https://glasswingshop.com/collections/the-la-paz-collection",
+      "text": "La Paz"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/lownn",
+      "text": "Lownn"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/man-tle",
+      "text": "MAN-TLE"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/merz-b-schwanen-mens",
+      "text": "Merz b. Schwanen"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/o-project",
+      "text": "O Project"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/orslow-mens-collection",
+      "text": "OrSlow"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/petrosolaum",
+      "text": "Petrosolaum"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/postalco/mens",
+      "text": "Postalco"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/sillage",
+      "text": "Sillage"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/stutterheim/MENS",
+      "text": "Stutterheim"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/tacoma-fuji-records",
+      "text": "Tacoma Fuji Records"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/universal-works",
+      "text": "Universal Works"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/yoko-sakamoto-mens-collection",
+      "text": "Yoko Sakamoto"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/new-arrivals-for-her",
+      "text": "New Arrivals"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/womens-collection",
+      "text": "Clothing"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/womens-shoes",
+      "text": "Shoes"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/jewelry",
+      "text": "Jewelry"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/accessories-for-her",
+      "text": "Accessories"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/women-s-sale",
+      "text": "Sale"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/shop-all-womens",
+      "text": "Shop All"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/7115-by-szeki",
+      "text": "7115 by Szeki"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/agmes",
+      "text": "Agmes"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/ayame-eyewear",
+      "text": "Ayame Eyewear"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/another-feather",
+      "text": "ANOTHER FEATHER"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/atelier-delphine",
+      "text": "Atelier Delphine"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/black-crane",
+      "text": "Black Crane"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/brain-dead-womens-collection",
+      "text": "Brain Dead"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/camiel-fortgens-womens-collection",
+      "text": "Camiel Fortgens"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/cawley-womens-collection",
+      "text": "Cawley"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/colbo-womens-collection",
+      "text": "Colbo"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/cordera-womens-collection",
+      "text": "Cordera"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/henrik-vibskov",
+      "text": "Henrik Vibskov"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/hernan-herdez",
+      "text": "Hernán Herdez"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/history-industry",
+      "text": "History + Industry"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/illesteva",
+      "text": "Illesteva"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/jacques-soloviere",
+      "text": "Jacques Solovière"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/jan-jan-van-essche-womens-collection",
+      "text": "JAN-JAN VAN ESSCHE"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/jesse-kamm",
+      "text": "Jesse Kamm"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/kapital-the-femme-collection/WOMENS",
+      "text": "Kapital"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/kara-yoo",
+      "text": "KARA YOO"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/lauren-manoogian",
+      "text": "Lauren Manoogian"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/loq",
+      "text": "LOQ"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/man-tle-womens",
+      "text": "MAN-TLE"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/machete",
+      "text": "MACHETE"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/merz-b-schwanen-1",
+      "text": "Merz b. Schwanen"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/mijeong-park",
+      "text": "Mijeong Park"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/orslow-1",
+      "text": "orSlow"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/petrosolaum",
+      "text": "Petrosolaum"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/postalco",
+      "text": "Postalco"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/sillage",
+      "text": "Sillage"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/yoko-sakamoto-womens-collection",
+      "text": "Yoko Sakamoto"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/zii-ropa",
+      "text": "ZII ROPA"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/face",
+      "text": "Face"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/bath-1",
+      "text": "Bath & Body"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/fragrance-collection",
+      "text": "Fragrance"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/blackbird-apothecary",
+      "text": "Blackbird"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/brain-dead-bath",
+      "text": "BRAIN DEAD"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/corpus",
+      "text": "Corpus"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/d-s-durga",
+      "text": "D.S. & Durga"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/frama",
+      "text": "FRAMA"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/haoma-earth",
+      "text": "Haoma"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/iris-hantverk-1",
+      "text": "Iris Hantverk"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/j-hannah-polish",
+      "text": "J. Hannah"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/leif",
+      "text": "Leif"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/lightwell",
+      "text": "Lightwell"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/mad-et-len",
+      "text": "Mad et Lin"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/morihata",
+      "text": "Morihata"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/na-nin",
+      "text": "Na Nin"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/parfums-quartana",
+      "text": "Parfums Quartana"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/stora-skuggan",
+      "text": "Stora Skuggan"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/wonder-valley",
+      "text": "Wonder Valley"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/february-gift-guide",
+      "text": "February Gift Guide"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/gift-sets",
+      "text": "Gift Sets"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/bath",
+      "text": "Bath & Body"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/candles",
+      "text": "Candles & Scent"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/handmade-ceramics",
+      "text": "Ceramics"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/current-floral-collection",
+      "text": "Florals"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/gift-cards",
+      "text": "Gift Cards"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/plant-collection",
+      "text": "Plants"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/plant-pots",
+      "text": "Pots"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/office",
+      "text": "Office"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/kitchen",
+      "text": "Tableware"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/aleph-geddis",
+      "text": "Aleph Geddis"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/alex-roby-ceramics",
+      "text": "Alex Roby Ceramics"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/ayame",
+      "text": "Ayame Bullock"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/blackbird-apothecary",
+      "text": "Blackbird"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/brain-dead-bath",
+      "text": "BRAIN DEAD"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/corpus",
+      "text": "Corpus"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/daisuke-anayama",
+      "text": "Daisuke Anayama"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/daiyo",
+      "text": "Daiyo"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/deux-cranes",
+      "text": "Deux Cranes"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/frama",
+      "text": "FRAMA"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/george-nakamura",
+      "text": "George Nakamura"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/haoma-earth",
+      "text": "Haoma"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/iris-hantverk-1",
+      "text": "Iris Hantverk"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/jojo-corv-i",
+      "text": "Jojo Corväiá"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/kettl",
+      "text": "Kettl"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/kinto",
+      "text": "Kinto"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/lamine-diouf-weavings",
+      "text": "Lamine Diouf"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/leif",
+      "text": "Leif"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/lightwell",
+      "text": "Lightwell"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/mad-et-len",
+      "text": "Mad et Len"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/morihata",
+      "text": "Morihata"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/na-nin",
+      "text": "Na Nin"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/postalco",
+      "text": "Postalco"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/takazawa-candle",
+      "text": "Takazawa Candle"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/the-quiet-botanist",
+      "text": "The Quiet Botanist"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/wilde-house-paper",
+      "text": "Wilde House Paper"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/wonder-valley",
+      "text": "Wonder Valley"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/yuriko-bullock",
+      "text": "Yuriko Bullock"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/current-floral-collection",
+      "text": "florals"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/plant-collection",
+      "text": "plants"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/plant-pots",
+      "text": "pots"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/plants-garden",
+      "text": "shop all"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/workshops",
+      "text": "workshops"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/mens-collection?sort_by=",
+      "text": "Clear all"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/mens-collection",
+      "text": "1"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/mens-collection?page=2&phcursor=eyJhbGciOiJIUzI1NiJ9.eyJzayI6InByb2R1Y3RfdGl0bGUiLCJzdiI6IkFycGVudGV1ciBNb29uc3RhciBTaWRld2FsayBTbmVha2VyLCBCbGFjayIsImQiOiJmIiwidWlkIjozNDE4ODg0NzQxNTM5NSwibCI6MjAsIm8iOjAsInIiOiJDRFAiLCJ2IjoxLCJwIjoyfQ.qfSAfKlRsCgcQmLYyxFfrsQgK1BurHxRxFUChkzbj6I",
+      "text": "2"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/mens-collection?page=3",
+      "text": "3"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/mens-collection",
+      "text": "…"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/mens-collection?page=14",
+      "text": "14"
+    },
+    {
+      "url": "https://glasswingshop.com/collections/mens-collection?page=2&phcursor=eyJhbGciOiJIUzI1NiJ9.eyJzayI6InByb2R1Y3RfdGl0bGUiLCJzdiI6IkFycGVudGV1ciBNb29uc3RhciBTaWRld2FsayBTbmVha2VyLCBCbGFjayIsImQiOiJmIiwidWlkIjozNDE4ODg0NzQxNTM5NSwibCI6MjAsIm8iOjAsInIiOiJDRFAiLCJ2IjoxLCJwIjoyfQ.qfSAfKlRsCgcQmLYyxFfrsQgK1BurHxRxFUChkzbj6I",
+      "text": "next"
+    }
+  ],
+  "selectors": {
+    "working": [],
+    "notWorking": [
+      {
+        "selector": ".open-product",
+        "found": 1,
+        "reason": "No product links inside"
+      },
+      {
+        "selector": "a[href*=\"/products/\"]",
+        "found": 60,
+        "reason": "No product links inside"
+      }
+    ]
+  },
+  "productGridClass": "grid min-h-full grid-cols-1 grid-rows-1",
+  "productGridChildren": 35
+}

@@ -1,0 +1,213 @@
+{
+  "url": "https://glasswingshop.com/collections/mens-collection",
+  "analysis": {
+    "isProductRich": true,
+    "productScore": 14,
+    "productDensity": 220,
+    "platform": "generic",
+    "indicators": {
+      "urlMatch": true,
+      "productContainers": 486,
+      "priceElements": 21,
+      "addToCartButtons": 20,
+      "gridLayouts": 4,
+      "visibleProducts": 220
+    },
+    "reason": "Product score 14.0 exceeds threshold 3"
+  },
+  "products": [
+    {
+      "url": "https://glasswingshop.com/collections/unisex",
+      "title": "Unisex",
+      "price": "/ $ 0",
+      "image": "https://glasswingshop.com/cdn/shop/files/glasswing-logo.svg?v=1691521417&width=600",
+      "availability": "Unknown",
+      "containerIndex": 0,
+      "platform": "generic",
+      "discoveredAt": "2025-08-20T03:45:20.898Z",
+      "discoveryMethod": "ProductCatalogStrategy",
+      "pageAnalysis": {
+        "platform": "generic",
+        "productScore": 14,
+        "productDensity": 220
+      },
+      "category": "unknown",
+      "confidence": 0.9
+    },
+    {
+      "url": "https://glasswingshop.com/",
+      "title": "Glasswing Logo",
+      "price": "/ $ 0",
+      "image": "https://glasswingshop.com/cdn/shop/files/glasswing-logo.svg?v=1691521417&width=600",
+      "availability": "Unknown",
+      "containerIndex": 1,
+      "platform": "generic",
+      "discoveredAt": "2025-08-20T03:45:20.898Z",
+      "discoveryMethod": "ProductCatalogStrategy",
+      "pageAnalysis": {
+        "platform": "generic",
+        "productScore": 14,
+        "productDensity": 220
+      },
+      "category": "unknown",
+      "confidence": 0.9
+    },
+    {
+      "url": "https://glasswingshop.com/collections/clothing-collection",
+      "title": "All Clothing",
+      "price": null,
+      "image": null,
+      "availability": "Unknown",
+      "containerIndex": 11,
+      "platform": "generic",
+      "discoveredAt": "2025-08-20T03:45:20.898Z",
+      "discoveryMethod": "ProductCatalogStrategy",
+      "pageAnalysis": {
+        "platform": "generic",
+        "productScore": 14,
+        "productDensity": 220
+      },
+      "category": "clothing",
+      "confidence": 0.65
+    },
+    {
+      "url": "https://glasswingshop.com/collections/shoe-collection",
+      "title": "All Shoes",
+      "price": null,
+      "image": null,
+      "availability": "Unknown",
+      "containerIndex": 12,
+      "platform": "generic",
+      "discoveredAt": "2025-08-20T03:45:20.898Z",
+      "discoveryMethod": "ProductCatalogStrategy",
+      "pageAnalysis": {
+        "platform": "generic",
+        "productScore": 14,
+        "productDensity": 220
+      },
+      "category": "unknown",
+      "confidence": 0.65
+    },
+    {
+      "url": "https://glasswingshop.com/collections/sale",
+      "title": "All Sale",
+      "price": null,
+      "image": null,
+      "availability": "Unknown",
+      "containerIndex": 13,
+      "platform": "generic",
+      "discoveredAt": "2025-08-20T03:45:20.898Z",
+      "discoveryMethod": "ProductCatalogStrategy",
+      "pageAnalysis": {
+        "platform": "generic",
+        "productScore": 14,
+        "productDensity": 220
+      },
+      "category": "unknown",
+      "confidence": 0.65
+    },
+    {
+      "url": "https://glasswingshop.com/collections/7115-by-szeki-1",
+      "title": "7115 by Szeki",
+      "price": null,
+      "image": null,
+      "availability": "Unknown",
+      "containerIndex": 14,
+      "platform": "generic",
+      "discoveredAt": "2025-08-20T03:45:20.898Z",
+      "discoveryMethod": "ProductCatalogStrategy",
+      "pageAnalysis": {
+        "platform": "generic",
+        "productScore": 14,
+        "productDensity": 220
+      },
+      "category": "unknown",
+      "confidence": 0.65
+    },
+    {
+      "url": "https://glasswingshop.com/collections/ayame-eyewear",
+      "title": "Ayame Eyewear",
+      "price": null,
+      "image": null,
+      "availability": "Unknown",
+      "containerIndex": 15,
+      "platform": "generic",
+      "discoveredAt": "2025-08-20T03:45:20.898Z",
+      "discoveryMethod": "ProductCatalogStrategy",
+      "pageAnalysis": {
+        "platform": "generic",
+        "productScore": 14,
+        "productDensity": 220
+      },
+      "category": "unknown",
+      "confidence": 0.65
+    },
+    {
+      "url": "https://glasswingshop.com/collections/arpenteur",
+      "title": "Arpenteur",
+      "price": null,
+      "image": null,
+      "availability": "Unknown",
+      "containerIndex": 16,
+      "platform": "generic",
+      "discoveredAt": "2025-08-20T03:45:20.898Z",
+      "discoveryMethod": "ProductCatalogStrategy",
+      "pageAnalysis": {
+        "platform": "generic",
+        "productScore": 14,
+        "productDensity": 220
+      },
+      "category": "unknown",
+      "confidence": 0.65
+    },
+    {
+      "url": "https://glasswingshop.com/collections/black-crane",
+      "title": "Black Crane",
+      "price": null,
+      "image": null,
+      "availability": "Unknown",
+      "containerIndex": 17,
+      "platform": "generic",
+      "discoveredAt": "2025-08-20T03:45:20.898Z",
+      "discoveryMethod": "ProductCatalogStrategy",
+      "pageAnalysis": {
+        "platform": "generic",
+        "productScore": 14,
+        "productDensity": 220
+      },
+      "category": "unknown",
+      "confidence": 0.65
+    },
+    {
+      "url": "https://glasswingshop.com/collections/braindead",
+      "title": "Brain Dead",
+      "price": null,
+      "image": null,
+      "availability": "Unknown",
+      "containerIndex": 18,
+      "platform": "generic",
+      "discoveredAt": "2025-08-20T03:45:20.898Z",
+      "discoveryMethod": "ProductCatalogStrategy",
+      "pageAnalysis": {
+        "platform": "generic",
+        "productScore": 14,
+        "productDensity": 220
+      },
+      "category": "unknown",
+      "confidence": 0.65
+    }
+  ],
+  "metadata": {
+    "isProductRich": true,
+    "productScore": 14,
+    "platform": "generic",
+    "paginationHandled": false,
+    "totalProducts": 166,
+    "productDensity": 220
+  },
+  "performance": {
+    "loadTime": 2095,
+    "productCount": 166,
+    "timePerProduct": 13
+  }
+}

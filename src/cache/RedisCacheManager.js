@@ -1,9 +1,9 @@
 /**
  * RedisCacheManager.js
- * 
+ *
  * Unified Redis cache management system that consolidates multiple cache instances
  * into a single shared connection pool with namespace management and TTL policies.
- * 
+ *
  * Replaces separate RedisCache instances in:
  * - WorldModel (site intelligence)
  * - NavigationLearningCache (hierarchical navigation)
@@ -18,56 +18,56 @@ class RedisCacheManager {
     if (RedisCacheManager.instance) {
       return RedisCacheManager.instance;
     }
-    
+
     this.logger = logger || {
       info: (msg, data) => console.log(`[CACHE] ${msg}`, data || ''),
       debug: (msg, data) => console.log(`[CACHE] ${msg}`, data || ''),
       warn: (msg, data) => console.warn(`[CACHE] ${msg}`, data || ''),
-      error: (msg, data) => console.error(`[CACHE] ${msg}`, data || '')
+      error: (msg, data) => console.error(`[CACHE] ${msg}`, data || ''),
     };
-    
+
     this.redis = null;
     this.connected = false;
     this.memoryCache = new Map();
     this.initializationPromise = null;
-    
+
     // Namespace configuration with TTL policies
     this.namespaceConfig = {
-      navigation: { 
+      navigation: {
         prefix: 'nav',
         ttl: 7 * 24 * 60 * 60, // 7 days
-        description: 'Site navigation intelligence'
+        description: 'Site navigation intelligence',
       },
-      selectors: { 
+      selectors: {
         prefix: 'sel',
         ttl: 3 * 24 * 60 * 60, // 3 days
-        description: 'CSS selector patterns'
+        description: 'CSS selector patterns',
       },
-      learning: { 
+      learning: {
         prefix: 'learn',
         ttl: 24 * 60 * 60, // 1 day
-        description: 'Hierarchical navigation learning'
+        description: 'Hierarchical navigation learning',
       },
-      state: { 
+      state: {
         prefix: 'state',
         ttl: 12 * 60 * 60, // 12 hours
-        description: 'Job and process state'
+        description: 'Job and process state',
       },
-      discovery: { 
+      discovery: {
         prefix: 'disc',
         ttl: 1 * 60 * 60, // 1 hour
-        description: 'Recent discoveries cache'
-      }
+        description: 'Recent discoveries cache',
+      },
     };
-    
+
     // Connection statistics
     this.stats = {
       hits: 0,
       misses: 0,
       errors: 0,
-      operations: 0
+      operations: 0,
     };
-    
+
     RedisCacheManager.instance = this;
   }
 
@@ -78,11 +78,11 @@ class RedisCacheManager {
     if (this.connected) {
       return this.redis;
     }
-    
+
     if (this.initializationPromise) {
       return this.initializationPromise;
     }
-    
+
     this.initializationPromise = this._doInitialize();
     return this.initializationPromise;
   }
@@ -111,7 +111,7 @@ class RedisCacheManager {
         family: 4,
         keepAlive: true,
         connectTimeout: 10000,
-        commandTimeout: 5000
+        commandTimeout: 5000,
       };
 
       if (process.env.REDIS_URL) {
@@ -121,24 +121,24 @@ class RedisCacheManager {
           host: process.env.REDIS_HOST || 'localhost',
           port: process.env.REDIS_PORT || 6379,
           password: process.env.REDIS_PASSWORD || undefined,
-          ...redisConfig
+          ...redisConfig,
         });
       }
 
       // Test connection
       await this.redis.ping();
       this.connected = true;
-      
+
       // Set up event handlers
       this.redis.on('error', (error) => {
         this.logger.error('Redis connection error:', error);
         this.stats.errors++;
       });
-      
+
       this.redis.on('connect', () => {
         this.logger.info('Redis connection established');
       });
-      
+
       this.redis.on('close', () => {
         this.logger.warn('Redis connection closed');
         this.connected = false;
@@ -146,7 +146,7 @@ class RedisCacheManager {
 
       this.logger.info('RedisCacheManager initialized with shared connection pool');
       return this.redis;
-      
+
     } catch (error) {
       this.logger.warn('Redis connection failed, using memory cache fallback:', error.message);
       this.redis = null;
@@ -163,14 +163,14 @@ class RedisCacheManager {
     if (!this.namespaceConfig[namespace]) {
       throw new Error(`Unknown namespace: ${namespace}. Available: ${Object.keys(this.namespaceConfig).join(', ')}`);
     }
-    
+
     const config = this.namespaceConfig[namespace];
     const parts = [config.prefix, domain];
-    
+
     if (identifier) {
       parts.push(identifier);
     }
-    
+
     return parts.join(':');
   }
 
@@ -180,14 +180,14 @@ class RedisCacheManager {
   async set(namespace, domain, value, identifier = null, customTTL = null) {
     try {
       await this.initialize();
-      
+
       const key = this.generateKey(namespace, domain, identifier);
       const ttl = customTTL || this.namespaceConfig[namespace].ttl;
       const serializedValue = JSON.stringify({
         data: value,
         namespace,
         created_at: new Date().toISOString(),
-        ttl: ttl
+        ttl: ttl,
       });
 
       this.stats.operations++;
@@ -199,11 +199,11 @@ class RedisCacheManager {
         // Memory cache fallback
         this.memoryCache.set(key, {
           value: serializedValue,
-          expires: Date.now() + (ttl * 1000)
+          expires: Date.now() + (ttl * 1000),
         });
         this.logger.debug(`Memory cached ${namespace} data for ${domain}${identifier ? ':' + identifier : ''}`);
       }
-      
+
       return true;
     } catch (error) {
       this.logger.error(`Failed to cache ${namespace} data:`, error);
@@ -218,7 +218,7 @@ class RedisCacheManager {
   async get(namespace, domain, identifier = null) {
     try {
       await this.initialize();
-      
+
       const key = this.generateKey(namespace, domain, identifier);
       let cached = null;
 
@@ -238,17 +238,17 @@ class RedisCacheManager {
       if (cached) {
         const parsed = JSON.parse(cached);
         this.stats.hits++;
-        
+
         // Log cache age for monitoring
         const cacheAge = (Date.now() - new Date(parsed.created_at).getTime()) / 1000;
         this.logger.debug(`Cache hit for ${namespace}:${domain}${identifier ? ':' + identifier : ''} (age: ${Math.round(cacheAge)}s)`);
-        
+
         return parsed.data;
       }
 
       this.stats.misses++;
       return null;
-      
+
     } catch (error) {
       this.logger.error(`Failed to retrieve ${namespace} data:`, error);
       this.stats.errors++;
@@ -262,23 +262,23 @@ class RedisCacheManager {
   async delete(namespace, domain, identifier = null) {
     try {
       await this.initialize();
-      
+
       if (identifier) {
         // Delete specific key
         const key = this.generateKey(namespace, domain, identifier);
-        
+
         if (this.connected && this.redis) {
           await this.redis.del(key);
         } else {
           this.memoryCache.delete(key);
         }
-        
+
         this.logger.debug(`Deleted ${namespace} cache for ${domain}:${identifier}`);
       } else {
         // Delete all keys for domain in namespace
         await this.clearNamespace(namespace, domain);
       }
-      
+
       return true;
     } catch (error) {
       this.logger.error(`Failed to delete ${namespace} cache:`, error);
@@ -292,9 +292,9 @@ class RedisCacheManager {
   async clearNamespace(namespace, domain = '*') {
     try {
       await this.initialize();
-      
+
       const pattern = this.generateKey(namespace, domain, '*');
-      
+
       if (this.connected && this.redis) {
         const keys = await this.redis.keys(pattern);
         if (keys.length > 0) {
@@ -310,7 +310,7 @@ class RedisCacheManager {
           }
         }
       }
-      
+
       return true;
     } catch (error) {
       this.logger.error(`Failed to clear ${namespace} namespace:`, error);
@@ -324,10 +324,10 @@ class RedisCacheManager {
   async setBatch(operations) {
     try {
       await this.initialize();
-      
+
       if (this.connected && this.redis) {
         const pipeline = this.redis.pipeline();
-        
+
         for (const op of operations) {
           const { namespace, domain, value, identifier, customTTL } = op;
           const key = this.generateKey(namespace, domain, identifier);
@@ -336,12 +336,12 @@ class RedisCacheManager {
             data: value,
             namespace,
             created_at: new Date().toISOString(),
-            ttl: ttl
+            ttl: ttl,
           });
-          
+
           pipeline.setex(key, ttl, serializedValue);
         }
-        
+
         await pipeline.exec();
         this.logger.info(`Batch cached ${operations.length} operations`);
       } else {
@@ -350,7 +350,7 @@ class RedisCacheManager {
           await this.set(op.namespace, op.domain, op.value, op.identifier, op.customTTL);
         }
       }
-      
+
       return true;
     } catch (error) {
       this.logger.error('Batch cache operation failed:', error);
@@ -363,7 +363,7 @@ class RedisCacheManager {
    */
   getStats() {
     const hitRate = this.stats.operations > 0 ? (this.stats.hits / this.stats.operations * 100).toFixed(1) : 0;
-    
+
     return {
       connected: this.connected,
       hits: this.stats.hits,
@@ -374,8 +374,8 @@ class RedisCacheManager {
       namespaces: Object.keys(this.namespaceConfig),
       memoryCache: {
         enabled: !this.connected,
-        size: this.memoryCache.size
-      }
+        size: this.memoryCache.size,
+      },
     };
   }
 
@@ -385,7 +385,7 @@ class RedisCacheManager {
   async healthCheck() {
     try {
       await this.initialize();
-      
+
       if (this.connected && this.redis) {
         await this.redis.ping();
         return { status: 'healthy', type: 'redis' };
@@ -409,7 +409,7 @@ class RedisCacheManager {
       this.connected = false;
       this.redis = null;
       this.initializationPromise = null;
-      
+
       this.logger.info('RedisCacheManager closed successfully');
     } catch (error) {
       this.logger.error('Error closing RedisCacheManager:', error);

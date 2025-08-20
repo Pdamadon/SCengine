@@ -7,6 +7,8 @@ const ScrapingAPI = require('./routes/scraping');
 const initializeScrapingJobsRoutes = require('./routes/scrapingJobs');
 const monitoringRoutes = require('./routes/monitoring');
 const queueManagementRoutes = require('./routes/queueManagement');
+const universalScrapingRoutes = require('./routes/universalScraping');
+const toastTestRoutes = require('./routes/toastTest');
 const WebSocketService = require('./services/WebSocketService');
 const ServerSentEventsService = require('./services/ServerSentEventsService');
 const initializeSSERoutes = require('./routes/serverSentEvents');
@@ -159,6 +161,12 @@ class AIShoppingScraper {
     // Queue Management routes
     this.app.use('/api/v1/queue', queueManagementRoutes);
 
+    // Universal scraping routes (NEW - uses MasterOrchestrator)
+    this.app.use('/api/universal', universalScrapingRoutes);
+    
+    // Toast test routes for Railway deployment testing
+    this.app.use('/api/test', toastTestRoutes);
+
     // SSE routes - will be set up after SSE service initialization
     this.app.use('/api/v1/sse', (req, res, next) => {
       if (!this.sseRouter) {
@@ -181,7 +189,7 @@ class AIShoppingScraper {
       res.json(this.webSocketService.getHealthStatus());
     });
 
-    // SSE health endpoint  
+    // SSE health endpoint
     this.app.get('/api/v1/sse/health', (req, res) => {
       if (!this.sseService) {
         return res.status(503).json({

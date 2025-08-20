@@ -1,0 +1,93 @@
+{
+  "metadata": {
+    "extractedAt": "2025-08-19T17:06:02.741Z",
+    "site": "macys.com",
+    "categoriesTested": 2
+  },
+  "categories": {
+    "Women's Activewear & Workout": {
+      "navigationUrl": "https://www.macys.com/shop/womens/clothing/activewear?id=29891",
+      "extractionSuccess": true,
+      "totalProducts": 66,
+      "products": [
+        {
+          "url": "https://www.macys.com/shop/product/gift-card-sent-by-mail?ID=10509228",
+          "title": "Physical Gift Card",
+          "imageUrl": null,
+          "selector": "a[href*=\"/shop/product/\"]"
+        },
+        {
+          "url": "https://www.macys.com/shop/product/levis-womens-501-curve-high-rise-straight-leg-jeans?ID=22299307",
+          "title": "Levi's 501 Curve",
+          "imageUrl": null,
+          "selector": "a[href*=\"/shop/product/\"]"
+        },
+        {
+          "url": "https://www.macys.com/shop/product/calvin-klein-womens-fleece-high-waist-drawstring-sweatpants?ID=23894545",
+          "title": "Trending 175 bought in the last 5 daysTrending 175 bought",
+          "imageUrl": "",
+          "selector": "a[href*=\"/shop/product/\"]"
+        },
+        {
+          "url": "https://www.macys.com/shop/product/columbia-womens-benton-springs-fleece-jacket?ID=23810282&swatchColor=Lemon%20Wash",
+          "title": "",
+          "imageUrl": "",
+          "selector": "a[href*=\"/shop/product/\"]"
+        },
+        {
+          "url": "https://www.macys.com/shop/product/columbia-womens-switchback-iv-hooded-packable-jacket?ID=22246575&swatchColor=Black",
+          "title": "",
+          "imageUrl": "",
+          "selector": "a[href*=\"/shop/product/\"]"
+        },
+        {
+          "url": "https://www.macys.com/shop/product/columbia-womens-switchback-iv-hooded-packable-jacket?ID=22246575",
+          "title": "+2",
+          "imageUrl": null,
+          "selector": "a[href*=\"/shop/product/\"]"
+        },
+        {
+          "url": "https://www.macys.com/shop/product/nike-sportswear-womens-club-fleece-loose-crewneck-sweatshirt?ID=18608704&swatchColor=B%20Hthr/bla",
+          "title": "",
+          "imageUrl": "",
+          "selector": "a[href*=\"/shop/product/\"]"
+        },
+        {
+          "url": "https://www.macys.com/shop/product/simone-sport-hight-impact-underwire-bra-855170-up-to-i-cup?ID=360198&swatchColor=Black",
+          "title": "",
+          "imageUrl": "",
+          "selector": "a[href*=\"/shop/product/\"]"
+        },
+        {
+          "url": "https://www.macys.com/shop/product/calvin-klein-womens-french-terry-collared-half-zip-pullover-top?ID=20639508&swatchColor=Pearl%20Grey%20Heather",
+          "title": "In demand 111 bought in the last 5 daysTrending 111 bought",
+          "imageUrl": "",
+          "selector": "a[href*=\"/shop/product/\"]"
+        },
+        {
+          "url": "https://www.macys.com/shop/product/under-armour-womens-twist-tech-v-neck-short-sleeve-top?ID=16584898&swatchColor=Halo%20Gray%20/%20%20/%20White",
+          "title": "",
+          "imageUrl": "",
+          "selector": "a[href*=\"/shop/product/\"]"
+        }
+      ],
+      "extractionMethods": [
+        "a[href*=\"/shop/product/\"]",
+        "a[href*=\"ID=\"]"
+      ]
+    },
+    "Men's Casual Shoes": {
+      "navigationUrl": "https://www.macys.com/shop/mens/shop-all-mens-shoes/mens-casual-shoes?id=59851",
+      "extractionSuccess": false,
+      "totalProducts": 0,
+      "products": [],
+      "extractionMethods": []
+    }
+  },
+  "summary": {
+    "totalProducts": 66,
+    "successfulCategories": 1,
+    "totalCategories": 2,
+    "successRate": 50
+  }
+}

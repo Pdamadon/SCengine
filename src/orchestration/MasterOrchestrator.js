@@ -1,386 +1,310 @@
 /**
- * MasterOrchestrator - Central coordination for universal scraping system
+ * MasterOrchestrator - Main coordinator for universal scraping operations
  * 
- * Manages the complete scraping lifecycle:
- * 1. Discovery - Navigate and map site structure
- * 2. Learning - Learn patterns and improve quality
- * 3. Extraction - Extract products using learned patterns
+ * Wraps PipelineOrchestrator with job management, progress tracking, and state management
+ * Provides the API interface that UniversalScrapingController expects
  * 
- * This replaces SelfLearningUniversalScraper as the main entry point
+ * This fixes the broken import in UniversalScrapingController.js:14
  */
 
-const DiscoveryPipeline = require('./DiscoveryPipeline');
-const LearningEngine = require('./LearningEngine');
-const ExtractionPipeline = require('./ExtractionPipeline');
-const StateManager = require('./StateManager');
-const ProgressReporter = require('./ProgressReporter');
-const { createDomainRateLimiter } = require('../utils/rateLimiter');
+const PipelineOrchestrator = require('../core/PipelineOrchestrator');
+const { logger } = require('../utils/logger');
+const { performance } = require('perf_hooks');
 
 class MasterOrchestrator {
   constructor(logger) {
-    this.logger = logger;
+    this.logger = logger || require('../utils/logger').logger;
+    this.pipeline = new PipelineOrchestrator(this.logger, {
+      enableNavigation: true,
+      enableCollection: true,
+      enableExtraction: true,
+      persistResults: true
+    });
     
-    // Initialize sub-components
-    this.stateManager = new StateManager(logger);
-    this.progressReporter = new ProgressReporter(logger);
-    this.discoveryPipeline = new DiscoveryPipeline(logger);
-    this.learningEngine = new LearningEngine(logger);
-    this.extractionPipeline = new ExtractionPipeline(logger);
-    
-    // Job tracking
+    // Job tracking (matches UniversalScrapingController expectations)
     this.activeJobs = new Map();
     this.completedJobs = new Map();
+    
+    // Progress reporting (matches UniversalScrapingController expectations)
+    this.progressReporter = {
+      getCurrentProgress: (jobId) => {
+        const job = this.activeJobs.get(jobId);
+        if (!job) return null;
+        
+        return {
+          percentage: job.progress,
+          message: job.currentStage,
+          startTime: job.startTime,
+          elapsedTime: Date.now() - job.startTime
+        };
+      },
+      
+      getMetrics: () => ({
+        activeJobs: this.activeJobs.size,
+        completedJobs: this.completedJobs.size,
+        totalJobs: this.activeJobs.size + this.completedJobs.size
+      })
+    };
+    
+    // State management (matches UniversalScrapingController expectations)
+    this.stateManager = {
+      getDiscovery: async (domain) => {
+        // TODO: Implement discovery data retrieval
+        return null;
+      },
+      
+      getLearning: async (domain) => {
+        // TODO: Implement learning data retrieval  
+        return null;
+      },
+      
+      getStatistics: () => ({
+        totalSitesProcessed: this.completedJobs.size,
+        averageProcessingTime: this.calculateAverageProcessingTime(),
+        successRate: this.calculateSuccessRate()
+      })
+    };
+    
+    this.initialized = false;
   }
 
   /**
-   * Initialize all components
+   * Initialize the MasterOrchestrator
    */
   async initialize() {
-    this.logger.info('Initializing MasterOrchestrator');
+    if (this.initialized) return;
     
-    await this.stateManager.initialize();
-    await this.discoveryPipeline.initialize();
-    await this.learningEngine.initialize();
-    await this.extractionPipeline.initialize();
-    await this.progressReporter.initialize();
-    
-    this.logger.info('MasterOrchestrator initialized successfully');
+    try {
+      this.logger.info('Initializing MasterOrchestrator...');
+      
+      // Initialize the underlying pipeline
+      await this.pipeline.initialize();
+      
+      this.initialized = true;
+      this.logger.info('MasterOrchestrator initialized successfully');
+    } catch (error) {
+      this.logger.error('Failed to initialize MasterOrchestrator:', error);
+      throw error;
+    }
   }
 
   /**
-   * Main entry point for universal scraping
-   * 
-   * @param {string} url - Target URL to scrape
-   * @param {object} options - Scraping options
-   * @param {function} progressCallback - Progress callback function
-   * @returns {object} Scraping results
+   * Main scraping method (API interface for UniversalScrapingController)
    */
   async scrape(url, options = {}, progressCallback = null) {
-    const jobId = this.generateJobId();
-    const domain = new URL(url).hostname;
-    const startTime = Date.now();
-    
-    this.logger.info('Starting universal scraping job', {
-      jobId,
-      url,
-      domain,
-      options
-    });
-
-    // Initialize rate limiter for domain
-    const rateLimiter = createDomainRateLimiter(domain);
-    rateLimiter.configure({
-      baseDelay: options.rateLimit?.baseDelay || 2000,
-      minDelay: options.rateLimit?.minDelay || 1000,
-      maxDelay: options.rateLimit?.maxDelay || 5000
-    });
-
-    // Create job state
-    const jobState = {
-      jobId,
-      url,
-      domain,
-      options,
-      status: 'initializing',
-      phases: {
-        discovery: { status: 'pending', data: null },
-        learning: { status: 'pending', data: null },
-        extraction: { status: 'pending', data: null }
-      },
-      startTime,
-      progressCallback
-    };
-
-    this.activeJobs.set(jobId, jobState);
-
-    try {
-      // Setup progress reporting
-      if (progressCallback) {
-        this.progressReporter.attachCallback(jobId, progressCallback);
-      }
-
-      // Phase 1: Discovery
-      await this.executeDiscoveryPhase(jobState);
-      
-      // Phase 2: Learning
-      await this.executeLearningPhase(jobState);
-      
-      // Phase 3: Extraction
-      await this.executeExtractionPhase(jobState);
-      
-      // Compile final results
-      const results = this.compileFinalResults(jobState);
-      
-      // Mark job as completed
-      jobState.status = 'completed';
-      jobState.endTime = Date.now();
-      jobState.duration = jobState.endTime - startTime;
-      
-      this.completedJobs.set(jobId, jobState);
-      this.activeJobs.delete(jobId);
-      
-      this.logger.info('Universal scraping job completed', {
-        jobId,
-        duration: jobState.duration,
-        productsFound: results.products?.length || 0,
-        quality: results.quality
-      });
-      
-      return {
-        success: true,
-        jobId,
-        ...results
-      };
-      
-    } catch (error) {
-      this.logger.error('Universal scraping job failed', {
-        jobId,
-        error: error.message,
-        stack: error.stack
-      });
-      
-      jobState.status = 'failed';
-      jobState.error = error.message;
-      jobState.endTime = Date.now();
-      jobState.duration = jobState.endTime - startTime;
-      
-      this.completedJobs.set(jobId, jobState);
-      this.activeJobs.delete(jobId);
-      
-      return {
-        success: false,
-        jobId,
-        error: error.message,
-        duration: jobState.duration
-      };
-      
-    } finally {
-      if (progressCallback) {
-        this.progressReporter.detachCallback(jobId);
-      }
+    if (!this.initialized) {
+      await this.initialize();
     }
-  }
 
-  /**
-   * Execute discovery phase - map site navigation and structure
-   */
-  async executeDiscoveryPhase(jobState) {
-    this.logger.info('Starting discovery phase', { jobId: jobState.jobId });
+    const jobId = `master_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const startTime = performance.now();
     
-    jobState.status = 'discovering';
-    jobState.phases.discovery.status = 'in_progress';
+    // Create job tracking entry
+    const jobEntry = {
+      jobId,
+      url,
+      startTime,
+      progress: 0,
+      currentStage: 'initializing',
+      options
+    };
     
-    this.progressReporter.reportProgress(jobState.jobId, 10, 'Discovering site navigation structure...');
+    this.activeJobs.set(jobId, jobEntry);
     
-    const discoveryResult = await this.discoveryPipeline.discover(
-      jobState.url,
-      {
-        maxDepth: jobState.options.discoveryDepth || 3,
-        maxSections: jobState.options.maxSections || 10,
-        includeHiddenMenus: true,
-        exploreDropdowns: true
-      }
-    );
-    
-    jobState.phases.discovery.status = 'completed';
-    jobState.phases.discovery.data = discoveryResult;
-    
-    // Store discovery results in state
-    await this.stateManager.storeDiscovery(jobState.domain, discoveryResult);
-    
-    this.progressReporter.reportProgress(
-      jobState.jobId, 
-      30, 
-      `Discovery complete: ${discoveryResult.navigation?.total_items || 0} navigation items found`
-    );
-    
-    this.logger.info('Discovery phase completed', {
-      jobId: jobState.jobId,
-      itemsFound: discoveryResult.navigation?.total_items || 0
-    });
-    
-    return discoveryResult;
-  }
+    try {
+      this.logger.info('Starting scraping job', {
+        jobId,
+        url,
+        options: Object.keys(options)
+      });
 
-  /**
-   * Execute learning phase - learn patterns and improve quality
-   */
-  async executeLearningPhase(jobState) {
-    this.logger.info('Starting learning phase', { jobId: jobState.jobId });
-    
-    jobState.status = 'learning';
-    jobState.phases.learning.status = 'in_progress';
-    
-    this.progressReporter.reportProgress(jobState.jobId, 40, 'Learning site patterns...');
-    
-    // Get discovery data
-    const discoveryData = jobState.phases.discovery.data;
-    
-    const learningResult = await this.learningEngine.learn(
-      jobState.url,
-      discoveryData,
-      {
-        maxAttempts: jobState.options.learningAttempts || 3,
-        targetQuality: jobState.options.targetQuality || 0.9,
-        progressCallback: (percent, message) => {
-          const adjustedPercent = 40 + (percent * 0.3); // 40-70% range
-          this.progressReporter.reportProgress(jobState.jobId, adjustedPercent, message);
+      // Update progress callback to track job progress
+      const wrappedProgressCallback = (progress) => {
+        if (this.activeJobs.has(jobId)) {
+          const job = this.activeJobs.get(jobId);
+          job.progress = progress.percentage || 0;
+          job.currentStage = progress.stage || progress.message || 'processing';
         }
-      }
-    );
-    
-    jobState.phases.learning.status = 'completed';
-    jobState.phases.learning.data = learningResult;
-    
-    // Store learning results
-    await this.stateManager.storeLearning(jobState.domain, learningResult);
-    
-    this.progressReporter.reportProgress(
-      jobState.jobId, 
-      70, 
-      `Learning complete: ${(learningResult.quality * 100).toFixed(1)}% quality achieved`
-    );
-    
-    this.logger.info('Learning phase completed', {
-      jobId: jobState.jobId,
-      quality: learningResult.quality,
-      patternsLearned: learningResult.patterns?.length || 0
-    });
-    
-    return learningResult;
-  }
-
-  /**
-   * Execute extraction phase - extract products using learned patterns
-   */
-  async executeExtractionPhase(jobState) {
-    this.logger.info('Starting extraction phase', { jobId: jobState.jobId });
-    
-    jobState.status = 'extracting';
-    jobState.phases.extraction.status = 'in_progress';
-    
-    this.progressReporter.reportProgress(jobState.jobId, 75, 'Extracting products...');
-    
-    // Get learning data
-    const learningData = jobState.phases.learning.data;
-    const discoveryData = jobState.phases.discovery.data;
-    
-    const extractionResult = await this.extractionPipeline.extract(
-      jobState.url,
-      {
-        learnedPatterns: {
-          patterns: learningData.patterns,
-          selectors: learningData.selectors,
-          url_patterns: learningData.url_patterns,
-          extraction_rules: learningData.extraction_rules,
-          platform: learningData.platform_detected
-        },
-        navigation: discoveryData.navigation,
-        maxProducts: jobState.options.maxProducts || 1000,
-        maxWorkers: jobState.options.maxWorkers || 5,
-        progressCallback: (percent, message) => {
-          const adjustedPercent = 75 + (percent * 0.2); // 75-95% range
-          this.progressReporter.reportProgress(jobState.jobId, adjustedPercent, message);
+        
+        if (progressCallback) {
+          progressCallback(progress);
         }
-      }
-    );
-    
-    jobState.phases.extraction.status = 'completed';
-    jobState.phases.extraction.data = extractionResult;
-    
-    // Store extraction results
-    await this.stateManager.storeExtraction(jobState.domain, extractionResult);
-    
-    this.progressReporter.reportProgress(
-      jobState.jobId, 
-      95, 
-      `Extraction complete: ${extractionResult.products?.length || 0} products found`
-    );
-    
-    this.logger.info('Extraction phase completed', {
-      jobId: jobState.jobId,
-      productsFound: extractionResult.products?.length || 0
-    });
-    
-    return extractionResult;
-  }
+      };
 
-  /**
-   * Compile final results from all phases
-   */
-  compileFinalResults(jobState) {
-    const discoveryData = jobState.phases.discovery.data;
-    const learningData = jobState.phases.learning.data;
-    const extractionData = jobState.phases.extraction.data;
-    
-    this.progressReporter.reportProgress(jobState.jobId, 100, 'Scraping complete!');
-    
-    return {
-      navigation: discoveryData?.navigation,
-      patterns: learningData?.patterns,
-      selectors: learningData?.selectors,
-      quality: learningData?.quality || 0,
-      products: extractionData?.products || [],
-      metadata: {
-        jobId: jobState.jobId,
-        domain: jobState.domain,
-        duration: Date.now() - jobState.startTime,
-        phases: {
-          discovery: {
-            itemsFound: discoveryData?.navigation?.total_items || 0,
-            duration: discoveryData?.duration
-          },
-          learning: {
-            quality: learningData?.quality || 0,
-            attempts: learningData?.attempts || 0,
-            duration: learningData?.duration
-          },
-          extraction: {
-            productsFound: extractionData?.products?.length || 0,
-            failedUrls: extractionData?.failedUrls?.length || 0,
-            duration: extractionData?.duration
+      // Execute the pipeline
+      jobEntry.currentStage = 'executing_pipeline';
+      jobEntry.progress = 10;
+      
+      const result = await this.pipeline.executePipeline(url, {
+        ...options,
+        jobId,
+        progressCallback: wrappedProgressCallback
+      });
+
+      // Calculate final metrics
+      const endTime = performance.now();
+      const duration = endTime - startTime;
+      
+      const finalResult = {
+        ...result,
+        jobId,
+        success: result.status === 'completed',
+        duration,
+        startTime: new Date(Date.now() - duration),
+        endTime: new Date(),
+        
+        // Add summary metrics
+        summary: {
+          ...result.summary,
+          processingTimeMs: duration,
+          stages: {
+            navigation: result.navigation ? 'completed' : 'skipped',
+            collection: result.collection ? 'completed' : 'skipped', 
+            extraction: result.extraction ? 'completed' : 'skipped'
           }
         }
-      }
-    };
+      };
+
+      // Move to completed jobs
+      this.completedJobs.set(jobId, finalResult);
+      this.activeJobs.delete(jobId);
+
+      this.logger.info('Scraping job completed successfully', {
+        jobId,
+        duration: Math.round(duration),
+        status: finalResult.status,
+        navigationSections: finalResult.summary?.navigationSections || 0,
+        productUrls: finalResult.summary?.productUrls || 0,
+        extractedProducts: finalResult.summary?.extractedProducts || 0
+      });
+
+      return finalResult;
+
+    } catch (error) {
+      // Handle job failure
+      const endTime = performance.now();
+      const duration = endTime - startTime;
+      
+      const failedResult = {
+        jobId,
+        url,
+        success: false,
+        status: 'failed',
+        error: error.message,
+        duration,
+        startTime: new Date(Date.now() - duration),
+        endTime: new Date()
+      };
+
+      this.completedJobs.set(jobId, failedResult);
+      this.activeJobs.delete(jobId);
+
+      this.logger.error('Scraping job failed', {
+        jobId,
+        url,
+        duration: Math.round(duration),
+        error: error.message
+      });
+
+      throw error;
+    }
   }
 
   /**
-   * Generate unique job ID
-   */
-  generateJobId() {
-    return `job_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  }
-
-  /**
-   * Get job status
+   * Get job status (API interface for UniversalScrapingController)
    */
   getJobStatus(jobId) {
-    const job = this.activeJobs.get(jobId) || this.completedJobs.get(jobId);
-    if (!job) {
-      return null;
+    if (this.activeJobs.has(jobId)) {
+      const job = this.activeJobs.get(jobId);
+      return {
+        status: 'running',
+        progress: job.progress,
+        currentStage: job.currentStage,
+        startTime: job.startTime,
+        duration: Date.now() - job.startTime,
+        phases: {
+          navigation: job.currentStage.includes('navigation') ? 'running' : 'pending',
+          collection: job.currentStage.includes('collection') ? 'running' : 'pending',
+          extraction: job.currentStage.includes('extraction') ? 'running' : 'pending'
+        }
+      };
     }
     
+    if (this.completedJobs.has(jobId)) {
+      const job = this.completedJobs.get(jobId);
+      return {
+        status: job.success ? 'completed' : 'failed',
+        duration: job.duration,
+        error: job.error || null,
+        phases: {
+          navigation: job.summary?.stages?.navigation || 'completed',
+          collection: job.summary?.stages?.collection || 'completed', 
+          extraction: job.summary?.stages?.extraction || 'completed'
+        },
+        results: job.success ? {
+          navigationSections: job.summary?.navigationSections || 0,
+          productUrls: job.summary?.productUrls || 0,
+          extractedProducts: job.summary?.extractedProducts || 0
+        } : null
+      };
+    }
+    
+    return null; // Job not found
+  }
+
+  /**
+   * Calculate average processing time across completed jobs
+   */
+  calculateAverageProcessingTime() {
+    if (this.completedJobs.size === 0) return 0;
+    
+    const totalTime = Array.from(this.completedJobs.values())
+      .reduce((sum, job) => sum + (job.duration || 0), 0);
+    
+    return Math.round(totalTime / this.completedJobs.size);
+  }
+
+  /**
+   * Calculate success rate across completed jobs
+   */
+  calculateSuccessRate() {
+    if (this.completedJobs.size === 0) return 1.0;
+    
+    const successfulJobs = Array.from(this.completedJobs.values())
+      .filter(job => job.success).length;
+    
+    return successfulJobs / this.completedJobs.size;
+  }
+
+  /**
+   * Get comprehensive statistics
+   */
+  getStats() {
     return {
-      jobId: job.jobId,
-      status: job.status,
-      phases: job.phases,
-      duration: job.duration,
-      error: job.error
+      initialized: this.initialized,
+      activeJobs: this.activeJobs.size,
+      completedJobs: this.completedJobs.size,
+      averageProcessingTime: this.calculateAverageProcessingTime(),
+      successRate: this.calculateSuccessRate(),
+      uptime: this.initialized ? Date.now() - this.initTime : 0
     };
   }
 
   /**
    * Cleanup resources
    */
-  async cleanup() {
-    await this.discoveryPipeline.cleanup();
-    await this.learningEngine.cleanup();
-    await this.extractionPipeline.cleanup();
-    await this.stateManager.cleanup();
-    await this.progressReporter.cleanup();
+  async close() {
+    this.logger.info('Closing MasterOrchestrator...');
     
-    this.logger.info('MasterOrchestrator cleaned up');
+    try {
+      await this.pipeline.close();
+      this.activeJobs.clear();
+      this.completedJobs.clear();
+    } catch (error) {
+      this.logger.warn('Error during MasterOrchestrator cleanup:', error);
+    }
+
+    this.initialized = false;
   }
 }
 

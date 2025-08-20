@@ -1,17 +1,12 @@
 /**
  * Scraping Worker Service
- * Processes scraping jobs from Redis queue and executes scraping operations
- * Integrates with existing scraper engines and provides progress reporting
+ * Processes scraping jobs from Redis queue using PipelineOrchestrator
  */
 
 const { queueManager } = require('../services/QueueManager');
 const { logger } = require('../utils/logger');
 const { metrics } = require('../utils/metrics');
-const ScrapingEngine = require('../scrapers/ScrapingEngine');
-const GlasswingScraper = require('../scrapers/GlasswingScraper');
-const ScraperFactory = require('../multisite/core/ScraperFactory');
-const GapScraper = require('../multisite/scrapers/GapScraper');
-const UniversalScraper = require('../multisite/core/UniversalScraper');
+const PipelineOrchestrator = require('../core/PipelineOrchestrator');
 const { performance } = require('perf_hooks');
 
 class ScrapingWorker {
@@ -22,15 +17,10 @@ class ScrapingWorker {
     this.isProcessing = false;
     this.activeJobs = new Map();
 
-    // Initialize scraper engines
-    this.scrapers = {
-      glasswing: new GlasswingScraper(logger),
-      general: new ScrapingEngine(logger, mongoClient),
-    };
-    
-    // Initialize multisite scraper factory
-    this.scraperFactory = new ScraperFactory(logger, {
-      cacheTimeout: 24 * 60 * 60 * 1000, // 24 hours
+    // Initialize pipeline orchestrator
+    this.pipelineOrchestrator = new PipelineOrchestrator(logger, {
+      persistResults: true,
+      maxConcurrency: concurrency
     });
 
     // Database collections
@@ -48,43 +38,31 @@ class ScrapingWorker {
       if (!queueManager.isInitialized) {
         await queueManager.initialize();
       }
-      
-      // Initialize scraper factory
-      await this.scraperFactory.initialize();
 
-      // Get the scraping queue
-      const scrapingQueue = queueManager.getQueue('scraping');
-
-      // Set up job processing
-      scrapingQueue.process('*', this.concurrency, this.processJob.bind(this));
+      // Initialize pipeline orchestrator
+      await this.pipelineOrchestrator.initialize();
 
       this.isProcessing = true;
 
-      logger.info('ScrapingWorker: Worker started successfully', {
-        concurrency: this.concurrency,
-        queues: ['scraping'],
+      // Start processing jobs
+      queueManager.scrapingQueue.process(this.concurrency, async (job) => {
+        return this.processJob(job);
       });
 
-      // Start health monitoring
-      this.startHealthMonitoring();
+      logger.info(`ScrapingWorker: Started with concurrency ${this.concurrency}`);
 
     } catch (error) {
-      logger.error('ScrapingWorker: Failed to start worker', {
-        error: error.message,
-        stack: error.stack,
-      });
-
-      metrics.trackError('WorkerStartError', 'scraping_worker');
+      logger.error('ScrapingWorker: Failed to start worker', { error: error.message });
       throw error;
     }
   }
 
   /**
-   * Process a job from the queue
+   * Process individual scraping job
    */
   async processJob(job) {
+    const jobId = job.id;
     const startTime = performance.now();
-    const jobId = job.data.job_id;
 
     logger.info('ScrapingWorker: Processing job', {
       jobId: jobId,
@@ -103,7 +81,7 @@ class ScrapingWorker {
       // Update job status in database
       await this.updateJobStatus(jobId, 'running', 0);
 
-      // Define progress callback here
+      // Define progress callback
       const progressCallback = (progress, message = '', details = {}) => {
         const progressData = {
           progress: progress,
@@ -122,36 +100,26 @@ class ScrapingWorker {
       };
 
       // Report initial progress
-      progressCallback(5, 'Job started - initializing scraper...');
+      progressCallback(5, 'Job started - initializing pipeline...');
 
-      // Determine scraper type based on target URL and job type
-      const scraper = await this.selectScraper(job.data);
-      progressCallback(8, `Selected ${scraper.constructor.name} for scraping...`);
-
-      // Execute scraping operation
-      const result = await this.executeScraping(job, scraper, progressCallback);
+      // Execute pipeline operation
+      const result = await this.executePipeline(job, progressCallback);
 
       // Save results to database
       progressCallback(90, 'Saving results to database...');
       await this.saveResults(jobId, result);
 
       // Update final job status
-      progressCallback(100, 'Job completed successfully!', {
-        itemsScraped: result.summary.total_items,
-        categoriesFound: result.summary.categories_found,
-      });
-      await this.updateJobStatus(jobId, 'completed', 100, result.summary);
-
       const duration = performance.now() - startTime;
+      await this.updateJobStatus(jobId, 'completed', 100, result.summary);
 
       logger.info('ScrapingWorker: Job completed successfully', {
         jobId: jobId,
         duration: Math.round(duration),
-        itemsScraped: result.summary.total_items,
-        categoriesFound: result.summary.categories_found,
+        itemsProcessed: result.summary.total_items,
       });
 
-      // Track metrics
+      // Track success metrics
       metrics.trackScrapingOperation(
         this.extractDomain(job.data.target_url),
         'success',
@@ -195,302 +163,70 @@ class ScrapingWorker {
   }
 
   /**
-   * Select appropriate scraper based on job data
-   * Enhanced with multisite platform detection
+   * Execute pipeline orchestrator for the job
    */
-  async selectScraper(jobData) {
-    const targetUrl = jobData.target_url.toLowerCase();
-
-    try {
-      // Try multisite scraper factory first (supports Gap, Shopify, etc.)
-      const scraperInfo = await this.scraperFactory.createScraper(targetUrl, jobData, {
-        enableDeepAnalysis: false, // Start with fast detection
-      });
-      
-      logger.info('ScrapingWorker: Selected multisite scraper', {
-        url: targetUrl,
-        platform: scraperInfo.platformInfo.platform,
-        confidence: scraperInfo.platformInfo.confidence,
-        scraperType: scraperInfo.scraper.constructor.name,
-      });
-      
-      return scraperInfo.scraper;
-      
-    } catch (error) {
-      logger.warn('ScrapingWorker: Multisite scraper selection failed, falling back to legacy scrapers', {
-        url: targetUrl,
-        error: error.message,
-      });
-      
-      // Fall back to legacy scraper selection
-      if (targetUrl.includes('glasswingshop.com')) {
-        return this.scrapers.glasswing;
-      }
-
-      // Default to general scraper
-      return this.scrapers.general;
-    }
-  }
-
-  /**
-   * Execute scraping operation with progress reporting
-   */
-  async executeScraping(job, scraper, progressCallback) {
+  async executePipeline(job, progressCallback) {
     const jobData = job.data;
-    const jobId = jobData.job_id;
+    const targetUrl = jobData.target_url;
 
-    // Configure scraper options
-    const scrapingOptions = {
-      maxPages: jobData.max_pages || 100,
-      respectRobotsTxt: jobData.respect_robots_txt !== false,
-      rateLimitDelay: jobData.rate_limit_delay_ms || 1000,
-      timeout: jobData.timeout_ms || 30000,
-      extractImages: jobData.extract_images || false,
-      extractReviews: jobData.extract_reviews || false,
-      categoryFilters: jobData.category_filters || [],
-      customSelectors: jobData.custom_selectors || {},
-    };
-
-    progressCallback(10, `Starting ${jobData.scraping_type} scraping...`);
-
-    // Execute based on scraping type
-    switch (jobData.scraping_type) {
-      case 'full_site':
-        return await this.executeFullSiteScraping(jobData.target_url, scrapingOptions, scraper, progressCallback);
-
-      case 'category':
-      case 'category_search': // Support both legacy and new naming
-        return await this.executeCategoryScraping(jobData.target_url, scrapingOptions, scraper, progressCallback);
-
-      case 'product':
-        return await this.executeProductScraping(jobData.target_url, scrapingOptions, scraper, progressCallback);
-
-      case 'search':
-        return await this.executeSearchScraping(jobData.target_url, scrapingOptions, scraper, progressCallback);
-
-      default:
-        throw new Error(`Unsupported scraping type: ${jobData.scraping_type}`);
-    }
-  }
-
-  /**
-   * Execute full site scraping
-   */
-  async executeFullSiteScraping(targetUrl, options, scraper, progressCallback) {
-    progressCallback(15, 'Starting full site discovery...');
-
-    // For Glasswing scraper, use the existing category-aware method
-    if (scraper instanceof GlasswingScraper) {
-      const results = await scraper.scrapeWithCategories({
-        baseUrl: targetUrl,
-        maxPages: options.maxPages,
-        respectRobotsTxt: options.respectRobotsTxt,
-        delay: options.rateLimitDelay,
-        extractImages: options.extractImages,
-        extractReviews: options.extractReviews,
-        progressCallback: progressCallback,
-      });
-
-      return this.formatScrapingResults(results, 'full_site');
-    }
-
-    // For general scraper, implement full site logic
-    throw new Error('Full site scraping not yet implemented for general scraper');
-  }
-
-  /**
-   * Execute category scraping
-   * Enhanced to support multisite scrapers
-   */
-  async executeCategoryScraping(targetUrl, options, scraper, progressCallback) {
-    progressCallback(15, 'Starting category page analysis...');
-
-    // Handle multisite scrapers (Gap, Universal, etc.)
-    if (scraper instanceof GapScraper || scraper instanceof UniversalScraper) {
-      const results = await scraper.scrape(progressCallback);
-      return this.formatMultisiteResults(results, 'category');
-    }
-    
-    // Handle legacy Glasswing scraper
-    if (scraper instanceof GlasswingScraper) {
-      const results = await scraper.scrapeCategoryPage(targetUrl, {
-        maxPages: options.maxPages,
-        respectRobotsTxt: options.respectRobotsTxt,
-        delay: options.rateLimitDelay,
-        extractImages: options.extractImages,
-        extractReviews: options.extractReviews,
-        progressCallback: progressCallback,
-      });
-
-      return this.formatScrapingResults(results, 'category');
-    }
-
-    throw new Error('Category scraping not yet implemented for general scraper');
-  }
-
-  /**
-   * Execute product scraping
-   * Enhanced to support multisite scrapers
-   */
-  async executeProductScraping(targetUrl, options, scraper, progressCallback) {
-    progressCallback(15, 'Extracting product data...');
-
-    // Handle multisite scrapers (Gap, Universal, etc.)
-    if (scraper instanceof GapScraper || scraper instanceof UniversalScraper) {
-      const results = await scraper.scrape(progressCallback);
-      return this.formatMultisiteResults(results, 'product');
-    }
-    
-    // Handle legacy Glasswing scraper
-    if (scraper instanceof GlasswingScraper) {
-      const result = await scraper.scrapeProductPage(targetUrl);
-      return this.formatScrapingResults([result], 'product');
-    }
-
-    throw new Error('Product scraping not yet implemented for general scraper');
-  }
-
-  /**
-   * Execute search scraping
-   */
-  async executeSearchScraping(targetUrl, options, scraper, progressCallback) {
-    progressCallback(15, 'Processing search results...');
-
-    throw new Error('Search scraping not yet implemented');
-  }
-
-  /**
-   * Format scraping results for storage (legacy format)
-   */
-  formatScrapingResults(rawResults, scrapingType) {
-    const items = Array.isArray(rawResults) ? rawResults : [rawResults];
-    const totalItems = items.length;
-    const categories = [...new Set(items.map(item => item.category).filter(Boolean))];
-
-    return {
-      data: items,
-      summary: {
-        total_items: totalItems,
-        categories_found: categories.length,
-        categories: categories,
-        scraping_type: scrapingType,
-        data_quality_score: this.calculateDataQualityScore(items),
-      },
-    };
-  }
-
-  /**
-   * Format multisite scraper results for storage
-   */
-  formatMultisiteResults(multisiteResults, scrapingType) {
     try {
-      // Multisite scrapers return structured results with products array
-      const products = multisiteResults.products || [];
-      const pages = multisiteResults.pages || [];
-      
-      // Convert multisite format to legacy format for compatibility
-      const items = products.map(product => ({
-        title: product.title,
-        price: product.price,
-        url: product.url,
-        description: product.description,
-        images: product.images ? product.images.map(img => img.src) : [],
-        availability: product.available ? 'in_stock' : 'out_of_stock',
-        brand: product.brand,
-        sizes: product.sizes ? product.sizes.map(size => size.text).join(', ') : '',
-        colors: product.colors ? product.colors.map(color => color.name).join(', ') : '',
-        category: this.extractCategoryFromUrl(product.url),
-        scraped_at: product.scrapedAt,
-        platform: multisiteResults.platform,
-      }));
+      progressCallback(10, 'Starting pipeline execution...');
 
-      const totalItems = items.length;
-      const categories = [...new Set(items.map(item => item.category).filter(Boolean))];
-      
-      // Include multisite-specific metadata
-      const summary = {
-        total_items: totalItems,
-        categories_found: categories.length,
-        categories: categories,
-        scraping_type: scrapingType,
-        data_quality_score: this.calculateDataQualityScore(items),
-        platform: multisiteResults.platform,
-        pages_scraped: multisiteResults.summary?.pagesScraped || pages.length,
-        success_rate: multisiteResults.summary?.successRate || 1.0,
-        duration_ms: multisiteResults.summary?.duration || 0,
+      // Configure pipeline options based on job data
+      const pipelineOptions = {
+        jobId: job.id,
+        enableNavigation: jobData.scraping_type !== 'extraction_only',
+        enableCollection: jobData.scraping_type !== 'navigation_only', 
+        enableExtraction: jobData.scraping_type !== 'navigation_only',
+        persistResults: true,
+        maxPages: jobData.max_pages || 100
       };
 
-      return {
-        data: items,
-        summary: summary,
-        raw_results: multisiteResults, // Keep original results for analysis
+      progressCallback(20, 'Executing pipeline stages...');
+
+      // Execute full pipeline
+      const pipelineResult = await this.pipelineOrchestrator.executePipeline(targetUrl, pipelineOptions);
+
+      progressCallback(80, 'Pipeline execution completed');
+
+      // Transform pipeline result to expected worker format
+      const result = {
+        success: pipelineResult.status === 'completed',
+        jobId: job.id,
+        targetUrl: targetUrl,
+        scrapingType: jobData.scraping_type,
+        timestamp: new Date(),
+        
+        // Pipeline results
+        navigationResults: pipelineResult.navigation,
+        collectionResults: pipelineResult.collection, 
+        extractionResults: pipelineResult.extraction,
+        
+        // Summary for compatibility
+        summary: {
+          total_items: pipelineResult.summary?.extractedProducts || 0,
+          navigation_sections: pipelineResult.summary?.navigationSections || 0,
+          product_categories: pipelineResult.summary?.productCategories || 0,
+          product_urls: pipelineResult.summary?.productUrls || 0,
+          extracted_products: pipelineResult.summary?.extractedProducts || 0,
+          duration: pipelineResult.duration,
+          status: pipelineResult.status
+        },
+
+        // Store full pipeline result for debugging
+        pipelineResult: pipelineResult
       };
 
+      return result;
+
     } catch (error) {
-      logger.warn('ScrapingWorker: Failed to format multisite results, using fallback format', {
-        error: error.message,
-        scrapingType: scrapingType,
+      logger.error('Pipeline execution failed in worker', {
+        jobId: job.id,
+        targetUrl: targetUrl,
+        error: error.message
       });
-
-      // Fallback to basic format
-      return this.formatScrapingResults([], scrapingType);
+      throw error;
     }
-  }
-
-  /**
-   * Extract category from product URL
-   */
-  extractCategoryFromUrl(url) {
-    try {
-      const urlPath = new URL(url).pathname.toLowerCase();
-      
-      // Common category patterns
-      const categoryPatterns = [
-        /\/browse\/([^\/]+)/,
-        /\/collections\/([^\/]+)/,
-        /\/category\/([^\/]+)/,
-        /\/shop\/([^\/]+)/,
-      ];
-      
-      for (const pattern of categoryPatterns) {
-        const match = urlPath.match(pattern);
-        if (match && match[1]) {
-          return match[1].replace(/-/g, ' ').replace(/_/g, ' ');
-        }
-      }
-      
-      return 'unknown';
-    } catch (error) {
-      return 'unknown';
-    }
-  }
-
-  /**
-   * Calculate data quality score based on completeness
-   */
-  calculateDataQualityScore(items) {
-    if (!items.length) {return 0;}
-
-    const requiredFields = ['title', 'price', 'url'];
-    const optionalFields = ['description', 'images', 'availability'];
-
-    let totalScore = 0;
-
-    for (const item of items) {
-      let itemScore = 0;
-
-      // Required fields (70% of score)
-      const requiredCount = requiredFields.filter(field => item[field] && item[field] !== '').length;
-      itemScore += (requiredCount / requiredFields.length) * 0.7;
-
-      // Optional fields (30% of score)
-      const optionalCount = optionalFields.filter(field => item[field] && item[field] !== '').length;
-      itemScore += (optionalCount / optionalFields.length) * 0.3;
-
-      totalScore += itemScore;
-    }
-
-    return Math.round((totalScore / items.length) * 100) / 100;
   }
 
   /**
@@ -498,41 +234,34 @@ class ScrapingWorker {
    */
   async updateJobStatus(jobId, status, progress, resultsSummary = null, errorDetails = null) {
     if (!this.db) {
-      logger.warn('ScrapingWorker: Database not available for status update', { jobId });
+      logger.warn('ScrapingWorker: No database connection, skipping job status update');
       return;
     }
 
     try {
-      const updateDoc = {
+      const updateData = {
         status: status,
         progress: progress,
         updated_at: new Date(),
       };
 
-      if (status === 'running' && !progress) {
-        updateDoc.started_at = new Date();
+      if (resultsSummary) {
+        updateData.results_summary = resultsSummary;
+      }
+
+      if (errorDetails) {
+        updateData.error_details = errorDetails;
+        updateData.error_timestamp = new Date();
       }
 
       if (status === 'completed') {
-        updateDoc.completed_at = new Date();
-        updateDoc.results_summary = resultsSummary;
-      }
-
-      if (status === 'failed') {
-        updateDoc.completed_at = new Date();
-        updateDoc.error_details = errorDetails;
+        updateData.completed_at = new Date();
       }
 
       await this.db.collection(this.jobsCollection).updateOne(
         { job_id: jobId },
-        { $set: updateDoc },
+        { $set: updateData }
       );
-
-      logger.debug('ScrapingWorker: Job status updated', {
-        jobId: jobId,
-        status: status,
-        progress: progress,
-      });
 
     } catch (error) {
       logger.error('ScrapingWorker: Failed to update job status', {
@@ -548,28 +277,26 @@ class ScrapingWorker {
    */
   async saveResults(jobId, results) {
     if (!this.db) {
-      logger.warn('ScrapingWorker: Database not available for results storage', { jobId });
+      logger.warn('ScrapingWorker: No database connection, skipping results save');
       return;
     }
 
     try {
-      const resultDoc = {
+      const resultRecord = {
         job_id: jobId,
-        data: results.data,
-        total_items: results.summary.total_items,
-        categories_found: results.summary.categories_found,
-        categories: results.summary.categories,
-        data_quality_score: results.summary.data_quality_score,
-        processing_time_ms: Date.now(), // Will be calculated by caller
+        results: results,
         created_at: new Date(),
+        result_type: results.scrapingType || 'unknown',
+        item_count: results.summary?.total_items || 0,
+        success: results.success || false,
       };
 
-      await this.db.collection(this.resultsCollection).insertOne(resultDoc);
+      await this.db.collection(this.resultsCollection).insertOne(resultRecord);
 
-      logger.info('ScrapingWorker: Results saved to database', {
+      logger.info('ScrapingWorker: Results saved successfully', {
         jobId: jobId,
-        totalItems: results.summary.total_items,
-        categoriesFound: results.summary.categories_found,
+        itemCount: resultRecord.item_count,
+        success: resultRecord.success,
       });
 
     } catch (error) {
@@ -577,7 +304,6 @@ class ScrapingWorker {
         jobId: jobId,
         error: error.message,
       });
-      throw error;
     }
   }
 
@@ -587,57 +313,31 @@ class ScrapingWorker {
   extractDomain(url) {
     try {
       return new URL(url).hostname;
-    } catch {
+    } catch (error) {
       return 'unknown';
     }
   }
 
   /**
-   * Start health monitoring
+   * Get worker status and statistics
    */
-  startHealthMonitoring() {
-    // Report active job count every 30 seconds
-    setInterval(() => {
-      metrics.setGauge('scraping_worker_active_jobs', this.activeJobs.size);
-
-      // Report individual job progress
-      for (const [jobId, jobInfo] of this.activeJobs) {
-        const duration = performance.now() - jobInfo.startTime;
-        logger.debug('ScrapingWorker: Active job status', {
-          jobId: jobId,
-          duration: Math.round(duration),
-          status: jobInfo.status,
-        });
-      }
-    }, 30000);
-  }
-
-  /**
-   * Get worker health status
-   */
-  getHealthStatus() {
+  getStatus() {
     return {
       isProcessing: this.isProcessing,
       activeJobs: this.activeJobs.size,
-      maxConcurrency: this.concurrency,
-      jobDetails: Array.from(this.activeJobs.entries()).map(([jobId, jobInfo]) => ({
-        jobId: jobId,
-        duration: Math.round(performance.now() - jobInfo.startTime),
-        status: jobInfo.status,
-      })),
+      concurrency: this.concurrency,
+      queueStatus: queueManager.getStatus(),
     };
   }
 
   /**
-   * Graceful shutdown
+   * Stop the worker gracefully
    */
-  async stop() {
+  async stop(maxWaitTime = 30000) {
     logger.info('ScrapingWorker: Stopping worker...');
-
     this.isProcessing = false;
 
-    // Wait for active jobs to complete (with timeout)
-    const maxWaitTime = 300000; // 5 minutes
+    // Wait for active jobs to complete
     const startWait = Date.now();
 
     while (this.activeJobs.size > 0 && (Date.now() - startWait) < maxWaitTime) {
@@ -649,11 +349,11 @@ class ScrapingWorker {
       logger.warn(`ScrapingWorker: Force stopping with ${this.activeJobs.size} active jobs`);
     }
 
-    // Clean up scraper factory resources
+    // Clean up pipeline orchestrator
     try {
-      await this.scraperFactory.close();
+      await this.pipelineOrchestrator.close();
     } catch (error) {
-      logger.warn('ScrapingWorker: Error closing scraper factory', { error: error.message });
+      logger.warn('ScrapingWorker: Error closing pipeline orchestrator', { error: error.message });
     }
 
     logger.info('ScrapingWorker: Worker stopped');

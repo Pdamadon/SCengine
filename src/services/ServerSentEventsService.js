@@ -16,7 +16,7 @@ class ServerSentEventsService extends EventEmitter {
     this.queueStatsSubscribers = new Set(); // connectionIds subscribed to queue stats
     this.isInitialized = false;
     this.heartbeatInterval = null;
-    
+
     this.initialize();
   }
 
@@ -27,16 +27,16 @@ class ServerSentEventsService extends EventEmitter {
     try {
       // Start heartbeat to keep connections alive
       this.startHeartbeat();
-      
+
       this.isInitialized = true;
       logger.info('ServerSentEventsService initialized successfully');
-      
+
       // Initialize metrics
       metrics.createGauge('sse_connections_active', 'Active SSE connections');
       metrics.createCounter('sse_events_sent', 'SSE events sent', ['event_type']);
       metrics.createCounter('sse_connections_opened', 'SSE connections opened');
       metrics.createCounter('sse_connections_closed', 'SSE connections closed', ['reason']);
-      
+
     } catch (error) {
       logger.error('Failed to initialize ServerSentEventsService:', error);
       this.isInitialized = false;
@@ -50,7 +50,7 @@ class ServerSentEventsService extends EventEmitter {
     return (req, res, next) => {
       try {
         const connectionId = this.generateConnectionId();
-        
+
         // Set SSE headers
         res.writeHead(200, {
           'Content-Type': 'text/event-stream',
@@ -132,7 +132,7 @@ class ServerSentEventsService extends EventEmitter {
       this.jobSubscriptions.set(jobId, new Set());
     }
     this.jobSubscriptions.get(jobId).add(connectionId);
-    
+
     // Add to connection subscriptions
     connection.subscriptions.add(`job:${jobId}`);
     connection.clientInfo.lastActivity = new Date();

@@ -1,0 +1,96 @@
+{
+  "url": "www.macys.com",
+  "domain": "www.macys.com",
+  "platform": "universal_orchestrator",
+  "scrapingType": "two_phase_universal",
+  "products": [],
+  "intelligence": {
+    "domain": "www.macys.com",
+    "created_at": "2025-08-13T20:44:20.000Z",
+    "navigation": {
+      "main_sections": 0,
+      "dropdown_menus": 0,
+      "sidebar_navigation": 0,
+      "breadcrumb_patterns": 0,
+      "clickable_elements": 0
+    },
+    "exploration": {
+      "sections_explored": 0,
+      "total_products_found": 0,
+      "page_types_discovered": [],
+      "working_selectors": []
+    },
+    "products": [],
+    "selectors": {
+      "library_size": 10,
+      "success_rate": 0,
+      "reliability_scores": {},
+      "categories": [
+        "navigation",
+        "product",
+        "pricing",
+        "availability",
+        "variants",
+        "images",
+        "filters",
+        "pagination",
+        "reliability_scores"
+      ]
+    },
+    "url_patterns": {
+      "product_url": null,
+      "category_url": null,
+      "collection_url": null,
+      "examples": {}
+    },
+    "capabilities": {
+      "can_navigate_categories": false,
+      "can_extract_products": false,
+      "can_extract_prices": false,
+      "can_handle_variants": false,
+      "can_check_availability": false,
+      "can_use_filters": false,
+      "can_handle_pagination": false,
+      "supports_search": false,
+      "has_dropdown_navigation": false,
+      "mobile_responsive": false,
+      "overall_score": 0
+    },
+    "summary": {
+      "sections_mapped": 0,
+      "products_discovered": 0,
+      "selectors_identified": 0,
+      "intelligence_score": 20
+    }
+  },
+  "stats": {
+    "phase1": {
+      "sectionsDiscovered": 0,
+      "sectionsExplored": 0,
+      "urlsCollected": 0,
+      "duplicatesRemoved": 0,
+      "duration": 6183
+    },
+    "phase2": {
+      "urlsProcessed": 0,
+      "productsExtracted": 0,
+      "extractionsFailed": 0,
+      "duration": 0
+    },
+    "overall": {
+      "totalDuration": 6266,
+      "sectionsExplored": 0,
+      "urlsDiscovered": 0,
+      "productsExtracted": 0,
+      "successRate": "NaN%"
+    }
+  },
+  "startedAt": "2025-08-13T20:44:13.737Z",
+  "completedAt": "2025-08-13T20:44:20.003Z",
+  "summary": {
+    "pagesScraped": 0,
+    "productsFound": 0,
+    "intelligenceScore": 20,
+    "two_phase": true
+  }
+}

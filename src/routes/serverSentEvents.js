@@ -42,7 +42,7 @@ const initializeSSERoutes = (sseService) => {
     (req, res) => {
       // Connection is established by middleware
       // Keep connection alive - it will be closed by client or timeout
-    }
+    },
   );
 
   /**
@@ -119,7 +119,7 @@ const initializeSSERoutes = (sseService) => {
           timestamp: new Date().toISOString(),
         });
       }
-    }
+    },
   );
 
   /**
@@ -187,7 +187,7 @@ const initializeSSERoutes = (sseService) => {
           timestamp: new Date().toISOString(),
         });
       }
-    }
+    },
   );
 
   /**
@@ -257,7 +257,7 @@ const initializeSSERoutes = (sseService) => {
         });
         res.end();
       }
-    }
+    },
   );
 
   /**
@@ -314,7 +314,7 @@ const initializeSSERoutes = (sseService) => {
         });
         res.end();
       }
-    }
+    },
   );
 
   /**

@@ -1,0 +1,161 @@
+{
+  "site": "glasswingshop.com",
+  "testType": "CategoryFilterDiscovery",
+  "timestamp": "2025-08-17T14:44:44.497Z",
+  "category": "Women's Clothing",
+  "url": "https://glasswingshop.com/collections/womens-collection",
+  "processorUsed": "TaxonomyDiscoveryProcessor",
+  "filterExtractionEnabled": true,
+  "summary": {
+    "totalFilters": 0,
+    "filterTypes": [],
+    "treeNodes": 15,
+    "treeDepth": 1,
+    "pipelineConfidence": 0.7333333333333334
+  },
+  "filtersByType": {},
+  "hierarchicalTree": {
+    "rootCategories": 15,
+    "sampleCategories": [
+      {
+        "name": "Unisex",
+        "url": "https://glasswingshop.com/collections/unisex",
+        "type": "main_category",
+        "depth": 1,
+        "childrenCount": 0,
+        "filterData": {
+          "hasFilters": false,
+          "filterCount": 0,
+          "sampleFilters": [],
+          "hasSubcategories": false,
+          "subcategoryCount": 0
+        }
+      },
+      {
+        "name": "All Clothing",
+        "url": "https://glasswingshop.com/collections/clothing-collection",
+        "type": "main_category",
+        "depth": 1,
+        "childrenCount": 0,
+        "filterData": {
+          "hasFilters": false,
+          "filterCount": 0,
+          "sampleFilters": [],
+          "hasSubcategories": false,
+          "subcategoryCount": 0
+        }
+      },
+      {
+        "name": "All Shoes",
+        "url": "https://glasswingshop.com/collections/shoe-collection",
+        "type": "main_category",
+        "depth": 1,
+        "childrenCount": 0,
+        "filterData": {
+          "hasFilters": false,
+          "filterCount": 0,
+          "sampleFilters": [],
+          "hasSubcategories": false,
+          "subcategoryCount": 0
+        }
+      },
+      {
+        "name": "All Sale",
+        "url": "https://glasswingshop.com/collections/sale",
+        "type": "main_category",
+        "depth": 1,
+        "childrenCount": 0,
+        "filterData": {
+          "hasFilters": false,
+          "filterCount": 0,
+          "sampleFilters": [],
+          "hasSubcategories": false,
+          "subcategoryCount": 0
+        }
+      },
+      {
+        "name": "7115 by Szeki",
+        "url": "https://glasswingshop.com/collections/7115-by-szeki-1",
+        "type": "main_category",
+        "depth": 1,
+        "childrenCount": 0,
+        "filterData": {
+          "hasFilters": false,
+          "filterCount": 0,
+          "sampleFilters": [],
+          "hasSubcategories": false,
+          "subcategoryCount": 0
+        }
+      }
+    ]
+  },
+  "pipelineMetadata": {
+    "strategies_used": [
+      "AdaptiveNavigationStrategy",
+      "MainNavigationStrategy",
+      "DropdownDiscoveryStrategy",
+      "AriaNavigationStrategy",
+      "VisibleNavigationStrategy",
+      "HiddenElementStrategy",
+      "ProductCatalogStrategy"
+    ],
+    "total_discovered": 168,
+    "confidence": 0.7333333333333334,
+    "metrics": {
+      "AdaptiveNavigationStrategy": {
+        "duration": 18,
+        "itemsFound": 140,
+        "confidence": 0.8,
+        "success": true
+      },
+      "MainNavigationStrategy": {
+        "duration": 16,
+        "itemsFound": 138,
+        "confidence": 0.56,
+        "success": true
+      },
+      "DropdownDiscoveryStrategy": {
+        "duration": 4097,
+        "itemsFound": 181,
+        "confidence": 0.8,
+        "success": true
+      },
+      "AriaNavigationStrategy": {
+        "duration": 4,
+        "itemsFound": 2,
+        "confidence": 0.7,
+        "success": true
+      },
+      "DataAttributeStrategy": {
+        "duration": 4,
+        "itemsFound": 0,
+        "confidence": 0.6,
+        "success": true
+      },
+      "VisibleNavigationStrategy": {
+        "duration": 40,
+        "itemsFound": 360,
+        "confidence": 1,
+        "success": true
+      },
+      "HiddenElementStrategy": {
+        "duration": 9,
+        "itemsFound": 136,
+        "confidence": 0.9,
+        "success": true
+      },
+      "DepartmentExplorationStrategy": {
+        "duration": 8460,
+        "itemsFound": 0,
+        "confidence": 0.7,
+        "success": true
+      },
+      "ProductCatalogStrategy": {
+        "duration": 42,
+        "itemsFound": 167,
+        "confidence": 1,
+        "success": true
+      }
+    }
+  }
+}

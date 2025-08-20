@@ -123,3 +123,6 @@ site_intelligence_*.json
 
 # Zen MCP Server (external tool)
 tools/zen-mcp-server/
+# Local environment files
+.env.local
+.env.*.local

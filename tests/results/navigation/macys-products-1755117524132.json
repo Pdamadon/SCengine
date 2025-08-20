@@ -1,0 +1,61 @@
+{
+  "url": "https://www.macys.com/shop/womens?id=118",
+  "timestamp": "2025-08-13T20:38:44.132Z",
+  "totalProducts": 8,
+  "products": [
+    {
+      "url": "https://www.macys.com/shop/product/easy-spirit-womens-glitz-slip-on-walking-shoe?ID=15389827&swatchColor=Silver%20Tone",
+      "title": null,
+      "price": null,
+      "image": null
+    },
+    {
+      "url": "https://www.macys.com/shop/product/easy-spirit-womens-devitt-slip-on-loafer-flats?ID=10559980&swatchColor=Black/Bronze%20Leopard%20Suede",
+      "title": null,
+      "price": null,
+      "image": null
+    },
+    {
+      "url": "https://www.macys.com/shop/product/naturalizer-womens-connie-slingback-mary-jane-flats?ID=18041119&swatchColor=Black%20Leather",
+      "title": null,
+      "price": null,
+      "image": null
+    },
+    {
+      "url": "https://www.macys.com/shop/product/adore-me-womens-janey-contour-plunge-bra?ID=16219247",
+      "title": null,
+      "price": null,
+      "image": null
+    },
+    {
+      "url": "https://www.macys.com/shop/product/adore-me-womens-kalila-unlined-plunge-bra?ID=17708562&swatchColor=Dark%20red",
+      "title": null,
+      "price": null,
+      "image": null
+    },
+    {
+      "url": "https://www.macys.com/shop/product/delsey-paris-chatelet-air-2.0-small-weekender-duffle?ID=20082152&swatchColor=Blush",
+      "title": null,
+      "price": null,
+      "image": null
+    },
+    {
+      "url": "https://www.macys.com/shop/product/adore-me-womens-suki-push-up-plunge-bra?ID=17708563&swatchColor=Dark%20red",
+      "title": null,
+      "price": null,
+      "image": null
+    },
+    {
+      "url": "https://www.macys.com/shop/product/adore-me-womens-bettie-contour-balconette-holiday-edition?ID=17382837",
+      "title": null,
+      "price": null,
+      "image": null
+    }
+  ],
+  "patterns": {
+    "urlPatterns": [],
+    "selectors": [],
+    "confidence": 0,
+    "samples": []
+  }
+}

@@ -211,15 +211,15 @@ router.get('/monitoring/config', (req, res) => {
 router.get('/rate-limits', (req, res) => {
   try {
     const { domain } = req.query;
-    
+
     const stats = rateLimiter.getStats(domain || null);
-    
+
     res.json({
       rate_limiting: {
         enabled: true,
         adaptive: true,
         jitter_enabled: true,
-        status: 'active'
+        status: 'active',
       },
       domain_stats: stats,
       global_summary: {
@@ -231,7 +231,7 @@ router.get('/rate-limits', (req, res) => {
           const totalReq = Object.values(stats).reduce((sum, s) => sum + (s ? s.requestCount : 0), 0);
           const totalSuccess = Object.values(stats).reduce((sum, s) => sum + (s ? s.successCount : 0), 0);
           return totalReq > 0 ? ((totalSuccess / totalReq) * 100).toFixed(1) + '%' : '0%';
-        })()
+        })(),
       },
       timestamp: new Date().toISOString(),
       request_id: req.correlationId,
@@ -259,7 +259,7 @@ router.get('/rate-limits', (req, res) => {
 router.post('/rate-limits/configure', (req, res) => {
   try {
     const { domain, baseDelay, minDelay, maxDelay, reset } = req.body;
-    
+
     if (!domain) {
       return res.status(400).json({
         error: 'MISSING_DOMAIN',
@@ -267,22 +267,22 @@ router.post('/rate-limits/configure', (req, res) => {
         timestamp: new Date().toISOString(),
       });
     }
-    
+
     if (reset) {
       rateLimiter.resetDomain(domain);
       logger.info('Rate limiting reset for domain', { domain, correlation_id: req.correlationId });
     } else {
       const config = {};
-      if (baseDelay !== undefined) config.baseDelay = parseInt(baseDelay);
-      if (minDelay !== undefined) config.minDelay = parseInt(minDelay);
-      if (maxDelay !== undefined) config.maxDelay = parseInt(maxDelay);
-      
+      if (baseDelay !== undefined) {config.baseDelay = parseInt(baseDelay);}
+      if (minDelay !== undefined) {config.minDelay = parseInt(minDelay);}
+      if (maxDelay !== undefined) {config.maxDelay = parseInt(maxDelay);}
+
       rateLimiter.configureDomain(domain, config);
       logger.info('Rate limiting configured for domain', { domain, config, correlation_id: req.correlationId });
     }
-    
+
     const updatedStats = rateLimiter.getStats(domain);
-    
+
     res.json({
       success: true,
       message: reset ? 'Rate limiting reset' : 'Rate limiting configured',

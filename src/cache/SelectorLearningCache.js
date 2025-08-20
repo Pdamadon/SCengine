@@ -1,19 +1,19 @@
 /**
  * SelectorLearningCache.js
- * 
+ *
  * Intelligent caching system for selector discovery that learns and improves over time
  * Bridges Redis temporary storage with MongoDB persistent storage
  * Based on NavigationLearningCache pattern but for selector management
  */
 
-const RedisCacheFactory = require('./RedisCacheFactory');
+const RedisCacheManager = require('./RedisCacheManager');
 const { MongoClient } = require('mongodb');
 const { DATABASE_NAME } = require('../../mongodb-schema');
 
 class SelectorLearningCache {
   constructor(logger) {
     this.logger = logger;
-    this.cache = RedisCacheFactory.getInstance(logger, 'SelectorLearningCache');
+    this.cache = RedisCacheManager.getInstance(logger);
     this.learningData = new Map(); // Track success rates and patterns
     this.mongoClient = null;
     this.db = null;
@@ -21,21 +21,21 @@ class SelectorLearningCache {
   }
 
   async initialize() {
-    // Initialize Redis cache
-    await this.cache.connect();
-    
+    // Initialize Redis cache manager
+    await this.cache.initialize();
+
     // Initialize MongoDB connection
     const mongoUrl = process.env.MONGODB_URL || process.env.MONGODB_URI || 'mongodb://localhost:27017';
     this.mongoClient = new MongoClient(mongoUrl);
     await this.mongoClient.connect();
-    
+
     this.db = this.mongoClient.db(DATABASE_NAME); // Use 'ai_shopping_scraper'
     this.selectorsCollection = this.db.collection('selectors'); // Use new collection name
-    
+
     // Indexes are already created by migration script
     // Just verify connection works
     await this.selectorsCollection.findOne({}, { limit: 1 });
-    
+
     this.logger.info('SelectorLearningCache initialized with Redis and MongoDB');
   }
 
@@ -45,39 +45,37 @@ class SelectorLearningCache {
   async getOrDiscoverSelector(domain, selectorType, options = {}) {
     try {
       const { discoveryFn, elementType, context } = options;
-      
+
       // First, check MongoDB for proven selectors
       const mongoSelector = await this.getMongoSelector(domain, selectorType);
       if (mongoSelector && mongoSelector.confidence_score > 0.7) {
         this.logger.info(`Using proven MongoDB selector for ${domain}:${selectorType}`);
         this.trackCacheHit(domain, selectorType, 'mongodb');
-        
+
         // Update usage stats
         await this.updateSelectorUsage(mongoSelector._id);
-        
+
         return {
           selector: mongoSelector.selector,
           alternatives: mongoSelector.alternative_selectors,
           fromCache: true,
           cacheType: 'mongodb',
           reliability: mongoSelector.confidence_score,
-          metadata: mongoSelector.context
+          metadata: mongoSelector.context,
         };
       }
-      
-      // Check Redis cache for recent discoveries
-      const redisKey = `selector:${domain}:${selectorType}`;
-      const cachedData = await this.cache.get(redisKey);
-      const cached = cachedData ? JSON.parse(cachedData) : null;
-      
+
+      // Check Redis cache for recent discoveries using RedisCacheManager
+      const cached = await this.cache.get('selectors', domain, selectorType);
+
       if (cached) {
         this.logger.info(`Using Redis cached selector for ${domain}:${selectorType}`);
         this.trackCacheHit(domain, selectorType, 'redis');
-        
+
         return {
           ...cached,
           fromCache: true,
-          cacheType: 'redis'
+          cacheType: 'redis',
         };
       }
 
@@ -85,22 +83,22 @@ class SelectorLearningCache {
       if (discoveryFn) {
         this.logger.info(`No cache found for ${domain}:${selectorType}, discovering...`);
         const discovered = await discoveryFn();
-        
+
         if (discovered) {
           // Cache in Redis immediately for fast access
-          await this.cache.set(redisKey, JSON.stringify(discovered), 3600); // 1 hour TTL
-          
+          await this.cache.set('selectors', domain, discovered, selectorType);
+
           // Track discovery for learning
           this.trackCacheMiss(domain, selectorType);
           this.trackDiscovery(domain, selectorType, discovered);
-          
+
           // Schedule MongoDB persistence (non-blocking)
           this.schedulePersistence(domain, selectorType, discovered, elementType, context);
-          
+
           return {
             ...discovered,
             fromCache: false,
-            discovered: true
+            discovered: true,
           };
         }
       }
@@ -118,16 +116,16 @@ class SelectorLearningCache {
   async getMongoSelector(domain, selectorType) {
     try {
       const selector = await this.selectorsCollection.findOne(
-        { 
-          domain, 
+        {
+          domain,
           selector_type: selectorType,
-          active: true
+          active: true,
         },
-        { 
-          sort: { confidence_score: -1, usage_count: -1 } 
-        }
+        {
+          sort: { confidence_score: -1, usage_count: -1 },
+        },
       );
-      
+
       return selector;
     } catch (error) {
       this.logger.error(`Failed to get MongoDB selector for ${domain}:${selectorType}:`, error);
@@ -141,22 +139,22 @@ class SelectorLearningCache {
   async persistSelector(domain, selectorType, selectorData, elementType = null, context = {}) {
     try {
       const now = new Date();
-      
+
       // Check if selector already exists
       const existing = await this.selectorsCollection.findOne({
         domain,
         selector_type: selectorType,
-        selector: selectorData.selector
+        selector: selectorData.selector,
       });
-      
+
       if (existing) {
         // Update existing selector stats
         await this.selectorsCollection.updateOne(
           { _id: existing._id },
           {
-            $inc: { 
+            $inc: {
               usage_count: 1,
-              discovery_count: 1
+              discovery_count: 1,
             },
             $set: {
               last_used: now,
@@ -164,17 +162,17 @@ class SelectorLearningCache {
               metadata: {
                 ...existing.metadata,
                 ...selectorData.metadata,
-                last_context: context
-              }
+                last_context: context,
+              },
             },
             $addToSet: {
-              alternative_selectors: { 
-                $each: selectorData.alternatives || [] 
-              }
-            }
-          }
+              alternative_selectors: {
+                $each: selectorData.alternatives || [],
+              },
+            },
+          },
         );
-        
+
         this.logger.info(`Updated existing selector for ${domain}:${selectorType}`);
       } else {
         // Insert new selector with new schema
@@ -192,19 +190,19 @@ class SelectorLearningCache {
             ...selectorData.metadata,
             discovery_method: selectorData.discoveryMethod || 'auto',
             ...context,
-            patterns: selectorData.patterns || []
+            patterns: selectorData.patterns || [],
           },
           created_at: now,
           last_used: now,
           last_validated: now,
-          active: true
+          active: true,
         };
-        
+
         await this.selectorsCollection.insertOne(newSelector);
-        
+
         this.logger.info(`Persisted new selector for ${domain}:${selectorType}`);
       }
-      
+
       return true;
     } catch (error) {
       this.logger.error(`Failed to persist selector for ${domain}:${selectorType}:`, error);
@@ -219,57 +217,55 @@ class SelectorLearningCache {
     try {
       const now = new Date();
       const updateDoc = {
-        $inc: success ? 
-          { success_count: 1, usage_count: 1 } : 
-          { failure_count: 1, usage_count: 1 }
+        $inc: success ?
+          { success_count: 1, usage_count: 1 } :
+          { failure_count: 1, usage_count: 1 },
       };
-      
+
       // Update last success/failure time
       if (success) {
         updateDoc.$set = { last_success: now };
       } else {
-        updateDoc.$set = { 
+        updateDoc.$set = {
           last_failure: now,
-          last_error: error ? error.message : 'Unknown error'
+          last_error: error ? error.message : 'Unknown error',
         };
       }
-      
+
       // Recalculate reliability score
       const selectorDoc = await this.selectorsCollection.findOne({
         domain,
         selector_type: selectorType,
-        selector
+        selector,
       });
-      
+
       if (selectorDoc) {
         const newSuccessRate = success ? Math.min(1.0, (selectorDoc.success_rate || 0.5) + 0.1) : Math.max(0.0, (selectorDoc.success_rate || 0.5) - 0.1);
-        
+
         updateDoc.$set.confidence_score = newSuccessRate;
         updateDoc.$set.success_rate = newSuccessRate;
-        
+
         // Mark as inactive if reliability drops too low
         if (newSuccessRate < 0.3) {
           updateDoc.$set.active = false;
           this.logger.warn(`Deactivating unreliable selector for ${domain}:${selectorType}`);
         }
-        
+
         await this.selectorsCollection.updateOne(
           { _id: selectorDoc._id },
-          updateDoc
+          updateDoc,
         );
-        
+
         // Also update Redis cache if successful
         if (success) {
-          const redisKey = `selector:${domain}:${selectorType}`;
-          const cachedData = await this.cache.get(redisKey);
-          if (cachedData) {
-            const cached = JSON.parse(cachedData);
+          const cached = await this.cache.get('selectors', domain, selectorType);
+          if (cached) {
             cached.reliability = newSuccessRate;
-            await this.cache.set(redisKey, JSON.stringify(cached), 3600);
+            await this.cache.set('selectors', domain, cached, selectorType);
           }
         }
       }
-      
+
       return true;
     } catch (error) {
       this.logger.error(`Failed to update selector result for ${domain}:${selectorType}:`, error);
@@ -283,7 +279,7 @@ class SelectorLearningCache {
   async getSelectorStats(domain = null) {
     try {
       const match = domain ? { domain } : {};
-      
+
       const stats = await this.selectorsCollection.aggregate([
         { $match: match },
         {
@@ -291,26 +287,26 @@ class SelectorLearningCache {
             _id: '$domain',
             total_selectors: { $sum: 1 },
             active_selectors: {
-              $sum: { $cond: ['$active', 1, 0] }
+              $sum: { $cond: ['$active', 1, 0] },
             },
             avg_reliability: { $avg: '$confidence_score' },
             total_usage: { $sum: '$usage_count' },
             avg_success_rate: { $avg: '$success_rate' },
-            selector_types: { $addToSet: '$selector_type' }
-          }
-        }
+            selector_types: { $addToSet: '$selector_type' },
+          },
+        },
       ]).toArray();
-      
+
       // Add cache statistics
       const cacheStats = this.getCacheStats();
-      
+
       return {
         mongodb: stats,
         cache: cacheStats,
         learning: Array.from(this.learningData.entries()).map(([key, data]) => ({
           key,
-          ...data
-        }))
+          ...data,
+        })),
       };
     } catch (error) {
       this.logger.error('Failed to get selector stats:', error);
@@ -341,8 +337,8 @@ class SelectorLearningCache {
         { _id: selectorId },
         {
           $inc: { usage_count: 1 },
-          $set: { last_used: new Date() }
-        }
+          $set: { last_used: new Date() },
+        },
       );
     } catch (error) {
       this.logger.error('Failed to update selector usage:', error);
@@ -380,13 +376,13 @@ class SelectorLearningCache {
       this.learningData.set(key, { hits: 0, misses: 0, discoveries: [] });
     }
     const data = this.learningData.get(key);
-    if (!data.discoveries) data.discoveries = [];
+    if (!data.discoveries) {data.discoveries = [];}
     data.discoveries.push({
       timestamp: Date.now(),
       selector: discovered.selector,
-      method: discovered.discoveryMethod
+      method: discovered.discoveryMethod,
     });
-    
+
     // Keep only last 10 discoveries
     if (data.discoveries.length > 10) {
       data.discoveries = data.discoveries.slice(-10);
@@ -404,7 +400,7 @@ class SelectorLearningCache {
       mongoHits: 0,
       redisHits: 0,
       hitRate: 0,
-      typeStats: {}
+      typeStats: {},
     };
 
     for (const [key, data] of this.learningData) {
@@ -414,7 +410,7 @@ class SelectorLearningCache {
       stats.totalMisses += data.misses || 0;
       stats.mongoHits += data.mongoHits || 0;
       stats.redisHits += data.redisHits || 0;
-      
+
       if (!stats.typeStats[type]) {
         stats.typeStats[type] = { hits: 0, misses: 0 };
       }
@@ -436,20 +432,20 @@ class SelectorLearningCache {
     try {
       const cutoffDate = new Date();
       cutoffDate.setDate(cutoffDate.getDate() - daysOld);
-      
+
       const result = await this.selectorsCollection.updateMany(
         {
           $or: [
             { last_used: { $lt: cutoffDate } },
-            { 
+            {
               confidence_score: { $lt: minReliability },
-              usage_count: { $gt: 10 }
-            }
-          ]
+              usage_count: { $gt: 10 },
+            },
+          ],
         },
-        { $set: { active: false } }
+        { $set: { active: false } },
       );
-      
+
       this.logger.info(`Deactivated ${result.modifiedCount} old/unreliable selectors`);
       return result.modifiedCount;
     } catch (error) {
@@ -465,9 +461,9 @@ class SelectorLearningCache {
     try {
       const selectors = await this.selectorsCollection.find(
         { domain, active: true },
-        { projection: { _id: 0 } }
+        { projection: { _id: 0 } },
       ).toArray();
-      
+
       return selectors;
     } catch (error) {
       this.logger.error(`Failed to export selectors for ${domain}:`, error);
@@ -482,18 +478,18 @@ class SelectorLearningCache {
     try {
       const operations = selectors.map(selector => ({
         updateOne: {
-          filter: { 
-            domain, 
+          filter: {
+            domain,
             selector_type: selector.selector_type,
-            selector: selector.selector
+            selector: selector.selector,
           },
           update: { $set: selector },
-          upsert: true
-        }
+          upsert: true,
+        },
       }));
-      
+
       const result = await this.selectorsCollection.bulkWrite(operations);
-      
+
       this.logger.info(`Imported ${result.upsertedCount} new selectors for ${domain}`);
       return result;
     } catch (error) {
@@ -524,11 +520,11 @@ class SelectorLearningCache {
    * Map element types to the new expanded enum
    */
   mapElementType(type) {
-    if (!type) return 'text';
-    
+    if (!type) {return 'text';}
+
     const typeMap = {
       'text': 'text',
-      'description': 'description', 
+      'description': 'description',
       'title': 'title',
       'price': 'price',
       'image': 'image',
@@ -546,14 +542,14 @@ class SelectorLearningCache {
       'filter': 'filter',
       'cart': 'cart',
       'booking': 'booking',
-      'product': 'product'
+      'product': 'product',
     };
-    
+
     return typeMap[type.toLowerCase()] || 'text';
   }
 
   async close() {
-    await this.cache.close();
+    // RedisCacheManager is a singleton, handles its own cleanup
     if (this.mongoClient) {
       await this.mongoClient.close();
     }

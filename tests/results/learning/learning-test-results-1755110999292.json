@@ -1,0 +1,228 @@
+{
+  "url": "https://www.gap.com/browse/category.do?cid=5664",
+  "platform": "universal_self_learning",
+  "scrapingType": "universal_learning",
+  "startedAt": "2025-08-13T18:49:25.767Z",
+  "completedAt": "2025-08-13T18:49:59.292Z",
+  "duration": 33525,
+  "products": [],
+  "pages": [
+    {
+      "url": "https://www.gap.com/browse/category.do?cid=5664",
+      "title": "Unknown",
+      "scrapedAt": "2025-08-13T18:49:59.292Z",
+      "quality": 0
+    }
+  ],
+  "learning": {
+    "enabled": true,
+    "attempts_used": 3,
+    "final_quality": 0,
+    "quality_progression": [
+      0,
+      0,
+      0
+    ],
+    "patterns_learned": 4,
+    "target_reached": false,
+    "learning_effectiveness": "0.100",
+    "attempt_details": [
+      {
+        "attempt": 1,
+        "quality": 0,
+        "improvements": {
+          "quality_delta": 0,
+          "new_fields": [],
+          "new_patterns": 0,
+          "is_first_attempt": true
+        }
+      },
+      {
+        "attempt": 2,
+        "quality": 0,
+        "improvements": {
+          "quality_delta": 0,
+          "new_fields": [],
+          "new_patterns": null,
+          "selector_improvements": 0,
+          "is_first_attempt": false
+        }
+      },
+      {
+        "attempt": 3,
+        "quality": 0,
+        "improvements": {
+          "quality_delta": 0,
+          "new_fields": [],
+          "new_patterns": null,
+          "selector_improvements": 0,
+          "is_first_attempt": false
+        }
+      }
+    ]
+  },
+  "actionable_selectors": {},
+  "summary": {
+    "pagesScraped": 1,
+    "productsFound": 0,
+    "successRate": 0,
+    "platform": "universal_self_learning",
+    "intelligence_used": true,
+    "self_learning": true,
+    "learning_summary": {
+      "quality_achieved": "0.0%",
+      "attempts_needed": 3,
+      "patterns_discovered": 4,
+      "efficiency": "0.000"
+    }
+  },
+  "raw_learning_data": {
+    "successful_patterns": {
+      "library_size": 11,
+      "success_rate": 0.875,
+      "reliability_scores": {
+        "navigation.breadcrumb": 0.6666666666666666,
+        "product.title": 0.6666666666666666,
+        "product.link": 0.6666666666666666,
+        "product.container": 0.6666666666666666,
+        "images.product": 0.6666666666666666,
+        "filters.general": 2,
+        "_metadata.generation_strategy": 1,
+        "_metadata.confidence_scores": 1,
+        "_metadata.validation_results": 1
+      },
+      "categories": [
+        "navigation",
+        "product",
+        "pricing",
+        "availability",
+        "variants",
+        "images",
+        "filters",
+        "pagination",
+        "reliability_scores",
+        "_metadata"
+      ]
+    },
+    "failed_patterns": {},
+    "selector_reliability": {},
+    "quality_progression": [
+      0,
+      0,
+      0
+    ],
+    "attempts": [
+      {
+        "number": 1,
+        "quality": 0,
+        "timestamp": "2025-08-13T18:49:37.684Z",
+        "patterns_found": 4,
+        "successful_selectors": {
+          "library_size": 11,
+          "success_rate": 0.875,
+          "reliability_scores": {
+            "navigation.breadcrumb": 0.6666666666666666,
+            "product.title": 0.6666666666666666,
+            "product.link": 0.6666666666666666,
+            "product.container": 0.6666666666666666,
+            "images.product": 0.6666666666666666,
+            "filters.general": 2,
+            "_metadata.generation_strategy": 1,
+            "_metadata.confidence_scores": 1,
+            "_metadata.validation_results": 1
+          },
+          "categories": [
+            "navigation",
+            "product",
+            "pricing",
+            "availability",
+            "variants",
+            "images",
+            "filters",
+            "pagination",
+            "reliability_scores",
+            "_metadata"
+          ]
+        },
+        "failed_extractions": []
+      },
+      {
+        "number": 2,
+        "quality": 0,
+        "timestamp": "2025-08-13T18:49:48.043Z",
+        "patterns_found": 4,
+        "successful_selectors": {
+          "library_size": 11,
+          "success_rate": 0.875,
+          "reliability_scores": {
+            "navigation.breadcrumb": 0.6666666666666666,
+            "product.title": 0.6666666666666666,
+            "product.link": 0.6666666666666666,
+            "product.container": 0.6666666666666666,
+            "images.product": 0.6666666666666666,
+            "filters.general": 2,
+            "_metadata.generation_strategy": 1,
+            "_metadata.confidence_scores": 1,
+            "_metadata.validation_results": 1
+          },
+          "categories": [
+            "navigation",
+            "product",
+            "pricing",
+            "availability",
+            "variants",
+            "images",
+            "filters",
+            "pagination",
+            "reliability_scores",
+            "_metadata"
+          ]
+        },
+        "failed_extractions": []
+      },
+      {
+        "number": 3,
+        "quality": 0,
+        "timestamp": "2025-08-13T18:49:59.291Z",
+        "patterns_found": 4,
+        "successful_selectors": {
+          "library_size": 11,
+          "success_rate": 0.875,
+          "reliability_scores": {
+            "navigation.breadcrumb": 0.6666666666666666,
+            "product.title": 0.6666666666666666,
+            "product.link": 0.6666666666666666,
+            "product.container": 0.6666666666666666,
+            "images.product": 0.6666666666666666,
+            "filters.general": 2,
+            "_metadata.generation_strategy": 1,
+            "_metadata.confidence_scores": 1,
+            "_metadata.validation_results": 1
+          },
+          "categories": [
+            "navigation",
+            "product",
+            "pricing",
+            "availability",
+            "variants",
+            "images",
+            "filters",
+            "pagination",
+            "reliability_scores",
+            "_metadata"
+          ]
+        },
+        "failed_extractions": []
+      }
+    ],
+    "total_attempts": 3,
+    "best_quality": 0,
+    "last_updated": "2025-08-13T18:49:59.291Z"
+  },
+  "performance": {
+    "total_duration": 33525,
+    "average_attempt_duration": 11175,
+    "quality_per_minute": 0,
+    "patterns_per_minute": 7.158836689038031
+  }
+}

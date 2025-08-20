@@ -1,9 +1,9 @@
 /**
  * UniversalScrapingController - API controller for universal scraping
- * 
+ *
  * Handles HTTP requests for the universal scraping system.
  * Uses MasterOrchestrator for all scraping operations.
- * 
+ *
  * Endpoints:
  * - POST /api/v1/universal/scrape - Start universal scraping job
  * - GET /api/v1/universal/job/:jobId - Get job status
@@ -49,7 +49,7 @@ class UniversalScrapingController {
         url: req.body.url,
         options: req.body.options,
         user_agent: req.get('User-Agent'),
-        ip_address: req.ip
+        ip_address: req.ip,
       });
 
       // Validate request
@@ -57,7 +57,7 @@ class UniversalScrapingController {
         metrics.trackError('ValidationError', 'universal_scraping_controller');
         return res.status(400).json({
           error: 'URL is required',
-          correlation_id: correlationId
+          correlation_id: correlationId,
         });
       }
 
@@ -67,7 +67,7 @@ class UniversalScrapingController {
       } catch (error) {
         return res.status(400).json({
           error: 'Invalid URL format',
-          correlation_id: correlationId
+          correlation_id: correlationId,
         });
       }
 
@@ -79,14 +79,14 @@ class UniversalScrapingController {
         discoveryDepth: req.body.discoveryDepth || 3,
         learningAttempts: req.body.learningAttempts || 3,
         rateLimit: req.body.rateLimit || {},
-        forceRefresh: req.body.forceRefresh || false
+        forceRefresh: req.body.forceRefresh || false,
       };
 
       // Start async scraping job
       const scrapePromise = this.orchestrator.scrape(
         req.body.url,
         options,
-        null // No progress callback for HTTP request
+        null, // No progress callback for HTTP request
       );
 
       // Get job ID from orchestrator
@@ -104,7 +104,7 @@ class UniversalScrapingController {
         jobId: jobId,
         message: 'Universal scraping job started',
         correlation_id: correlationId,
-        status_url: `/api/v1/universal/job/${jobId}`
+        status_url: `/api/v1/universal/job/${jobId}`,
       });
 
       // Handle job completion asynchronously
@@ -114,18 +114,18 @@ class UniversalScrapingController {
           jobId: jobId,
           success: result.success,
           productsFound: result.products?.length || 0,
-          quality: result.quality
+          quality: result.quality,
         });
-        
+
         metrics.incrementCounter('universal_scraping_jobs_completed');
-        
+
       }).catch(error => {
         logger.error('UNIVERSAL_SCRAPING_JOB_FAILED', {
           correlation_id: correlationId,
           jobId: jobId,
-          error: error.message
+          error: error.message,
         });
-        
+
         metrics.incrementCounter('universal_scraping_jobs_failed');
       });
 
@@ -133,7 +133,7 @@ class UniversalScrapingController {
       logger.error('UNIVERSAL_SCRAPING_CONTROLLER_ERROR', {
         correlation_id: correlationId,
         error: error.message,
-        stack: error.stack
+        stack: error.stack,
       });
 
       metrics.trackError(error, 'universal_scraping_controller');
@@ -144,7 +144,7 @@ class UniversalScrapingController {
       res.status(500).json({
         error: 'Internal server error',
         message: error.message,
-        correlation_id: correlationId
+        correlation_id: correlationId,
       });
     }
   }
@@ -166,7 +166,7 @@ class UniversalScrapingController {
         return res.status(404).json({
           error: 'Job not found',
           jobId: jobId,
-          correlation_id: correlationId
+          correlation_id: correlationId,
         });
       }
 
@@ -180,24 +180,24 @@ class UniversalScrapingController {
         phases: status.phases,
         progress: progress ? {
           percentage: progress.percentage,
-          message: progress.message
+          message: progress.message,
         } : null,
         duration: status.duration,
         error: status.error,
-        correlation_id: correlationId
+        correlation_id: correlationId,
       });
 
     } catch (error) {
       logger.error('GET_JOB_STATUS_ERROR', {
         correlation_id: correlationId,
         jobId: jobId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
         error: 'Failed to get job status',
         message: error.message,
-        correlation_id: correlationId
+        correlation_id: correlationId,
       });
     }
   }
@@ -219,7 +219,7 @@ class UniversalScrapingController {
         return res.status(404).json({
           error: 'No discovery data found for domain',
           domain: domain,
-          correlation_id: correlationId
+          correlation_id: correlationId,
         });
       }
 
@@ -227,20 +227,20 @@ class UniversalScrapingController {
         success: true,
         domain: domain,
         discovery: discovery,
-        correlation_id: correlationId
+        correlation_id: correlationId,
       });
 
     } catch (error) {
       logger.error('GET_DISCOVERY_ERROR', {
         correlation_id: correlationId,
         domain: domain,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
         error: 'Failed to get discovery data',
         message: error.message,
-        correlation_id: correlationId
+        correlation_id: correlationId,
       });
     }
   }
@@ -262,7 +262,7 @@ class UniversalScrapingController {
         return res.status(404).json({
           error: 'No learning data found for domain',
           domain: domain,
-          correlation_id: correlationId
+          correlation_id: correlationId,
         });
       }
 
@@ -270,20 +270,20 @@ class UniversalScrapingController {
         success: true,
         domain: domain,
         learning: learning,
-        correlation_id: correlationId
+        correlation_id: correlationId,
       });
 
     } catch (error) {
       logger.error('GET_LEARNING_ERROR', {
         correlation_id: correlationId,
         domain: domain,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
         error: 'Failed to get learning data',
         message: error.message,
-        correlation_id: correlationId
+        correlation_id: correlationId,
       });
     }
   }
@@ -307,21 +307,21 @@ class UniversalScrapingController {
           state: stateStats,
           progress: progressMetrics,
           activeJobs: this.orchestrator.activeJobs.size,
-          completedJobs: this.orchestrator.completedJobs.size
+          completedJobs: this.orchestrator.completedJobs.size,
         },
-        correlation_id: correlationId
+        correlation_id: correlationId,
       });
 
     } catch (error) {
       logger.error('GET_STATISTICS_ERROR', {
         correlation_id: correlationId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
         error: 'Failed to get statistics',
         message: error.message,
-        correlation_id: correlationId
+        correlation_id: correlationId,
       });
     }
   }
@@ -337,14 +337,14 @@ class UniversalScrapingController {
       res.json({
         status: 'healthy',
         initialized: this.initialized,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
     } catch (error) {
       res.status(503).json({
         status: 'unhealthy',
         error: error.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
   }

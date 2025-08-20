@@ -62,18 +62,21 @@ module.exports = {
   projects: [
     {
       displayName: 'unit',
-      testMatch: ['<rootDir>/tests/unit/**/*.test.js'],
-      // testTimeout: 10000, // Use global timeout instead
+      testMatch: [
+        '<rootDir>/tests/unit/**/*.test.js',
+        '<rootDir>/src/**/__tests__/**/*.test.js'  // Co-located unit tests
+      ],
     },
     {
-      displayName: 'integration',
-      testMatch: ['<rootDir>/tests/integration/**/*.test.js'],
-      // testTimeout: 30000, // Use global timeout instead
+      displayName: 'integration', 
+      testMatch: [
+        '<rootDir>/tests/integration/**/*.test.js',
+        '<rootDir>/src/**/NavigationMapper.test.js'  // Discovery integration tests
+      ],
     },
     {
       displayName: 'system',
       testMatch: ['<rootDir>/tests/system/**/*.test.js'],
-      // testTimeout: 60000, // Use global timeout instead
       slowTestThreshold: 10000,
     },
   ],
