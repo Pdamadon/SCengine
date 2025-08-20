@@ -9,6 +9,7 @@ const monitoringRoutes = require('./routes/monitoring');
 const queueManagementRoutes = require('./routes/queueManagement');
 const universalScrapingRoutes = require('./routes/universalScraping');
 const toastTestRoutes = require('./routes/toastTest');
+const glasswingTestRoutes = require('./routes/glasswingTest');
 const WebSocketService = require('./services/WebSocketService');
 const ServerSentEventsService = require('./services/ServerSentEventsService');
 const initializeSSERoutes = require('./routes/serverSentEvents');
@@ -164,8 +165,9 @@ class AIShoppingScraper {
     // Universal scraping routes (NEW - uses MasterOrchestrator)
     this.app.use('/api/universal', universalScrapingRoutes);
     
-    // Toast test routes for Railway deployment testing
+    // Test routes for Railway deployment testing
     this.app.use('/api/test', toastTestRoutes);
+    this.app.use('/api/test', glasswingTestRoutes);
 
     // SSE routes - will be set up after SSE service initialization
     this.app.use('/api/v1/sse', (req, res, next) => {
