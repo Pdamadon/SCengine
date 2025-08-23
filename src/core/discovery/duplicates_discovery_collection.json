@@ -1,0 +1,245 @@
+{
+  "metadata": {
+    "generated_at": "2024-01-20T10:00:00Z",
+    "scope": ["src/core/discovery/**", "src/core/collection/**"],
+    "duplication_types": ["logic", "patterns", "utilities", "abstractions"]
+  },
+  "duplicated_logic": [
+    {
+      "duplication": "Browser initialization and management",
+      "instances": [
+        "NavigationMapper.initializeForSite",
+        "NavigationMapperBrowserless.initializeForSite"
+      ],
+      "similarity": "95%",
+      "description": "Nearly identical browser initialization logic with site-specific configuration",
+      "consolidation_proposal": "Extract to shared BrowserInitializer class"
+    },
+    {
+      "duplication": "Product URL detection patterns",
+      "instances": [
+        "ProductCatalogStrategy.productUrlPatterns",
+        "ProductPaginationStrategy.isProductUrl"
+      ],
+      "similarity": "80%",
+      "description": "Overlapping regex patterns for detecting product URLs",
+      "consolidation_proposal": "Create shared ProductUrlPatterns module"
+    },
+    {
+      "duplication": "Pagination detection and handling",
+      "instances": [
+        "ProductCatalogStrategy.detectPaginationType",
+        "ProductCatalogStrategy.handlePagination",
+        "ProductPaginationStrategy.detectPaginationType",
+        "ProductPaginationStrategy.navigateToNextPage"
+      ],
+      "similarity": "85%",
+      "description": "Duplicate pagination detection and navigation logic",
+      "consolidation_proposal": "Extract to PaginationHandler utility class"
+    },
+    {
+      "duplication": "Navigation element visibility checks",
+      "instances": [
+        "FallbackLinkStrategy.collectAllNavigationLinks (isVisible/isHidden)",
+        "NavigationStrategy.isNavigationElement",
+        "Multiple inline visibility checks"
+      ],
+      "similarity": "70%",
+      "description": "Repeated element visibility detection logic",
+      "consolidation_proposal": "Create ElementVisibility utility module"
+    },
+    {
+      "duplication": "CSS selector generation",
+      "instances": [
+        "NavigationStrategy.generateSelector",
+        "FallbackLinkStrategy.collectAllNavigationLinks (generateSelector)",
+        "Inline selector generation in multiple files"
+      ],
+      "similarity": "90%",
+      "description": "Identical selector generation logic repeated",
+      "consolidation_proposal": "Extract to SelectorGenerator utility"
+    }
+  ],
+  "duplicated_patterns": [
+    {
+      "pattern": "Strategy execution wrapper",
+      "instances": [
+        "NavigationStrategy.measureExecution",
+        "ProductCatalogStrategy.execute",
+        "FallbackLinkStrategy.execute"
+      ],
+      "description": "Same try-catch-measure pattern repeated",
+      "consolidation_proposal": "Use decorator pattern or base class method"
+    },
+    {
+      "pattern": "Configuration merging",
+      "instances": [
+        "Every strategy constructor",
+        "Options spreading in multiple places"
+      ],
+      "description": "Repeated config = {...defaults, ...options} pattern",
+      "consolidation_proposal": "Create ConfigMerger utility"
+    },
+    {
+      "pattern": "Stats tracking",
+      "instances": [
+        "ProductPaginationStrategy.stats",
+        "BrowserManagerBrowserless.sessionStats",
+        "NavigationMapper performance tracking"
+      ],
+      "description": "Similar statistics tracking patterns",
+      "consolidation_proposal": "Create StatsTracker mixin"
+    }
+  ],
+  "duplicated_data_structures": [
+    {
+      "structure": "Navigation item format",
+      "instances": [
+        "NavigationStrategy.formatNavigationItem",
+        "FallbackLinkStrategy item creation",
+        "NavigationPatternStrategy.convertToStrategyResult"
+      ],
+      "description": "Multiple slightly different navigation item shapes",
+      "consolidation_proposal": "Define NavigationItem interface/class"
+    },
+    {
+      "structure": "Product data format",
+      "instances": [
+        "ProductCatalogStrategy product objects",
+        "ProductPaginationStrategy product objects"
+      ],
+      "description": "Inconsistent product data shapes",
+      "consolidation_proposal": "Define Product interface/class"
+    },
+    {
+      "structure": "Site configuration",
+      "instances": [
+        "NavigationMapper.SITE_CONFIG",
+        "NavigationMapperBrowserless.SITE_CONFIG"
+      ],
+      "similarity": "90%",
+      "description": "Duplicate site configuration objects",
+      "consolidation_proposal": "Extract to SiteConfig module"
+    }
+  ],
+  "overlapping_abstractions": [
+    {
+      "abstraction": "Navigation extraction strategies",
+      "overlaps": [
+        "NavigationPatternStrategy uses NavigationPatternExtractor",
+        "RedundantNavigationExtractor wraps NavigationPatternExtractor",
+        "Multiple fallback strategies doing similar things"
+      ],
+      "issue": "Unclear separation of concerns between strategies and extractors",
+      "consolidation_proposal": "Consolidate into single NavigationExtractor with pluggable patterns"
+    },
+    {
+      "abstraction": "Browser management",
+      "overlaps": [
+        "BrowserManager",
+        "BrowserManagerBrowserless",
+        "ProxyBrowserManager"
+      ],
+      "issue": "Three different browser managers with overlapping functionality",
+      "consolidation_proposal": "Single BrowserManager with provider adapters"
+    },
+    {
+      "abstraction": "Product discovery vs collection",
+      "overlaps": [
+        "NavigationMapper does some product discovery",
+        "ProductCatalogStrategy does product discovery",
+        "ProductPaginationStrategy does product collection"
+      ],
+      "issue": "Unclear boundaries between discovery and collection phases",
+      "consolidation_proposal": "Clear separation: Discovery finds categories, Collection extracts products"
+    }
+  ],
+  "repeated_utilities": [
+    {
+      "utility": "Human delay simulation",
+      "instances": [
+        "BrowserManager.humanDelay",
+        "Multiple inline waitForTimeout calls"
+      ],
+      "consolidation_proposal": "Standardize on single humanDelay utility"
+    },
+    {
+      "utility": "URL normalization",
+      "instances": [
+        "Domain extraction in multiple places",
+        "URL cleaning logic repeated"
+      ],
+      "consolidation_proposal": "Create UrlUtils module"
+    },
+    {
+      "utility": "Popup/modal closing",
+      "instances": [
+        "NavigationMapper.closeAnyPopups",
+        "PopupHandler (referenced but not shown)"
+      ],
+      "consolidation_proposal": "Consolidate into PopupHandler"
+    }
+  ],
+  "code_smell_indicators": [
+    {
+      "smell": "Long parameter lists",
+      "locations": [
+        "Strategy constructors with many options",
+        "extractUsingPattern with multiple parameters"
+      ]
+    },
+    {
+      "smell": "Magic numbers",
+      "locations": [
+        "Timeout values (3000, 10000, etc.)",
+        "Threshold values",
+        "Max limits"
+      ]
+    },
+    {
+      "smell": "Commented out code",
+      "locations": [
+        "NavigationMapper has several removed/deprecated methods"
+      ]
+    },
+    {
+      "smell": "God objects",
+      "locations": [
+        "NavigationMapper doing too much",
+        "ProductCatalogStrategy handling analysis, extraction, and pagination"
+      ]
+    }
+  ],
+  "consolidation_priority": [
+    {
+      "priority": 1,
+      "item": "Pagination handling",
+      "reason": "High duplication, clear extraction path",
+      "effort": "Medium"
+    },
+    {
+      "priority": 2,
+      "item": "Browser initialization",
+      "reason": "Critical path, high duplication",
+      "effort": "Medium"
+    },
+    {
+      "priority": 3,
+      "item": "Product URL patterns",
+      "reason": "Simple extraction, high value",
+      "effort": "Low"
+    },
+    {
+      "priority": 4,
+      "item": "Navigation item format",
+      "reason": "Data consistency important",
+      "effort": "Medium"
+    },
+    {
+      "priority": 5,
+      "item": "Visibility utilities",
+      "reason": "Frequently used, simple extraction",
+      "effort": "Low"
+    }
+  ]
+}

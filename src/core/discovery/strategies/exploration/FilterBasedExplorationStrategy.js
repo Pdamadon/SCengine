@@ -17,6 +17,8 @@
 
 const NavigationTracker = require('../../../../common/NavigationTracker');
 const { logger } = require('../../../../utils/logger');
+const { canonicalizeUrl } = require('../../../../common/UrlCanonicalizer');
+const { FilterPatterns } = require('../../../../common/FilterPatterns');
 
 class FilterBasedExplorationStrategy {
   constructor(browserManager, options = {}) {
@@ -26,12 +28,38 @@ class FilterBasedExplorationStrategy {
       maxFilters: options.maxFilters || 20,
       filterTimeout: options.filterTimeout || 5000,
       captureFilterCombinations: options.captureFilterCombinations || false,
-      trackForML: options.trackForML !== false
+      trackForML: options.trackForML !== false,
+      // Anti-bot detection delays (configurable, longer for testing)
+      pageLoadDelay: options.pageLoadDelay || process.env.FILTER_PAGE_LOAD_DELAY || 3000,
+      filterClickDelay: options.filterClickDelay || process.env.FILTER_CLICK_DELAY || 1000,
+      filterProcessDelay: options.filterProcessDelay || process.env.FILTER_PROCESS_DELAY || 2000,
+      filterRemovalDelay: options.filterRemovalDelay || process.env.FILTER_REMOVAL_DELAY || 1000,
+      useDiscoveredFilters: options.useDiscoveredFilters !== false, // Default to true for Phase 2
+      // Feature flags for utility integration (following zen's guidance)
+      features: {
+        canonicalizedDedup: options.features?.canonicalizedDedup !== false, // Default: true
+        filterExclusions: options.features?.filterExclusions !== false, // Default: true
+        ...options.features
+      }
     };
     
+    // Phase 2 integration: Accept FilterDiscoveryStrategy instance
+    this.filterDiscoveryStrategy = options.filterDiscoveryStrategy || null;
+    
+    // Initialize filter patterns for exclusions
+    this.filterPatterns = new FilterPatterns();
+    
     this.navigationTracker = null;
-    this.discoveredProducts = new Map(); // Track unique products
+    this.discoveredProducts = new Map(); // Track unique products (now with canonical keys)
     this.filterPaths = []; // Track filter combinations for ML
+    
+    // Stats tracking for utility integration
+    this.stats = {
+      canonicalTransformChangedCount: 0,
+      canonicalCollisionsCount: 0,
+      filtersExcludedCount: 0,
+      excludedFilterLabels: []
+    };
   }
 
   /**
@@ -45,6 +73,12 @@ class FilterBasedExplorationStrategy {
       category: categoryName,
       url: categoryUrl
     });
+    
+    // Store category context for product tagging
+    this.currentCategory = {
+      name: categoryName,
+      url: categoryUrl
+    };
 
     const { page, close } = await this.browserManager.createBrowser('stealth');
     this.navigationTracker = new NavigationTracker(this.logger);
@@ -55,7 +89,7 @@ class FilterBasedExplorationStrategy {
         waitUntil: 'domcontentloaded',
         timeout: 30000 
       });
-      await this.browserManager.humanDelay(3000, 0.3);
+      await new Promise(resolve => setTimeout(resolve, this.options.pageLoadDelay));
 
       // Get baseline products (no filters applied)
       const baselineProducts = await this.captureProducts(page, 'baseline');
@@ -70,7 +104,7 @@ class FilterBasedExplorationStrategy {
 
       // Process each filter
       for (const filter of filters.slice(0, this.options.maxFilters)) {
-        await this.processFilter(page, filter, categoryName);
+        await this.processFilter(page, filter, categoryName, categoryUrl);
       }
 
       // If capturing combinations, try some multi-filter combinations
@@ -87,9 +121,42 @@ class FilterBasedExplorationStrategy {
 
   /**
    * Identify all filter elements on the page
+   * Phase 2: Use FilterDiscoveryStrategy when available, fallback to legacy method
    */
   async identifyFilters(page) {
     try {
+      // Phase 2: Use discovered filter candidates if FilterDiscoveryStrategy is available
+      if (this.filterDiscoveryStrategy && this.options.useDiscoveredFilters) {
+        this.logger.info('Using FilterDiscoveryStrategy for filter identification');
+        
+        const categoryUrl = page.url();
+        const discoveryResults = await this.filterDiscoveryStrategy.discoverFilterCandidates(page, categoryUrl);
+        
+        // Convert FilterCandidate objects to legacy filter format for compatibility
+        const convertedFilters = discoveryResults.candidates.map(candidate => ({
+          text: candidate.label,
+          type: candidate.elementType,
+          selector: candidate.selector, // Use the specific selector from discovery
+          index: 0, // Not needed when using specific selectors
+          ariaLabel: candidate.ariaLabel || null,
+          dataAttributes: [],
+          // Phase 2 additions: Keep original candidate data for enhanced processing
+          candidateData: candidate
+        }));
+        
+        this.logger.info('Converted discovered filters', {
+          discovered: discoveryResults.totalCandidates,
+          converted: convertedFilters.length,
+          types: [...new Set(convertedFilters.map(f => f.type))]
+        });
+        
+        // Apply filter exclusions with fallback (following zen's guidance)
+        return this.applyFilterExclusions(convertedFilters);
+      }
+
+      // Legacy method: Original hard-coded selector approach (fallback)
+      this.logger.info('Using legacy filter identification method');
+      
       const filters = await page.evaluate(() => {
         const filterSelectors = [
           // Common filter button patterns
@@ -140,7 +207,8 @@ class FilterBasedExplorationStrategy {
         return foundFilters;
       });
 
-      return filters;
+      // Apply filter exclusions with fallback (following zen's guidance)
+      return this.applyFilterExclusions(filters);
     } catch (error) {
       this.logger.warn('Failed to identify filters', { error: error.message });
       return [];
@@ -148,17 +216,76 @@ class FilterBasedExplorationStrategy {
   }
 
   /**
-   * Process a single filter - click, capture, unclick
+   * Apply filter exclusions with fallback - following zen's guidance
+   * @param {Array} allFilters - All discovered filters
+   * @returns {Array} Filtered list with exclusions applied
    */
-  async processFilter(page, filter, categoryName) {
+  applyFilterExclusions(allFilters) {
+    const useExclusions = this.options.features?.filterExclusions === true;
+    
+    if (!useExclusions || !allFilters || allFilters.length === 0) {
+      return allFilters;
+    }
+
+    try {
+      const beforeCount = allFilters.length;
+      const filtered = allFilters.filter(filter => {
+        const shouldExclude = this.filterPatterns.shouldExclude(filter.text);
+        if (shouldExclude) {
+          this.stats.filtersExcludedCount++;
+          this.stats.excludedFilterLabels.push(filter.text);
+          this.logger.debug('Excluding non-product filter', { label: filter.text });
+        }
+        return !shouldExclude;
+      });
+
+      // Fallback: if exclusion would result in zero filters but we had some, use original set
+      const finalFilters = filtered.length > 0 ? filtered : allFilters;
+      
+      if (filtered.length === 0 && allFilters.length > 0) {
+        this.logger.warn('Filter exclusions would remove all filters, using fallback', {
+          original: allFilters.length,
+          excluded: beforeCount - filtered.length
+        });
+      } else if (filtered.length < allFilters.length) {
+        this.logger.info('Applied filter exclusions', {
+          original: beforeCount,
+          excluded: beforeCount - filtered.length,
+          remaining: finalFilters.length
+        });
+      }
+
+      return finalFilters;
+    } catch (error) {
+      this.logger.warn('Error applying filter exclusions, using original filters', { 
+        error: error.message 
+      });
+      return allFilters;
+    }
+  }
+
+  /**
+   * Process a single filter - click, capture, unclick
+   * Phase 2: Enhanced to handle discovered filter candidates
+   */
+  async processFilter(page, filter, categoryName, categoryUrl) {
     try {
       this.logger.debug('Processing filter', { 
         filter: filter.text,
         type: filter.type 
       });
 
-      // Build selector for this specific filter
-      const selector = `${filter.selector}:nth-of-type(${filter.index + 1})`;
+      // Phase 2: Use specific selector for discovered filters, fallback to legacy approach
+      let selector;
+      if (filter.candidateData) {
+        // Use the specific selector from FilterDiscoveryStrategy
+        selector = filter.candidateData.selector;
+        this.logger.debug('Using discovered filter selector', { selector });
+      } else {
+        // Legacy approach: Build selector using index
+        selector = `${filter.selector}:nth-of-type(${filter.index + 1})`;
+        this.logger.debug('Using legacy filter selector', { selector });
+      }
       
       // Click to apply filter
       const element = await page.$(selector);
@@ -177,10 +304,16 @@ class FilterBasedExplorationStrategy {
 
       // Click the filter
       await element.click();
-      await this.browserManager.humanDelay(2000, 0.3); // Wait for DOM update
+      
+      // Wait for JavaScript to process the filter and products to load
+      await new Promise(resolve => setTimeout(resolve, this.options.filterClickDelay)); // Initial delay
+      await page.waitForLoadState('networkidle'); // Wait for network requests to finish
+      await new Promise(resolve => setTimeout(resolve, this.options.filterProcessDelay)); // Additional time for DOM updates
 
-      // Check if filter was applied (look for active state)
-      const isActive = await this.isFilterActive(page, element);
+      // Check if filter was applied by URL change (more reliable than DOM state)
+      const currentUrl = page.url();
+      const urlChanged = currentUrl !== categoryUrl && currentUrl.includes('filter');
+      const isActive = urlChanged || await this.isFilterActive(page, element);
       
       if (isActive) {
         // Capture products with this filter
@@ -198,9 +331,14 @@ class FilterBasedExplorationStrategy {
           productsFound: filteredProducts.length
         });
 
-        // Click again to remove filter
-        await element.click();
-        await this.browserManager.humanDelay(1000, 0.3);
+        // Click again to remove filter - re-find element as DOM may have updated
+        const elementForRemoval = await page.$(selector);
+        if (elementForRemoval) {
+          await elementForRemoval.click();
+          await new Promise(resolve => setTimeout(resolve, this.options.filterRemovalDelay));
+        } else {
+          this.logger.debug('Filter element not found for removal', { selector });
+        }
       } else {
         this.logger.debug('Filter did not activate', { filter: filter.text });
       }
@@ -237,58 +375,137 @@ class FilterBasedExplorationStrategy {
    */
   async captureProducts(page, filterName) {
     try {
-      const products = await page.evaluate(() => {
-        const productSelectors = [
-          'a[href*="/products/"]',
-          'a[href*="/product/"]',
-          'a[href*="/item/"]',
-          '.product-card a',
-          '.product-item a',
-          '.product-tile a',
-          '[class*="product"] a[href]'
-        ];
+      // Pass category context to page evaluation
+      const categoryContext = this.currentCategory || { name: 'unknown', url: '' };
+      
+      const products = await page.evaluate((categoryData) => {
+        // Enhanced product extraction method inspired by structure analysis
+        const allLinks = Array.from(document.querySelectorAll('a[href]'));
+        const productsByUrl = new Map();
 
-        const foundProducts = [];
-        const seenUrls = new Set();
-
-        for (const selector of productSelectors) {
-          const elements = document.querySelectorAll(selector);
-          elements.forEach(el => {
-            const url = el.href;
-            if (url && !seenUrls.has(url) && !url.includes('#')) {
-              seenUrls.add(url);
-              
-              // Try to extract product info
-              const card = el.closest('[class*="product"]');
-              const title = card?.querySelector('[class*="title"], [class*="name"], h3, h4')?.textContent?.trim();
-              const price = card?.querySelector('[class*="price"]')?.textContent?.trim();
-              const image = card?.querySelector('img')?.src;
-
-              foundProducts.push({
-                url: url,
-                title: title || el.textContent.trim(),
-                price: price,
-                image: image
+        allLinks.forEach(link => {
+          const href = link.href;
+          if (href && href.includes('/products/') && !href.includes('#')) {
+            const text = link.textContent.trim();
+            
+            // Collect all instances of this product URL
+            if (!productsByUrl.has(href)) {
+              productsByUrl.set(href, {
+                url: href,
+                titleCandidates: [],
+                price: null,
+                image: null,
+                metadata: {
+                  containerClasses: [],
+                  linkClasses: []
+                }
               });
             }
+            
+            const product = productsByUrl.get(href);
+            
+            // Collect title candidates (non-empty text)
+            if (text && text !== 'Go to product page >' && text.length > 5) {
+              product.titleCandidates.push(text);
+            }
+            
+            // Try to extract price and image from card context
+            const card = link.closest('[class*="product"], .grid-item, .card, [class*="col-span"]');
+            if (card && !product.price) {
+              const priceEl = card.querySelector('[class*="price"], .price, [data-price]');
+              if (priceEl) product.price = priceEl.textContent.trim();
+              
+              const imgEl = card.querySelector('img');
+              if (imgEl) product.image = imgEl.src;
+            }
+            
+            // Collect metadata
+            const container = link.closest('div, li, article');
+            if (container) {
+              product.metadata.containerClasses.push(container.className || '');
+            }
+            product.metadata.linkClasses.push(link.className || '');
+          }
+        });
+
+        // Process results to get best title for each product
+        const foundProducts = [];
+        productsByUrl.forEach((product, url) => {
+          // Choose best title candidate (usually the longest meaningful one)
+          const bestTitle = product.titleCandidates
+            .filter(title => title.length > 10) // Reasonable product title length
+            .sort((a, b) => b.length - a.length)[0] || 
+            product.titleCandidates[0] || '';
+
+          foundProducts.push({
+            url: url,
+            title: bestTitle,
+            price: product.price,
+            image: product.image,
+            // Add category context
+            categoryName: categoryData.name,
+            categoryUrl: categoryData.url,
+            capturedAt: new Date().toISOString(),
+            metadata: {
+              titleCandidates: product.titleCandidates.length,
+              containerClasses: [...new Set(product.metadata.containerClasses)],
+              linkClasses: [...new Set(product.metadata.linkClasses)]
+            }
           });
-        }
+        });
 
         return foundProducts;
-      });
+      }, categoryContext);
 
-      // Add to discovered products with filter tracking
+      // Add to discovered products with canonicalized deduplication (following zen's guidance)
       products.forEach(product => {
-        if (!this.discoveredProducts.has(product.url)) {
-          this.discoveredProducts.set(product.url, {
-            ...product,
-            filters: [filterName]
+        try {
+          // Apply canonicalized deduplication with feature flag
+          const useCanonical = this.options.features?.canonicalizedDedup === true;
+          const key = useCanonical ? canonicalizeUrl(product.url) : product.url;
+          
+          // Track canonicalization stats
+          if (useCanonical && key !== product.url) {
+            this.stats.canonicalTransformChangedCount++;
+          }
+          
+          // Cache canonical URL on product for potential downstream use
+          product.canonicalUrl = key;
+          
+          if (!this.discoveredProducts.has(key)) {
+            this.discoveredProducts.set(key, {
+              ...product,
+              filters: [filterName]
+            });
+          } else {
+            // Track collision (duplicate removed by canonicalization)
+            if (useCanonical && key !== product.url) {
+              this.stats.canonicalCollisionsCount++;
+            }
+            
+            // Add this filter to existing product
+            const existing = this.discoveredProducts.get(key);
+            if (!existing.filters.includes(filterName)) {
+              existing.filters.push(filterName);
+            }
+          }
+        } catch (error) {
+          // Fallback: use original URL if canonicalization fails
+          this.logger.warn('Canonicalization failed, using original URL', { 
+            url: product.url, 
+            error: error.message 
           });
-        } else {
-          // Add this filter to existing product
-          const existing = this.discoveredProducts.get(product.url);
-          if (!existing.filters.includes(filterName)) {
-            existing.filters.push(filterName);
+          
+          if (!this.discoveredProducts.has(product.url)) {
+            this.discoveredProducts.set(product.url, {
+              ...product,
+              filters: [filterName]
+            });
+          } else {
+            const existing = this.discoveredProducts.get(product.url);
+            if (!existing.filters.includes(filterName)) {
+              existing.filters.push(filterName);
+            }
           }
         }
       });
@@ -328,9 +545,9 @@ class FilterBasedExplorationStrategy {
           
           if (element1 && element2) {
             await element1.click();
-            await this.browserManager.humanDelay(1000, 0.3);
+            await new Promise(resolve => setTimeout(resolve, this.options.filterRemovalDelay));
             await element2.click();
-            await this.browserManager.humanDelay(2000, 0.3);
+            await new Promise(resolve => setTimeout(resolve, this.options.filterProcessDelay));
 
             // Capture products with combination
             const combinedProducts = await this.captureProducts(
@@ -345,9 +562,9 @@ class FilterBasedExplorationStrategy {
 
             // Remove both filters
             await element2.click();
-            await this.browserManager.humanDelay(500, 0.3);
+            await new Promise(resolve => setTimeout(resolve, this.options.filterRemovalDelay / 2));
             await element1.click();
-            await this.browserManager.humanDelay(500, 0.3);
+            await new Promise(resolve => setTimeout(resolve, this.options.filterRemovalDelay / 2));
 
             combinationsTried++;
           }
@@ -376,7 +593,18 @@ class FilterBasedExplorationStrategy {
         filterCombinations: this.filterPaths.length,
         avgProductsPerFilter: this.filterPaths.length > 0 
           ? Math.round(this.filterPaths.reduce((sum, p) => sum + p.productsFound, 0) / this.filterPaths.length)
-          : 0
+          : 0,
+        // Utility integration metrics (following zen's guidance)
+        utilityStats: {
+          canonicalTransformChangedCount: this.stats.canonicalTransformChangedCount,
+          canonicalCollisionsCount: this.stats.canonicalCollisionsCount,
+          filtersExcludedCount: this.stats.filtersExcludedCount,
+          excludedFilterLabels: [...new Set(this.stats.excludedFilterLabels)], // Dedupe for reporting
+          featuresEnabled: {
+            canonicalizedDedup: this.options.features?.canonicalizedDedup === true,
+            filterExclusions: this.options.features?.filterExclusions === true
+          }
+        }
       }
     };
 

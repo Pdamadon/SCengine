@@ -9,7 +9,7 @@ const { performance } = require('perf_hooks');
 
 class StructuredLogger {
   constructor() {
-    this.logger = this.createWinstonLogger();
+    this.winstonLogger = this.createWinstonLogger();
     this.correlationIdHeader = 'x-correlation-id';
     this.performanceTimers = new Map();
   }
@@ -18,6 +18,8 @@ class StructuredLogger {
    * Create Winston logger with structured JSON format
    */
   createWinstonLogger() {
+    const isTest = process.env.NODE_ENV === 'test' || process.env.LOG_SILENT === 'true';
+    
     const logFormat = winston.format.combine(
       winston.format.timestamp({
         format: 'YYYY-MM-DDTHH:mm:ss.sssZ',
@@ -38,13 +40,31 @@ class StructuredLogger {
       }),
     );
 
-    return winston.createLogger({
-      level: process.env.LOG_LEVEL || 'info',
-      format: logFormat,
-      defaultMeta: {
-        service: 'ai-shopping-scraper',
-      },
-      transports: [
+    // Configure transports based on environment
+    let transports;
+    let exceptionHandlers;
+    let rejectionHandlers;
+    
+    if (isTest) {
+      // Test environment: use silent console transport only
+      transports = [
+        new winston.transports.Console({ 
+          silent: true,
+          level: 'error' // Still process logs internally, just don't output
+        })
+      ];
+      
+      // Silent handlers for tests
+      exceptionHandlers = [
+        new winston.transports.Console({ silent: true })
+      ];
+      
+      rejectionHandlers = [
+        new winston.transports.Console({ silent: true })
+      ];
+    } else {
+      // Production/development environment: full logging
+      transports = [
         // Console transport for development
         new winston.transports.Console({
           level: process.env.NODE_ENV === 'production' ? 'warn' : 'debug',
@@ -88,18 +108,29 @@ class StructuredLogger {
             logFormat,
           ),
         }),
-      ],
-
+      ];
+      
       // Handle uncaught exceptions and rejections
-      exceptionHandlers: [
+      exceptionHandlers = [
         new winston.transports.File({ filename: 'logs/exceptions.log' }),
         new winston.transports.Console(),
-      ],
-
-      rejectionHandlers: [
+      ];
+      
+      rejectionHandlers = [
         new winston.transports.File({ filename: 'logs/rejections.log' }),
         new winston.transports.Console(),
-      ],
+      ];
+    }
+
+    return winston.createLogger({
+      level: process.env.LOG_LEVEL || (isTest ? 'error' : 'info'),
+      format: logFormat,
+      defaultMeta: {
+        service: 'ai-shopping-scraper',
+      },
+      transports,
+      exceptionHandlers,
+      rejectionHandlers,
     });
   }
 
@@ -196,7 +227,7 @@ class StructuredLogger {
       delete logEntry.error; // Remove original error object
     }
 
-    this.logger.log(level, message, logEntry);
+    this.winstonLogger.log(level, message, logEntry);
   }
 
   /**
@@ -363,7 +394,7 @@ class StructuredLogger {
    */
   async flush() {
     return new Promise((resolve) => {
-      this.logger.end(() => resolve());
+      this.winstonLogger.end(() => resolve());
     });
   }
 }
@@ -371,8 +402,11 @@ class StructuredLogger {
 // Create singleton logger instance
 const logger = new StructuredLogger();
 
-module.exports = {
-  StructuredLogger,
-  logger,
-  requestLogging: logger.requestMiddleware(),
-};
+// Export both the class and the instance
+// Default export is the logger instance for convenience
+module.exports = logger;
+
+// Also export named exports for backward compatibility
+module.exports.StructuredLogger = StructuredLogger;
+module.exports.logger = logger;
+module.exports.requestLogging = logger.requestMiddleware();

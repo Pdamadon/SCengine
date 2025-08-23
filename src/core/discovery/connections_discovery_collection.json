@@ -1,0 +1,253 @@
+{
+  "metadata": {
+    "generated_at": "2024-01-20T10:00:00Z",
+    "scope": ["src/core/discovery/**", "src/core/collection/**"],
+    "total_files": 56,
+    "files_analyzed": 56
+  },
+  "modules": {
+    "discovery": {
+      "entry_points": [
+        "NavigationMapper.js",
+        "NavigationMapperBrowserless.js"
+      ],
+      "core_extractors": [
+        "NavigationPatternExtractor.js",
+        "RedundantNavigationExtractor.js",
+        "NavigationPatterns.js"
+      ],
+      "strategies": {
+        "navigation": [
+          "NavigationStrategy.js",
+          "NavigationPatternStrategy.js",
+          "FallbackLinkStrategy.js",
+          "MegaMenuStrategy.js",
+          "EnhancedMegaMenuStrategy.js",
+          "SectorTemplateStrategy.js"
+        ],
+        "exploration": [
+          "SubCategoryExplorationStrategy.js",
+          "FilterBasedExplorationStrategy.js"
+        ],
+        "general": [
+          "LearningSelectorStrategy.js",
+          "UniversalProductDiscovery.js",
+          "PlatformDetector.js",
+          "PopupHandler.js"
+        ]
+      },
+      "processors": [
+        "TaxonomyDiscoveryProcessor.js",
+        "ProductDiscoveryProcessor.js"
+      ],
+      "utilities": [
+        "SimpleSelectorCache.js",
+        "StructuralNavigationClassifier.js"
+      ]
+    },
+    "collection": {
+      "strategies": [
+        "ProductCatalogStrategy.js",
+        "ProductPaginationStrategy.js"
+      ]
+    }
+  },
+  "imports": {
+    "NavigationMapper.js": {
+      "internal": [
+        "../../common/BrowserManager",
+        "./strategies/navigation/NavigationPatternStrategy",
+        "./strategies/navigation/FallbackLinkStrategy",
+        "./strategies/navigation/MegaMenuStrategy",
+        "../../cache/ProductCatalogCache",
+        "./processors/TaxonomyDiscoveryProcessor"
+      ],
+      "external": ["playwright"]
+    },
+    "NavigationMapperBrowserless.js": {
+      "internal": [
+        "../../common/BrowserManagerBrowserless",
+        "./strategies/navigation/NavigationPatternStrategy",
+        "./strategies/navigation/FallbackLinkStrategy",
+        "./strategies/navigation/MegaMenuStrategy",
+        "../../cache/ProductCatalogCache",
+        "./processors/TaxonomyDiscoveryProcessor"
+      ],
+      "external": ["playwright"]
+    },
+    "NavigationPatternExtractor.js": {
+      "internal": ["../../utils/logger"],
+      "external": []
+    },
+    "NavigationPatterns.js": {
+      "internal": [],
+      "external": []
+    },
+    "RedundantNavigationExtractor.js": {
+      "internal": [
+        "./NavigationPatternExtractor",
+        "./NavigationPatterns",
+        "../../utils/logger"
+      ],
+      "external": []
+    },
+    "NavigationPatternStrategy.js": {
+      "internal": [
+        "./NavigationStrategy",
+        "../../NavigationPatternExtractor",
+        "../../NavigationPatterns",
+        "../../../../common/NavigationTracker"
+      ],
+      "external": []
+    },
+    "FallbackLinkStrategy.js": {
+      "internal": ["./NavigationStrategy"],
+      "external": []
+    },
+    "ProductCatalogStrategy.js": {
+      "internal": ["../../discovery/strategies/navigation/NavigationStrategy"],
+      "external": []
+    },
+    "ProductPaginationStrategy.js": {
+      "internal": ["../../../utils/logger"],
+      "external": []
+    },
+    "TaxonomyDiscoveryProcessor.js": {
+      "internal": [],
+      "external": []
+    }
+  },
+  "function_calls": {
+    "NavigationMapper": {
+      "mapSiteNavigation": ["mapSiteProducts"],
+      "mapSiteProducts": ["mapSiteTaxonomy"],
+      "mapSiteTaxonomy": ["_mapSiteWithProcessor"],
+      "_mapSiteWithProcessor": [
+        "initializeForSite",
+        "browserManager.createBrowser",
+        "closeAnyPopups",
+        "extractNavigationIntelligence"
+      ],
+      "extractNavigationIntelligence": ["strategy.execute"]
+    },
+    "NavigationPatternExtractor": {
+      "extractUsingPattern": [
+        "extractMainNavigation",
+        "extractDropdownContent",
+        "compileResults"
+      ],
+      "extractDropdownContent": [
+        "resetNavigationState",
+        "tryHoverExtraction",
+        "tryForceVisibilityFallback"
+      ],
+      "tryHoverExtraction": ["extractLinksFromDropdown"],
+      "tryForceVisibilityFallback": ["extractLinksFromDropdown"]
+    },
+    "NavigationPatternStrategy": {
+      "execute": [
+        "extractUsingPattern",
+        "convertToStrategyResult"
+      ]
+    },
+    "ProductCatalogStrategy": {
+      "execute": [
+        "analyzePageForProducts",
+        "collectProductURLs",
+        "handlePagination",
+        "enhanceProductMetadata"
+      ],
+      "handlePagination": [
+        "detectPaginationType",
+        "handleTraditionalPagination",
+        "handleLoadMoreButtons",
+        "handleInfiniteScroll"
+      ]
+    },
+    "ProductPaginationStrategy": {
+      "extractProducts": [
+        "extractAllProducts"
+      ],
+      "extractAllProducts": [
+        "detectPaginationType",
+        "extractProductsFromPage",
+        "navigateToNextPage"
+      ]
+    }
+  },
+  "data_flow_edges": [
+    {
+      "from": "NavigationMapper",
+      "to": "BrowserManager",
+      "data": "browser_config",
+      "type": "initialization"
+    },
+    {
+      "from": "BrowserManager",
+      "to": "NavigationMapper",
+      "data": "page_instance",
+      "type": "browser_session"
+    },
+    {
+      "from": "NavigationMapper",
+      "to": "NavigationPatternStrategy",
+      "data": "page_instance",
+      "type": "strategy_execution"
+    },
+    {
+      "from": "NavigationPatternStrategy",
+      "to": "NavigationPatternExtractor",
+      "data": "page_pattern_config",
+      "type": "extraction_request"
+    },
+    {
+      "from": "NavigationPatternExtractor",
+      "to": "NavigationPatternStrategy",
+      "data": "extraction_results",
+      "type": "navigation_data"
+    },
+    {
+      "from": "NavigationPatternStrategy",
+      "to": "NavigationMapper",
+      "data": "strategy_results",
+      "type": "navigation_hierarchy"
+    },
+    {
+      "from": "NavigationMapper",
+      "to": "TaxonomyDiscoveryProcessor",
+      "data": "navigation_data",
+      "type": "processing_request"
+    },
+    {
+      "from": "TaxonomyDiscoveryProcessor",
+      "to": "NavigationMapper",
+      "data": "structured_taxonomy",
+      "type": "classified_navigation"
+    },
+    {
+      "from": "NavigationMapper",
+      "to": "ProductCatalogCache",
+      "data": "navigation_results",
+      "type": "cache_storage"
+    },
+    {
+      "from": "ProductCatalogStrategy",
+      "to": "ProductPaginationStrategy",
+      "data": "category_urls",
+      "type": "pagination_request"
+    },
+    {
+      "from": "ProductPaginationStrategy",
+      "to": "ProductCatalogStrategy",
+      "data": "product_urls",
+      "type": "collected_products"
+    }
+  ],
+  "external_dependencies": {
+    "browser_automation": ["playwright", "rebrowser-playwright"],
+    "data_storage": ["MongoDB", "PostgreSQL", "Redis"],
+    "utilities": ["logger", "metrics"],
+    "caching": ["ProductCatalogCache"],
+    "tracking": ["NavigationTracker"]
+  }
+}

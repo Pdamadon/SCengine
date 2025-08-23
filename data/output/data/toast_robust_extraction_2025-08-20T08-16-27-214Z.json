@@ -1,8 +1,0 @@
-[
-  {
-    "restaurant": "Biang Biang Noodles",
-    "url": "https://www.toasttab.com/local/order/biang-biang-noodles-601-e-pike-st",
-    "error": "page.goto: net::ERR_INVALID_AUTH_CREDENTIALS at https://www.toasttab.com/local/order/biang-biang-noodles-601-e-pike-st\nCall log:\n\u001b[2m  - navigating to \"https://www.toasttab.com/local/order/biang-biang-noodles-601-e-pike-st\", waiting until \"domcontentloaded\"\u001b[22m\n",
-    "timestamp": "2025-08-20T08:16:27.214Z"
-  }
-]

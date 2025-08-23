@@ -453,7 +453,23 @@ class AIShoppingScraper {
           logger.info('SSE router initialized');
         }
 
-        logger.info(`Services initialized - MongoDB: ${mongoConnected ? 'connected' : 'disabled'}, WebSocket: ${this.webSocketService?.isInitialized || false}`);
+        // Initialize and start worker process for job processing (optional)
+        if (process.env.ENABLE_INTEGRATED_WORKER !== 'false') {
+          try {
+            logger.info('Starting integrated scraping worker...');
+            const ScrapingWorker = require('./workers/ScrapingWorker');
+            this.scrapingWorker = new ScrapingWorker(this.mongoClient, 3); // 3 concurrent jobs
+            await this.scrapingWorker.start();
+            logger.info('✅ Scraping worker started - ready to process jobs from queue');
+          } catch (error) {
+            logger.error('❌ Failed to start scraping worker:', error);
+            logger.warn('API will accept jobs but they will remain queued until worker is started manually');
+          }
+        } else {
+          logger.info('Integrated worker disabled - use dedicated worker process');
+        }
+
+        logger.info(`Services initialized - MongoDB: ${mongoConnected ? 'connected' : 'disabled'}, WebSocket: ${this.webSocketService?.isInitialized || false}, Worker: ${!!this.scrapingWorker}`);
       });
 
     } catch (error) {
@@ -482,6 +498,17 @@ class AIShoppingScraper {
         logger.info('SSE service shutdown complete');
       } catch (error) {
         logger.error('Error shutting down SSE service:', error);
+      }
+    }
+
+    // Shutdown scraping worker
+    if (this.scrapingWorker) {
+      try {
+        logger.info('Stopping scraping worker...');
+        await this.scrapingWorker.stop();
+        logger.info('Scraping worker shutdown complete');
+      } catch (error) {
+        logger.error('Error shutting down scraping worker:', error);
       }
     }
 

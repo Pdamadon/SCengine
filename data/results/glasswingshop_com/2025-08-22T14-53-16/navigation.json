@@ -1,0 +1,1714 @@
+{
+  "main_sections": [
+    {
+      "name": "Clothing",
+      "url": null,
+      "type": "main_navigation",
+      "children": [
+        {
+          "name": "Unisex",
+          "url": "https://glasswingshop.com/collections/unisex",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "All Clothing",
+          "url": "https://glasswingshop.com/collections/clothing-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "All Shoes",
+          "url": "https://glasswingshop.com/collections/shoe-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "All Sale",
+          "url": "https://glasswingshop.com/collections/sale",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "7115 by Szeki",
+          "url": "https://glasswingshop.com/collections/7115-by-szeki-1",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Ayame Eyewear",
+          "url": "https://glasswingshop.com/collections/ayame-eyewear",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Arpenteur",
+          "url": "https://glasswingshop.com/collections/arpenteur",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Black Crane",
+          "url": "https://glasswingshop.com/collections/black-crane",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Brain Dead",
+          "url": "https://glasswingshop.com/collections/braindead",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Camiel Fortgens",
+          "url": "https://glasswingshop.com/collections/camiel-fortgens",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Cawley",
+          "url": "https://glasswingshop.com/collections/cawley",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Colbo",
+          "url": "https://glasswingshop.com/collections/colbo",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Cordera",
+          "url": "https://glasswingshop.com/collections/monica-cordera",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Engineered Garments",
+          "url": "https://glasswingshop.com/collections/engineered-garments",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Evan Kinori",
+          "url": "https://glasswingshop.com/collections/evan-kinori",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Henrik Vibskov",
+          "url": "https://glasswingshop.com/collections/henrik-vibskov-1",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Hernán Herdez",
+          "url": "https://glasswingshop.com/collections/hernan-herdez",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "History + Industry",
+          "url": "https://glasswingshop.com/collections/history-industry",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Illesteva",
+          "url": "https://glasswingshop.com/collections/illesteva",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Jacques Solovière",
+          "url": "https://glasswingshop.com/collections/jacques-soloviere",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Jan-Jan Van Essche",
+          "url": "https://glasswingshop.com/collections/jan-jan-van-essche-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "jesse kamm",
+          "url": "https://glasswingshop.com/collections/jesse-kamm",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Kapital",
+          "url": "https://glasswingshop.com/collections/kapital",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Kara Yoo",
+          "url": "https://glasswingshop.com/collections/kara-yoo",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Lady White Co.",
+          "url": "https://glasswingshop.com/collections/lady-white-mens",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "La Paz",
+          "url": "https://glasswingshop.com/collections/the-la-paz-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Lauren Manoogian",
+          "url": "https://glasswingshop.com/collections/lauren-manoogian",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Lownn",
+          "url": "https://glasswingshop.com/collections/lownn",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "MAN-TLE",
+          "url": "https://glasswingshop.com/collections/man-tle-1",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Merz b Schwanen",
+          "url": "https://glasswingshop.com/collections/merz-b-schwanen",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Mijeong Park",
+          "url": "https://glasswingshop.com/collections/mijeong-park",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "O-Project",
+          "url": "https://glasswingshop.com/collections/o-project-1",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "orSlow",
+          "url": "https://glasswingshop.com/collections/orslow",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Petrosolaum",
+          "url": "https://glasswingshop.com/collections/petrosolaum",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Postalco",
+          "url": "https://glasswingshop.com/collections/postalco",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Sillage",
+          "url": "https://glasswingshop.com/collections/sillage",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Stutterheim",
+          "url": "https://glasswingshop.com/collections/stutterheim",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Universal Works",
+          "url": "https://glasswingshop.com/collections/universal-works",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Yoko Sakamoto",
+          "url": "https://glasswingshop.com/collections/yoko-sakamoto-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Zii Ropa",
+          "url": "https://glasswingshop.com/collections/zii-ropa",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Tacoma Fuji Records",
+          "url": "https://glasswingshop.com/collections/tacoma-fuji-records",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        }
+      ],
+      "metadata": {
+        "selector": "li.dropdown-toggle:nth-child(1)",
+        "index": 0
+      }
+    },
+    {
+      "name": "Man",
+      "url": null,
+      "type": "main_navigation",
+      "children": [
+        {
+          "name": "New Arrivals",
+          "url": "https://glasswingshop.com/collections/new-arrivals-for-him",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Clothing",
+          "url": "https://glasswingshop.com/collections/mens-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Shoes",
+          "url": "https://glasswingshop.com/collections/mens-shoes",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Accessories",
+          "url": "https://glasswingshop.com/collections/mens-accessories",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Sale",
+          "url": "https://glasswingshop.com/collections/mens-sale",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Shop All",
+          "url": "https://glasswingshop.com/collections/shop-all-mens",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "7115 by Szeki",
+          "url": "https://glasswingshop.com/collections/7115-by-szeki-mens-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Arpenteur",
+          "url": "https://glasswingshop.com/collections/arpenteur",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Brain Dead",
+          "url": "https://glasswingshop.com/collections/brain-dead-mens-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Camiel Fortgens",
+          "url": "https://glasswingshop.com/collections/camiel-fortgens-mens-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Colbo",
+          "url": "https://glasswingshop.com/collections/colbo-mens-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Engineered Garments",
+          "url": "https://glasswingshop.com/collections/engineered-garments",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Evan Kinori",
+          "url": "https://glasswingshop.com/collections/evan-kinori/EVAN-KINORI",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Henrik Vibskov",
+          "url": "https://glasswingshop.com/collections/henrik-vibskov-mens-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Illesteva",
+          "url": "https://glasswingshop.com/collections/illesteva",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Jacques Solovière",
+          "url": "https://glasswingshop.com/collections/jacques-soloviere",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Jan-Jan Van Essche",
+          "url": "https://glasswingshop.com/collections/jan-jan-van-essche/MENS",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Kapital",
+          "url": "https://glasswingshop.com/collections/kapital-mens-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Lady White Co.",
+          "url": "https://glasswingshop.com/collections/lady-white-mens",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "La Paz",
+          "url": "https://glasswingshop.com/collections/the-la-paz-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Lownn",
+          "url": "https://glasswingshop.com/collections/lownn",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "MAN-TLE",
+          "url": "https://glasswingshop.com/collections/man-tle-r19-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Merz b. Schwanen",
+          "url": "https://glasswingshop.com/collections/merz-b-schwanen-mens",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "O Project",
+          "url": "https://glasswingshop.com/collections/o-project",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "OrSlow",
+          "url": "https://glasswingshop.com/collections/orslow-mens-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Petrosolaum",
+          "url": "https://glasswingshop.com/collections/petrosolaum",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Postalco",
+          "url": "https://glasswingshop.com/collections/postalco/mens",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Sillage",
+          "url": "https://glasswingshop.com/collections/sillage",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Stutterheim",
+          "url": "https://glasswingshop.com/collections/stutterheim/MENS",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Tacoma Fuji Records",
+          "url": "https://glasswingshop.com/collections/tacoma-fuji-records",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Universal Works",
+          "url": "https://glasswingshop.com/collections/universal-works",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Yoko Sakamoto",
+          "url": "https://glasswingshop.com/collections/yoko-sakamoto-mens-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        }
+      ],
+      "metadata": {
+        "selector": "li.dropdown-toggle:nth-child(2)",
+        "index": 1
+      }
+    },
+    {
+      "name": "Woman",
+      "url": null,
+      "type": "main_navigation",
+      "children": [
+        {
+          "name": "New Arrivals",
+          "url": "https://glasswingshop.com/collections/new-arrivals-for-her",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Clothing",
+          "url": "https://glasswingshop.com/collections/womens-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Shoes",
+          "url": "https://glasswingshop.com/collections/womens-shoes",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Jewelry",
+          "url": "https://glasswingshop.com/collections/jewelry",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Accessories",
+          "url": "https://glasswingshop.com/collections/accessories-for-her",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Sale",
+          "url": "https://glasswingshop.com/collections/women-s-sale",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Shop All",
+          "url": "https://glasswingshop.com/collections/shop-all-womens",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "7115 by Szeki",
+          "url": "https://glasswingshop.com/collections/7115-by-szeki",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Agmes",
+          "url": "https://glasswingshop.com/collections/agmes",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Ayame Eyewear",
+          "url": "https://glasswingshop.com/collections/ayame-eyewear",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "ANOTHER FEATHER",
+          "url": "https://glasswingshop.com/collections/another-feather",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Atelier Delphine",
+          "url": "https://glasswingshop.com/collections/atelier-delphine",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Black Crane",
+          "url": "https://glasswingshop.com/collections/black-crane",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Brain Dead",
+          "url": "https://glasswingshop.com/collections/brain-dead-womens-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Camiel Fortgens",
+          "url": "https://glasswingshop.com/collections/camiel-fortgens-womens-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Cawley",
+          "url": "https://glasswingshop.com/collections/cawley-womens-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Colbo",
+          "url": "https://glasswingshop.com/collections/colbo-womens-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Cordera",
+          "url": "https://glasswingshop.com/collections/cordera-womens-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Henrik Vibskov",
+          "url": "https://glasswingshop.com/collections/henrik-vibskov",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Hernán Herdez",
+          "url": "https://glasswingshop.com/collections/hernan-herdez",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "History + Industry",
+          "url": "https://glasswingshop.com/collections/history-industry",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Illesteva",
+          "url": "https://glasswingshop.com/collections/illesteva",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Jacques Solovière",
+          "url": "https://glasswingshop.com/collections/jacques-soloviere",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "JAN-JAN VAN ESSCHE",
+          "url": "https://glasswingshop.com/collections/jan-jan-van-essche-womens-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Jesse Kamm",
+          "url": "https://glasswingshop.com/collections/jesse-kamm",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Kapital",
+          "url": "https://glasswingshop.com/collections/kapital-the-femme-collection/WOMENS",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "KARA YOO",
+          "url": "https://glasswingshop.com/collections/kara-yoo",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Lauren Manoogian",
+          "url": "https://glasswingshop.com/collections/lauren-manoogian",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "LOQ",
+          "url": "https://glasswingshop.com/collections/loq",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "MAN-TLE",
+          "url": "https://glasswingshop.com/collections/man-tle-womens",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "MACHETE",
+          "url": "https://glasswingshop.com/collections/machete",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Merz b. Schwanen",
+          "url": "https://glasswingshop.com/collections/merz-b-schwanen-1",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Mijeong Park",
+          "url": "https://glasswingshop.com/collections/mijeong-park",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "orSlow",
+          "url": "https://glasswingshop.com/collections/orslow-1",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Petrosolaum",
+          "url": "https://glasswingshop.com/collections/petrosolaum",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Postalco",
+          "url": "https://glasswingshop.com/collections/postalco",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Sillage",
+          "url": "https://glasswingshop.com/collections/sillage",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Yoko Sakamoto",
+          "url": "https://glasswingshop.com/collections/yoko-sakamoto-womens-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "ZII ROPA",
+          "url": "https://glasswingshop.com/collections/zii-ropa",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        }
+      ],
+      "metadata": {
+        "selector": "li.dropdown-toggle:nth-child(3)",
+        "index": 2
+      }
+    },
+    {
+      "name": "Bath & Body",
+      "url": null,
+      "type": "main_navigation",
+      "children": [
+        {
+          "name": "Face",
+          "url": "https://glasswingshop.com/collections/face",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Bath & Body",
+          "url": "https://glasswingshop.com/collections/bath-1",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Fragrance",
+          "url": "https://glasswingshop.com/collections/fragrance-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Blackbird",
+          "url": "https://glasswingshop.com/collections/blackbird-apothecary",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "BRAIN DEAD",
+          "url": "https://glasswingshop.com/collections/brain-dead-bath",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Corpus",
+          "url": "https://glasswingshop.com/collections/corpus",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "D.S. & Durga",
+          "url": "https://glasswingshop.com/collections/d-s-durga",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "FRAMA",
+          "url": "https://glasswingshop.com/collections/frama",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Haoma",
+          "url": "https://glasswingshop.com/collections/haoma-earth",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Iris Hantverk",
+          "url": "https://glasswingshop.com/collections/iris-hantverk-1",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "J. Hannah",
+          "url": "https://glasswingshop.com/collections/j-hannah-polish",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Leif",
+          "url": "https://glasswingshop.com/collections/leif",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Lightwell",
+          "url": "https://glasswingshop.com/collections/lightwell",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Mad et Lin",
+          "url": "https://glasswingshop.com/collections/mad-et-len",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Morihata",
+          "url": "https://glasswingshop.com/collections/morihata",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Na Nin",
+          "url": "https://glasswingshop.com/collections/na-nin",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Parfums Quartana",
+          "url": "https://glasswingshop.com/collections/parfums-quartana",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Stora Skuggan",
+          "url": "https://glasswingshop.com/collections/stora-skuggan",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Wonder Valley",
+          "url": "https://glasswingshop.com/collections/wonder-valley",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        }
+      ],
+      "metadata": {
+        "selector": "li.dropdown-toggle:nth-child(4)",
+        "index": 3
+      }
+    },
+    {
+      "name": "Home",
+      "url": null,
+      "type": "main_navigation",
+      "children": [
+        {
+          "name": "February Gift Guide",
+          "url": "https://glasswingshop.com/collections/february-gift-guide",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Gift Sets",
+          "url": "https://glasswingshop.com/collections/gift-sets",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Bath & Body",
+          "url": "https://glasswingshop.com/collections/bath",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Candles & Scent",
+          "url": "https://glasswingshop.com/collections/candles",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Ceramics",
+          "url": "https://glasswingshop.com/collections/handmade-ceramics",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Florals",
+          "url": "https://glasswingshop.com/collections/current-floral-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Gift Cards",
+          "url": "https://glasswingshop.com/collections/gift-cards",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Plants",
+          "url": "https://glasswingshop.com/collections/plant-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Pots",
+          "url": "https://glasswingshop.com/collections/plant-pots",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Office",
+          "url": "https://glasswingshop.com/collections/office",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Tableware",
+          "url": "https://glasswingshop.com/collections/kitchen",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Aleph Geddis",
+          "url": "https://glasswingshop.com/collections/aleph-geddis",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Alex Roby Ceramics",
+          "url": "https://glasswingshop.com/collections/alex-roby-ceramics",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Ayame Bullock",
+          "url": "https://glasswingshop.com/collections/ayame",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Blackbird",
+          "url": "https://glasswingshop.com/collections/blackbird-apothecary",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "BRAIN DEAD",
+          "url": "https://glasswingshop.com/collections/brain-dead-bath",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Corpus",
+          "url": "https://glasswingshop.com/collections/corpus",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Daisuke Anayama",
+          "url": "https://glasswingshop.com/collections/daisuke-anayama",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Daiyo",
+          "url": "https://glasswingshop.com/collections/daiyo",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Deux Cranes",
+          "url": "https://glasswingshop.com/collections/deux-cranes",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "FRAMA",
+          "url": "https://glasswingshop.com/collections/frama",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "George Nakamura",
+          "url": "https://glasswingshop.com/collections/george-nakamura",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Haoma",
+          "url": "https://glasswingshop.com/collections/haoma-earth",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Iris Hantverk",
+          "url": "https://glasswingshop.com/collections/iris-hantverk-1",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Jojo Corväiá",
+          "url": "https://glasswingshop.com/collections/jojo-corv-i",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Kettl",
+          "url": "https://glasswingshop.com/collections/kettl",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Kinto",
+          "url": "https://glasswingshop.com/collections/kinto",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Lamine Diouf",
+          "url": "https://glasswingshop.com/collections/lamine-diouf-weavings",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Leif",
+          "url": "https://glasswingshop.com/collections/leif",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Lightwell",
+          "url": "https://glasswingshop.com/collections/lightwell",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Mad et Len",
+          "url": "https://glasswingshop.com/collections/mad-et-len",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Morihata",
+          "url": "https://glasswingshop.com/collections/morihata",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Na Nin",
+          "url": "https://glasswingshop.com/collections/na-nin",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Postalco",
+          "url": "https://glasswingshop.com/collections/postalco",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Takazawa Candle",
+          "url": "https://glasswingshop.com/collections/takazawa-candle",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "The Quiet Botanist",
+          "url": "https://glasswingshop.com/collections/the-quiet-botanist",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Wilde House Paper",
+          "url": "https://glasswingshop.com/collections/wilde-house-paper",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Wonder Valley",
+          "url": "https://glasswingshop.com/collections/wonder-valley",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Yuriko Bullock",
+          "url": "https://glasswingshop.com/collections/yuriko-bullock",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        }
+      ],
+      "metadata": {
+        "selector": "li.dropdown-toggle:nth-child(5)",
+        "index": 4
+      }
+    },
+    {
+      "name": "Greenhouse",
+      "url": null,
+      "type": "main_navigation",
+      "children": [
+        {
+          "name": "florals",
+          "url": "https://glasswingshop.com/collections/current-floral-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "plants",
+          "url": "https://glasswingshop.com/collections/plant-collection",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "pots",
+          "url": "https://glasswingshop.com/collections/plant-pots",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "shop all",
+          "url": "https://glasswingshop.com/collections/plants-garden",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Design Services",
+          "url": "https://glasswingshop.com/pages/plant-services-1",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "workshops",
+          "url": "https://glasswingshop.com/collections/workshops",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        }
+      ],
+      "metadata": {
+        "selector": "li.dropdown-toggle:nth-child(6)",
+        "index": 5
+      }
+    },
+    {
+      "name": "Seattle",
+      "url": null,
+      "type": "main_navigation",
+      "children": [
+        {
+          "name": "People",
+          "url": "https://glasswingshop.com/blogs/friends",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Places",
+          "url": "https://glasswingshop.com/blogs/places",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Product",
+          "url": "https://glasswingshop.com/blogs/lookbook",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Events",
+          "url": "https://glasswingshop.com/blogs/events",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        },
+        {
+          "name": "Instagram",
+          "url": "https://www.instagram.com/glasswingshop/",
+          "type": "dropdown_item",
+          "metadata": {
+            "extraction_method": "hover",
+            "visible": true
+          }
+        }
+      ],
+      "metadata": {
+        "selector": "li.dropdown-toggle:nth-child(7)",
+        "index": 6
+      }
+    }
+  ],
+  "strategy": "NavigationPatternStrategy",
+  "totalNavigationItems": 188,
+  "confidence": 0.95,
+  "extractedAt": "2025-08-22T14:52:15.874Z"
+}

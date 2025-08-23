@@ -1,0 +1,1574 @@
+[
+  {
+    "site": "Glasswing (Shopify)",
+    "url": "https://glasswingshop.com/products/7115-by-szeki-cocoon-dress-shirt-off-white",
+    "timestamp": "2025-08-22T18:45:11.577Z",
+    "extraction": {
+      "jsonld": {
+        "price": 22800,
+        "currency": "USD",
+        "description": "A refined dress shirt with a fluid, architectural silhouette that reads tailored yet relaxed. Featuring long sleeves and a hidden side panel that creates a subtle cocoon shape through the back. Finished with a concealed front placket, a classic slightly exaggerated collar, and button cuffs. Cut from a soft sand washed cotton that has a gentle crinkle and comfortable breathability.\n \nfit\nDane is 6'0\" and typically wears a Large in tops. He's wearing the size Large here for a relaxed fit.\n\nmeasurements\nXXS: bust 52\", sleeve 30\", front length 28.5\", back length 30.5\"XS: bust 54\", sleeve 31\", front length 29\", back length 31\"S: bust 56\", sleeve 32\", front length 29.5\", back length 31.5\"M: bust 58\", sleeve 33\", front length 30\", back length 32\"L: bust 60\", sleeve 34\", front length 30.5\", back length 32.5\"XL: bust 62\", sleeve 35\", front length 31\", back length 33\"XXL: bust 64\", sleeve 36\", front length 31.5\", back length 33.5\"\n \ndetails\nMade in Guangzhou, ChinaSmall Batch Production100% CottonHand wash cold, Lay flat to dry",
+        "brand": "7115 by Szeki",
+        "images": [
+          {
+            "url": "https://glasswingshop.com/cdn/shop/files/7115byszekicocoondressshirtoffwhite_0771.jpg?v=1754771354&width=1920",
+            "type": "product"
+          }
+        ],
+        "availability": "in_stock",
+        "sku": "TP0006FW25",
+        "categories": null,
+        "reviews": null,
+        "title": "7115 by Szeki Cocoon Dress Shirt Unisex, Off-White"
+      },
+      "primary_strategy": "jsonld",
+      "final": {
+        "price": 22800,
+        "currency": "USD",
+        "description": "A refined dress shirt with a fluid, architectural silhouette that reads tailored yet relaxed. Featuring long sleeves and a hidden side panel that creates a subtle cocoon shape through the back. Finished with a concealed front placket, a classic slightly exaggerated collar, and button cuffs. Cut from a soft sand washed cotton that has a gentle crinkle and comfortable breathability.\n \nfit\nDane is 6'0\" and typically wears a Large in tops. He's wearing the size Large here for a relaxed fit.\n\nmeasurements\nXXS: bust 52\", sleeve 30\", front length 28.5\", back length 30.5\"XS: bust 54\", sleeve 31\", front length 29\", back length 31\"S: bust 56\", sleeve 32\", front length 29.5\", back length 31.5\"M: bust 58\", sleeve 33\", front length 30\", back length 32\"L: bust 60\", sleeve 34\", front length 30.5\", back length 32.5\"XL: bust 62\", sleeve 35\", front length 31\", back length 33\"XXL: bust 64\", sleeve 36\", front length 31.5\", back length 33.5\"\n \ndetails\nMade in Guangzhou, ChinaSmall Batch Production100% CottonHand wash cold, Lay flat to dry",
+        "brand": "7115 by Szeki",
+        "images": [
+          {
+            "url": "https://glasswingshop.com/cdn/shop/files/7115byszekicocoondressshirtoffwhite_0771.jpg?v=1754771354&width=1920",
+            "type": "product"
+          }
+        ],
+        "availability": "in_stock",
+        "sku": "TP0006FW25",
+        "categories": null,
+        "reviews": null,
+        "title": "7115 by Szeki Cocoon Dress Shirt Unisex, Off-White",
+        "selectors": {
+          "variant_groups": [
+            {
+              "name": "Id",
+              "type": "select",
+              "selector": "#product-select",
+              "options": [
+                {
+                  "value": "43540552876131",
+                  "text": "XS",
+                  "disabled": false
+                },
+                {
+                  "value": "43540552908899",
+                  "text": "S",
+                  "disabled": false
+                },
+                {
+                  "value": "43540552941667",
+                  "text": "M",
+                  "disabled": false
+                },
+                {
+                  "value": "43540552974435",
+                  "text": "L",
+                  "disabled": false
+                },
+                {
+                  "value": "43540553007203",
+                  "text": "XL",
+                  "disabled": false
+                }
+              ],
+              "current_value": "43540552876131",
+              "interaction_method": "directVariantId"
+            }
+          ],
+          "cart_button": {
+            "selector": "input.mb-6.btn.btn-primary.js-add-to-cart",
+            "text": "Add To Cart",
+            "disabled": false,
+            "interaction_method": "click"
+          },
+          "price_elements": [
+            {
+              "selector": "div.aph_bar_message_body",
+              "text": "FREE DOMESTIC SHIPPING ON ORDERS OVER $600",
+              "value": "600"
+            },
+            {
+              "selector": "span.open-product-cost",
+              "text": "/ $ 0",
+              "value": "0"
+            },
+            {
+              "selector": "span.money",
+              "text": "$228",
+              "value": "228"
+            }
+          ],
+          "image_elements": [
+            {
+              "selector": "img[data-zoom=\"//glasswingshop.com/cdn/shop/files/7115byszekicocoondressshirtoffwhite_0771.jpg?v=1754771354\"]",
+              "src": "https://glasswingshop.com/cdn/shop/files/7115byszekicocoondressshirtoffwhite_0771.jpg?v=1754771354&width=533",
+              "alt": "7115 by Szeki Cocoon Dress Shirt Unisex, Off-White"
+            },
+            {
+              "selector": "img[data-zoom=\"//glasswingshop.com/cdn/shop/files/7115byszekicocoondressshirtoffwhite_0777.jpg?v=1754771354\"]",
+              "src": "https://glasswingshop.com/cdn/shop/files/7115byszekicocoondressshirtoffwhite_0777.jpg?v=1754771354&width=533",
+              "alt": "7115 by Szeki Cocoon Dress Shirt Unisex, Off-White"
+            },
+            {
+              "selector": "img[data-zoom=\"//glasswingshop.com/cdn/shop/files/7115byszekicocoondressshirtoffwhite_0770.jpg?v=1754771354\"]",
+              "src": "https://glasswingshop.com/cdn/shop/files/7115byszekicocoondressshirtoffwhite_0770.jpg?v=1754771354&width=533",
+              "alt": "7115 by Szeki Cocoon Dress Shirt Unisex, Off-White"
+            }
+          ],
+          "hidden_inputs": [
+            {
+              "name": "product-id",
+              "selector": "input[name=\"product-id\"]",
+              "current_value": "7841488830563"
+            },
+            {
+              "name": "section-id",
+              "selector": "input[name=\"section-id\"]",
+              "current_value": "template--15575085351011__main-product"
+            }
+          ]
+        }
+      }
+    },
+    "selector_discovery": {
+      "variant_groups": [
+        {
+          "name": "Id",
+          "type": "select",
+          "selector": "#product-select",
+          "options": [
+            {
+              "value": "43540552876131",
+              "text": "XS",
+              "disabled": false
+            },
+            {
+              "value": "43540552908899",
+              "text": "S",
+              "disabled": false
+            },
+            {
+              "value": "43540552941667",
+              "text": "M",
+              "disabled": false
+            },
+            {
+              "value": "43540552974435",
+              "text": "L",
+              "disabled": false
+            },
+            {
+              "value": "43540553007203",
+              "text": "XL",
+              "disabled": false
+            }
+          ],
+          "current_value": "43540552876131",
+          "interaction_method": "directVariantId"
+        }
+      ],
+      "cart_button": {
+        "selector": "input.mb-6.btn.btn-primary.js-add-to-cart",
+        "text": "Add To Cart",
+        "disabled": false,
+        "interaction_method": "click"
+      },
+      "price_elements": [
+        {
+          "selector": "div.aph_bar_message_body",
+          "text": "FREE DOMESTIC SHIPPING ON ORDERS OVER $600",
+          "value": "600"
+        },
+        {
+          "selector": "span.open-product-cost",
+          "text": "/ $ 0",
+          "value": "0"
+        },
+        {
+          "selector": "span.money",
+          "text": "$228",
+          "value": "228"
+        }
+      ],
+      "image_elements": [
+        {
+          "selector": "img[data-zoom=\"//glasswingshop.com/cdn/shop/files/7115byszekicocoondressshirtoffwhite_0771.jpg?v=1754771354\"]",
+          "src": "https://glasswingshop.com/cdn/shop/files/7115byszekicocoondressshirtoffwhite_0771.jpg?v=1754771354&width=533",
+          "alt": "7115 by Szeki Cocoon Dress Shirt Unisex, Off-White"
+        },
+        {
+          "selector": "img[data-zoom=\"//glasswingshop.com/cdn/shop/files/7115byszekicocoondressshirtoffwhite_0777.jpg?v=1754771354\"]",
+          "src": "https://glasswingshop.com/cdn/shop/files/7115byszekicocoondressshirtoffwhite_0777.jpg?v=1754771354&width=533",
+          "alt": "7115 by Szeki Cocoon Dress Shirt Unisex, Off-White"
+        },
+        {
+          "selector": "img[data-zoom=\"//glasswingshop.com/cdn/shop/files/7115byszekicocoondressshirtoffwhite_0770.jpg?v=1754771354\"]",
+          "src": "https://glasswingshop.com/cdn/shop/files/7115byszekicocoondressshirtoffwhite_0770.jpg?v=1754771354&width=533",
+          "alt": "7115 by Szeki Cocoon Dress Shirt Unisex, Off-White"
+        }
+      ],
+      "hidden_inputs": [
+        {
+          "name": "product-id",
+          "selector": "input[name=\"product-id\"]",
+          "current_value": "7841488830563"
+        },
+        {
+          "name": "section-id",
+          "selector": "input[name=\"section-id\"]",
+          "current_value": "template--15575085351011__main-product"
+        }
+      ]
+    },
+    "errors": [],
+    "success": true
+  },
+  {
+    "site": "Mure & Grand (Shopify)",
+    "url": "https://mureandgrand.com/products/feeling-glazy-graphic-t-shirt",
+    "timestamp": "2025-08-22T18:45:16.097Z",
+    "extraction": {
+      "jsonld": {
+        "price": 2600,
+        "currency": "USD",
+        "description": "Serving up sweet vibes only—our Feelin’ Glazy T-shirt pairs a cute donut illustration with cheeky charm for the perfect sprinkle of fun in your wardrobe 🍩🎉\n✷ Click here for Size Chart",
+        "brand": "mure + grand",
+        "images": [
+          {
+            "url": "https://mureandgrand.com/cdn/shop/files/feelings-glazy-graphic-t-shirt-t-shirt-mure-grand-921034.jpg?v=1755045712&width=1024",
+            "type": "product"
+          }
+        ],
+        "availability": "in_stock",
+        "sku": 52747270717724,
+        "categories": null,
+        "reviews": null,
+        "title": "Feeling Glazy Graphic T-shirt"
+      },
+      "primary_strategy": "jsonld",
+      "final": {
+        "price": 2600,
+        "currency": "USD",
+        "description": "Serving up sweet vibes only—our Feelin’ Glazy T-shirt pairs a cute donut illustration with cheeky charm for the perfect sprinkle of fun in your wardrobe 🍩🎉\n✷ Click here for Size Chart",
+        "brand": "mure + grand",
+        "images": [
+          {
+            "url": "https://mureandgrand.com/cdn/shop/files/feelings-glazy-graphic-t-shirt-t-shirt-mure-grand-921034.jpg?v=1755045712&width=1024",
+            "type": "product"
+          }
+        ],
+        "availability": "in_stock",
+        "sku": 52747270717724,
+        "categories": null,
+        "reviews": null,
+        "title": "Feeling Glazy Graphic T-shirt",
+        "selectors": {
+          "variant_groups": [
+            {
+              "name": "Your cart is empty",
+              "type": "button_group",
+              "selector": "button.drawer__close",
+              "options": [
+                {
+                  "value": "",
+                  "text": "",
+                  "disabled": false
+                },
+                {
+                  "value": "",
+                  "text": "",
+                  "disabled": false
+                },
+                {
+                  "value": "",
+                  "text": "",
+                  "disabled": false
+                },
+                {
+                  "value": "Open media 1 in modal",
+                  "text": "Open media 1 in modal",
+                  "disabled": false
+                },
+                {
+                  "value": "Open media 2 in modal",
+                  "text": "Open media 2 in modal",
+                  "disabled": false
+                },
+                {
+                  "value": "Open media 3 in modal",
+                  "text": "Open media 3 in modal",
+                  "disabled": false
+                }
+              ],
+              "interaction_method": "clickButton"
+            },
+            {
+              "name": "Size",
+              "type": "radio_group",
+              "selector": "input[name=\"Size\"]",
+              "options": [
+                {
+                  "value": "S",
+                  "text": "S",
+                  "disabled": false,
+                  "selected": true
+                },
+                {
+                  "value": "M",
+                  "text": "M",
+                  "disabled": false,
+                  "selected": false
+                },
+                {
+                  "value": "L",
+                  "text": "L",
+                  "disabled": false,
+                  "selected": false
+                },
+                {
+                  "value": "XL",
+                  "text": "XL",
+                  "disabled": false,
+                  "selected": false
+                },
+                {
+                  "value": "XXL",
+                  "text": "XXL",
+                  "disabled": false,
+                  "selected": false
+                },
+                {
+                  "value": "S",
+                  "text": "S",
+                  "disabled": false,
+                  "selected": true
+                },
+                {
+                  "value": "M",
+                  "text": "M",
+                  "disabled": false,
+                  "selected": false
+                },
+                {
+                  "value": "L",
+                  "text": "L",
+                  "disabled": false,
+                  "selected": false
+                },
+                {
+                  "value": "XL",
+                  "text": "XL",
+                  "disabled": false,
+                  "selected": false
+                },
+                {
+                  "value": "XXL",
+                  "text": "XXL",
+                  "disabled": false,
+                  "selected": false
+                }
+              ],
+              "current_value": "S",
+              "interaction_method": "selectRadio"
+            },
+            {
+              "name": "Color",
+              "type": "radio_group",
+              "selector": "input[name=\"Color\"]",
+              "options": [
+                {
+                  "value": "White",
+                  "text": "White",
+                  "disabled": false,
+                  "selected": true
+                },
+                {
+                  "value": "White",
+                  "text": "White",
+                  "disabled": false,
+                  "selected": true
+                }
+              ],
+              "current_value": "White",
+              "interaction_method": "selectRadio"
+            }
+          ],
+          "cart_button": {
+            "selector": "button[name=\"add\"]",
+            "text": "Add to cart",
+            "disabled": false,
+            "interaction_method": "click"
+          },
+          "price_elements": [
+            {
+              "selector": "p.totals__subtotal-value",
+              "text": "$ 0.00 USD",
+              "value": "0.00"
+            },
+            {
+              "selector": "span:nth-child(2)",
+              "text": "$ 26.00 USD",
+              "value": "26.00"
+            },
+            {
+              "selector": "span:nth-child(4)",
+              "text": "$ 26.00 USD",
+              "value": "26.00"
+            },
+            {
+              "selector": "h2:nth-child(2)",
+              "text": "Free Shipping $75+",
+              "value": "75"
+            },
+            {
+              "selector": "span:nth-child(2)",
+              "text": "$ 79.00 USD",
+              "value": "79.00"
+            }
+          ],
+          "image_elements": [
+            {
+              "selector": "img.header__heading-logo",
+              "src": "https://mureandgrand.com/cdn/shop/files/Mure-and-Grand-Logo_Pelagia-Font_straight_small_c7e5fc53-c58d-4806-8304-d7603d04fe88.png?v=1677543358",
+              "alt": "Mure + Grand"
+            },
+            {
+              "selector": "img:nth-child(1)",
+              "src": "https://mureandgrand.com/cdn/shop/files/feelings-glazy-graphic-t-shirt-t-shirt-mure-grand-921034.jpg?v=1755045712&width=1946",
+              "alt": "Feelings Glazy Graphic T-shirt t-shirt mure + grand "
+            },
+            {
+              "selector": "img:nth-child(1)",
+              "src": "https://mureandgrand.com/cdn/shop/files/feelings-glazy-graphic-t-shirt-t-shirt-mure-grand-216010.jpg?v=1755045709&width=1946",
+              "alt": "Feelings Glazy Graphic T-shirt t-shirt mure + grand "
+            }
+          ],
+          "hidden_inputs": [
+            {
+              "name": "id",
+              "selector": "input[name=\"id\"]",
+              "current_value": "52747270717724"
+            },
+            {
+              "name": "product-id",
+              "selector": "input[name=\"product-id\"]",
+              "current_value": "10551446995228"
+            },
+            {
+              "name": "section-id",
+              "selector": "input[name=\"section-id\"]",
+              "current_value": "template--24534210150684__main"
+            },
+            {
+              "name": "id",
+              "selector": "input[name=\"id\"]",
+              "current_value": "52747270717724"
+            },
+            {
+              "name": "product-id",
+              "selector": "input[name=\"product-id\"]",
+              "current_value": "10551446995228"
+            },
+            {
+              "name": "section-id",
+              "selector": "input[name=\"section-id\"]",
+              "current_value": "template--24534210150684__main"
+            },
+            {
+              "name": "id",
+              "selector": "input[name=\"id\"]",
+              "current_value": "51607106978076"
+            },
+            {
+              "name": "product-id",
+              "selector": "input[name=\"product-id\"]",
+              "current_value": "10120392933660"
+            },
+            {
+              "name": "section-id",
+              "selector": "input[name=\"section-id\"]",
+              "current_value": "template--24534210150684__main"
+            },
+            {
+              "name": "id",
+              "selector": "input[name=\"id\"]",
+              "current_value": "49818895581468"
+            },
+            {
+              "name": "product-id",
+              "selector": "input[name=\"product-id\"]",
+              "current_value": "9627778515228"
+            },
+            {
+              "name": "section-id",
+              "selector": "input[name=\"section-id\"]",
+              "current_value": "template--24534210150684__main"
+            }
+          ]
+        }
+      }
+    },
+    "selector_discovery": {
+      "variant_groups": [
+        {
+          "name": "Your cart is empty",
+          "type": "button_group",
+          "selector": "button.drawer__close",
+          "options": [
+            {
+              "value": "",
+              "text": "",
+              "disabled": false
+            },
+            {
+              "value": "",
+              "text": "",
+              "disabled": false
+            },
+            {
+              "value": "",
+              "text": "",
+              "disabled": false
+            },
+            {
+              "value": "Open media 1 in modal",
+              "text": "Open media 1 in modal",
+              "disabled": false
+            },
+            {
+              "value": "Open media 2 in modal",
+              "text": "Open media 2 in modal",
+              "disabled": false
+            },
+            {
+              "value": "Open media 3 in modal",
+              "text": "Open media 3 in modal",
+              "disabled": false
+            }
+          ],
+          "interaction_method": "clickButton"
+        },
+        {
+          "name": "Size",
+          "type": "radio_group",
+          "selector": "input[name=\"Size\"]",
+          "options": [
+            {
+              "value": "S",
+              "text": "S",
+              "disabled": false,
+              "selected": true
+            },
+            {
+              "value": "M",
+              "text": "M",
+              "disabled": false,
+              "selected": false
+            },
+            {
+              "value": "L",
+              "text": "L",
+              "disabled": false,
+              "selected": false
+            },
+            {
+              "value": "XL",
+              "text": "XL",
+              "disabled": false,
+              "selected": false
+            },
+            {
+              "value": "XXL",
+              "text": "XXL",
+              "disabled": false,
+              "selected": false
+            },
+            {
+              "value": "S",
+              "text": "S",
+              "disabled": false,
+              "selected": true
+            },
+            {
+              "value": "M",
+              "text": "M",
+              "disabled": false,
+              "selected": false
+            },
+            {
+              "value": "L",
+              "text": "L",
+              "disabled": false,
+              "selected": false
+            },
+            {
+              "value": "XL",
+              "text": "XL",
+              "disabled": false,
+              "selected": false
+            },
+            {
+              "value": "XXL",
+              "text": "XXL",
+              "disabled": false,
+              "selected": false
+            }
+          ],
+          "current_value": "S",
+          "interaction_method": "selectRadio"
+        },
+        {
+          "name": "Color",
+          "type": "radio_group",
+          "selector": "input[name=\"Color\"]",
+          "options": [
+            {
+              "value": "White",
+              "text": "White",
+              "disabled": false,
+              "selected": true
+            },
+            {
+              "value": "White",
+              "text": "White",
+              "disabled": false,
+              "selected": true
+            }
+          ],
+          "current_value": "White",
+          "interaction_method": "selectRadio"
+        }
+      ],
+      "cart_button": {
+        "selector": "button[name=\"add\"]",
+        "text": "Add to cart",
+        "disabled": false,
+        "interaction_method": "click"
+      },
+      "price_elements": [
+        {
+          "selector": "p.totals__subtotal-value",
+          "text": "$ 0.00 USD",
+          "value": "0.00"
+        },
+        {
+          "selector": "span:nth-child(2)",
+          "text": "$ 26.00 USD",
+          "value": "26.00"
+        },
+        {
+          "selector": "span:nth-child(4)",
+          "text": "$ 26.00 USD",
+          "value": "26.00"
+        },
+        {
+          "selector": "h2:nth-child(2)",
+          "text": "Free Shipping $75+",
+          "value": "75"
+        },
+        {
+          "selector": "span:nth-child(2)",
+          "text": "$ 79.00 USD",
+          "value": "79.00"
+        }
+      ],
+      "image_elements": [
+        {
+          "selector": "img.header__heading-logo",
+          "src": "https://mureandgrand.com/cdn/shop/files/Mure-and-Grand-Logo_Pelagia-Font_straight_small_c7e5fc53-c58d-4806-8304-d7603d04fe88.png?v=1677543358",
+          "alt": "Mure + Grand"
+        },
+        {
+          "selector": "img:nth-child(1)",
+          "src": "https://mureandgrand.com/cdn/shop/files/feelings-glazy-graphic-t-shirt-t-shirt-mure-grand-921034.jpg?v=1755045712&width=1946",
+          "alt": "Feelings Glazy Graphic T-shirt t-shirt mure + grand "
+        },
+        {
+          "selector": "img:nth-child(1)",
+          "src": "https://mureandgrand.com/cdn/shop/files/feelings-glazy-graphic-t-shirt-t-shirt-mure-grand-216010.jpg?v=1755045709&width=1946",
+          "alt": "Feelings Glazy Graphic T-shirt t-shirt mure + grand "
+        }
+      ],
+      "hidden_inputs": [
+        {
+          "name": "id",
+          "selector": "input[name=\"id\"]",
+          "current_value": "52747270717724"
+        },
+        {
+          "name": "product-id",
+          "selector": "input[name=\"product-id\"]",
+          "current_value": "10551446995228"
+        },
+        {
+          "name": "section-id",
+          "selector": "input[name=\"section-id\"]",
+          "current_value": "template--24534210150684__main"
+        },
+        {
+          "name": "id",
+          "selector": "input[name=\"id\"]",
+          "current_value": "52747270717724"
+        },
+        {
+          "name": "product-id",
+          "selector": "input[name=\"product-id\"]",
+          "current_value": "10551446995228"
+        },
+        {
+          "name": "section-id",
+          "selector": "input[name=\"section-id\"]",
+          "current_value": "template--24534210150684__main"
+        },
+        {
+          "name": "id",
+          "selector": "input[name=\"id\"]",
+          "current_value": "51607106978076"
+        },
+        {
+          "name": "product-id",
+          "selector": "input[name=\"product-id\"]",
+          "current_value": "10120392933660"
+        },
+        {
+          "name": "section-id",
+          "selector": "input[name=\"section-id\"]",
+          "current_value": "template--24534210150684__main"
+        },
+        {
+          "name": "id",
+          "selector": "input[name=\"id\"]",
+          "current_value": "49818895581468"
+        },
+        {
+          "name": "product-id",
+          "selector": "input[name=\"product-id\"]",
+          "current_value": "9627778515228"
+        },
+        {
+          "name": "section-id",
+          "selector": "input[name=\"section-id\"]",
+          "current_value": "template--24534210150684__main"
+        }
+      ]
+    },
+    "errors": [],
+    "success": true
+  },
+  {
+    "site": "Liana NYC (Shopify)",
+    "url": "https://liana.nyc/collections/dresses/products/aster-dress-2",
+    "timestamp": "2025-08-22T18:45:20.507Z",
+    "extraction": {
+      "jsonld": {
+        "price": 89000,
+        "currency": "USD",
+        "description": "The Aster Dress combines lightweight pure cotton voile with exquisite lace detailing for a refined, breathable garment. Its flared silhouette and graceful hem flounce evoke effortless elegance, while wide volume sleeves and a shirt cuff with side buttons add sophisticated style. Featuring a chic round neckline with a subtle stand-up collar and button motif, this dress includes a removable matching slip for versatility. Perfect for warm days and elegant evenings, the Aster Dress embodies modern femininity inspired by the charm of Riviera gardens.\nStyle: 2515231023600",
+        "brand": "MAX MARA",
+        "images": [
+          {
+            "url": {
+              "@type": "ImageObject",
+              "url": "https://liana.nyc/cdn/shop/files/AsterDress-MaxmAra_1024x1024.jpg?v=1750088731",
+              "image": "https://liana.nyc/cdn/shop/files/AsterDress-MaxmAra_1024x1024.jpg?v=1750088731",
+              "name": "Aster Dress",
+              "width": 1024,
+              "height": 1024
+            },
+            "type": "product"
+          }
+        ],
+        "availability": "out_of_stock",
+        "sku": "1123508291",
+        "categories": null,
+        "reviews": null,
+        "title": "Aster Dress"
+      },
+      "primary_strategy": "jsonld",
+      "final": {
+        "price": 89000,
+        "currency": "USD",
+        "description": "The Aster Dress combines lightweight pure cotton voile with exquisite lace detailing for a refined, breathable garment. Its flared silhouette and graceful hem flounce evoke effortless elegance, while wide volume sleeves and a shirt cuff with side buttons add sophisticated style. Featuring a chic round neckline with a subtle stand-up collar and button motif, this dress includes a removable matching slip for versatility. Perfect for warm days and elegant evenings, the Aster Dress embodies modern femininity inspired by the charm of Riviera gardens.\nStyle: 2515231023600",
+        "brand": "MAX MARA",
+        "images": [
+          {
+            "url": {
+              "@type": "ImageObject",
+              "url": "https://liana.nyc/cdn/shop/files/AsterDress-MaxmAra_1024x1024.jpg?v=1750088731",
+              "image": "https://liana.nyc/cdn/shop/files/AsterDress-MaxmAra_1024x1024.jpg?v=1750088731",
+              "name": "Aster Dress",
+              "width": 1024,
+              "height": 1024
+            },
+            "type": "product"
+          }
+        ],
+        "availability": "out_of_stock",
+        "sku": "1123508291",
+        "categories": null,
+        "reviews": null,
+        "title": "Aster Dress",
+        "selectors": {
+          "variant_groups": [
+            {
+              "name": "Unknown Variant",
+              "type": "button_group",
+              "selector": "button.visually-hidden.slideshow__pause",
+              "options": [
+                {
+                  "value": "Pause slideshow\n          \n          \n            \n            Play slideshow",
+                  "text": "Pause slideshow\n          \n          \n            \n            Play slideshow",
+                  "disabled": false
+                },
+                {
+                  "value": "icon-search\n            Close (esc)",
+                  "text": "icon-search\n            Close (esc)",
+                  "disabled": false
+                },
+                {
+                  "value": "Close dialog",
+                  "text": "Close dialog",
+                  "disabled": false
+                }
+              ],
+              "interaction_method": "clickButton"
+            },
+            {
+              "name": "variant-wrapper js",
+              "type": "button_group",
+              "selector": "div.variant-wrapper.js",
+              "options": [
+                {
+                  "value": "Size\n\n    Size\n        0\n        2\n        4\n        6\n        8\n        10\n        12",
+                  "text": "Size\n\n    Size\n        0\n        2\n        4\n        6\n        8\n        10\n        12",
+                  "disabled": false
+                },
+                {
+                  "value": "Color\n\n    Color\n        BLACK",
+                  "text": "Color\n\n    Color\n        BLACK",
+                  "disabled": false
+                }
+              ],
+              "interaction_method": "clickButton"
+            },
+            {
+              "name": "variant__label",
+              "type": "button_group",
+              "selector": "label.variant__label",
+              "options": [
+                {
+                  "value": "Size",
+                  "text": "Size",
+                  "disabled": false
+                },
+                {
+                  "value": "Color",
+                  "text": "Color",
+                  "disabled": false
+                }
+              ],
+              "interaction_method": "clickButton"
+            },
+            {
+              "name": "Size",
+              "type": "button_group",
+              "selector": "#ProductSelect-template--24325160272119__main-9680073588983-option-0",
+              "options": [
+                {
+                  "value": "Size\n        0\n        2\n        4\n        6\n        8\n        10\n        12",
+                  "text": "Size\n        0\n        2\n        4\n        6\n        8\n        10\n        12",
+                  "disabled": false
+                },
+                {
+                  "value": "Size\n        0\n        2\n        4\n        6\n        8\n        10\n        12",
+                  "text": "Size\n        0\n        2\n        4\n        6\n        8\n        10\n        12",
+                  "disabled": false
+                }
+              ],
+              "interaction_method": "clickButton"
+            },
+            {
+              "name": "variant-input",
+              "type": "button_group",
+              "selector": "div.variant-input",
+              "options": [
+                {
+                  "value": "0",
+                  "text": "0",
+                  "disabled": false
+                },
+                {
+                  "value": "2",
+                  "text": "2",
+                  "disabled": false
+                },
+                {
+                  "value": "4",
+                  "text": "4",
+                  "disabled": false
+                },
+                {
+                  "value": "6",
+                  "text": "6",
+                  "disabled": false
+                },
+                {
+                  "value": "8",
+                  "text": "8",
+                  "disabled": false
+                },
+                {
+                  "value": "10",
+                  "text": "10",
+                  "disabled": false
+                },
+                {
+                  "value": "12",
+                  "text": "12",
+                  "disabled": false
+                },
+                {
+                  "value": "BLACK",
+                  "text": "BLACK",
+                  "disabled": false
+                }
+              ],
+              "interaction_method": "clickButton"
+            },
+            {
+              "name": "variant__button-label disabled",
+              "type": "button_group",
+              "selector": "label.variant__button-label.disabled",
+              "options": [
+                {
+                  "value": "0",
+                  "text": "0",
+                  "disabled": true
+                },
+                {
+                  "value": "2",
+                  "text": "2",
+                  "disabled": true
+                },
+                {
+                  "value": "4",
+                  "text": "4",
+                  "disabled": true
+                },
+                {
+                  "value": "10",
+                  "text": "10",
+                  "disabled": true
+                },
+                {
+                  "value": "12",
+                  "text": "12",
+                  "disabled": true
+                }
+              ],
+              "interaction_method": "clickButton"
+            },
+            {
+              "name": "variant__button-label",
+              "type": "button_group",
+              "selector": "label.variant__button-label",
+              "options": [
+                {
+                  "value": "6",
+                  "text": "6",
+                  "disabled": false
+                },
+                {
+                  "value": "8",
+                  "text": "8",
+                  "disabled": false
+                },
+                {
+                  "value": "BLACK",
+                  "text": "BLACK",
+                  "disabled": false
+                }
+              ],
+              "interaction_method": "clickButton"
+            },
+            {
+              "name": "Color",
+              "type": "button_group",
+              "selector": "#ProductSelect-template--24325160272119__main-9680073588983-option-1",
+              "options": [
+                {
+                  "value": "Color\n        BLACK",
+                  "text": "Color\n        BLACK",
+                  "disabled": false
+                },
+                {
+                  "value": "Color\n        BLACK",
+                  "text": "Color\n        BLACK",
+                  "disabled": false
+                }
+              ],
+              "interaction_method": "clickButton"
+            },
+            {
+              "name": "Size",
+              "type": "radio_group",
+              "selector": "input[name=\"Size\"]",
+              "options": [
+                {
+                  "value": "0",
+                  "text": "0",
+                  "disabled": false,
+                  "selected": false
+                },
+                {
+                  "value": "2",
+                  "text": "2",
+                  "disabled": false,
+                  "selected": false
+                },
+                {
+                  "value": "4",
+                  "text": "4",
+                  "disabled": false,
+                  "selected": false
+                },
+                {
+                  "value": "6",
+                  "text": "6",
+                  "disabled": false,
+                  "selected": true
+                },
+                {
+                  "value": "8",
+                  "text": "8",
+                  "disabled": false,
+                  "selected": false
+                },
+                {
+                  "value": "10",
+                  "text": "10",
+                  "disabled": false,
+                  "selected": false
+                },
+                {
+                  "value": "12",
+                  "text": "12",
+                  "disabled": false,
+                  "selected": false
+                },
+                {
+                  "value": "0",
+                  "text": "0",
+                  "disabled": false,
+                  "selected": false
+                },
+                {
+                  "value": "2",
+                  "text": "2",
+                  "disabled": false,
+                  "selected": false
+                },
+                {
+                  "value": "4",
+                  "text": "4",
+                  "disabled": false,
+                  "selected": false
+                },
+                {
+                  "value": "6",
+                  "text": "6",
+                  "disabled": false,
+                  "selected": true
+                },
+                {
+                  "value": "8",
+                  "text": "8",
+                  "disabled": false,
+                  "selected": false
+                },
+                {
+                  "value": "10",
+                  "text": "10",
+                  "disabled": false,
+                  "selected": false
+                },
+                {
+                  "value": "12",
+                  "text": "12",
+                  "disabled": false,
+                  "selected": false
+                }
+              ],
+              "current_value": "6",
+              "interaction_method": "selectRadio"
+            },
+            {
+              "name": "Color",
+              "type": "radio_group",
+              "selector": "input[name=\"Color\"]",
+              "options": [
+                {
+                  "value": "BLACK",
+                  "text": "BLACK",
+                  "disabled": false,
+                  "selected": true
+                },
+                {
+                  "value": "BLACK",
+                  "text": "BLACK",
+                  "disabled": false,
+                  "selected": true
+                }
+              ],
+              "current_value": "BLACK",
+              "interaction_method": "selectRadio"
+            }
+          ],
+          "cart_button": {
+            "selector": "button[name=\"add\"]",
+            "text": "Add to cart",
+            "disabled": false,
+            "interaction_method": "click"
+          },
+          "price_elements": [
+            {
+              "selector": "div[data-subtotal=\"\"]",
+              "text": "$0.00",
+              "value": "0.00"
+            },
+            {
+              "selector": "span.product__price",
+              "text": "$890.00",
+              "value": "890.00"
+            },
+            {
+              "selector": "option:nth-child(4)",
+              "text": "6 / BLACK - $890.00 USD",
+              "value": "6"
+            },
+            {
+              "selector": "option:nth-child(5)",
+              "text": "8 / BLACK - $890.00 USD",
+              "value": "8"
+            },
+            {
+              "selector": "div:nth-child(3)",
+              "text": "$890.00",
+              "value": "890.00"
+            }
+          ],
+          "image_elements": [
+            {
+              "selector": "img[data-photoswipe-src=\"//liana.nyc/cdn/shop/files/AsterDress-MaxmAra.jpg?v=1750088731&width=1800\"][data-photoswipe-width=\"1200\"]",
+              "src": "https://liana.nyc/cdn/shop/files/AsterDress-MaxmAra.jpg?v=1750088731&width=1080",
+              "alt": "Aster Dress"
+            },
+            {
+              "selector": "img[data-photoswipe-src=\"//liana.nyc/cdn/shop/files/asterdress-maxmara1.jpg?v=1750088731&width=1800\"][data-photoswipe-width=\"1920\"]",
+              "src": "https://liana.nyc/cdn/shop/files/asterdress-maxmara1.jpg?v=1750088731&width=1080",
+              "alt": "Aster Dress"
+            },
+            {
+              "selector": "img[data-photoswipe-src=\"//liana.nyc/cdn/shop/files/asterdress-maxmara2.jpg?v=1750088731&width=1800\"][data-photoswipe-width=\"1920\"]",
+              "src": "https://liana.nyc/cdn/shop/files/asterdress-maxmara2.jpg?v=1750088731&width=1080",
+              "alt": "Aster Dress"
+            }
+          ],
+          "hidden_inputs": [
+            {
+              "name": "product-id",
+              "selector": "input[name=\"product-id\"]",
+              "current_value": "9680073588983"
+            },
+            {
+              "name": "section-id",
+              "selector": "input[name=\"section-id\"]",
+              "current_value": "template--24325160272119__main"
+            }
+          ]
+        }
+      }
+    },
+    "selector_discovery": {
+      "variant_groups": [
+        {
+          "name": "Unknown Variant",
+          "type": "button_group",
+          "selector": "button.visually-hidden.slideshow__pause",
+          "options": [
+            {
+              "value": "Pause slideshow\n          \n          \n            \n            Play slideshow",
+              "text": "Pause slideshow\n          \n          \n            \n            Play slideshow",
+              "disabled": false
+            },
+            {
+              "value": "icon-search\n            Close (esc)",
+              "text": "icon-search\n            Close (esc)",
+              "disabled": false
+            },
+            {
+              "value": "Close dialog",
+              "text": "Close dialog",
+              "disabled": false
+            }
+          ],
+          "interaction_method": "clickButton"
+        },
+        {
+          "name": "variant-wrapper js",
+          "type": "button_group",
+          "selector": "div.variant-wrapper.js",
+          "options": [
+            {
+              "value": "Size\n\n    Size\n        0\n        2\n        4\n        6\n        8\n        10\n        12",
+              "text": "Size\n\n    Size\n        0\n        2\n        4\n        6\n        8\n        10\n        12",
+              "disabled": false
+            },
+            {
+              "value": "Color\n\n    Color\n        BLACK",
+              "text": "Color\n\n    Color\n        BLACK",
+              "disabled": false
+            }
+          ],
+          "interaction_method": "clickButton"
+        },
+        {
+          "name": "variant__label",
+          "type": "button_group",
+          "selector": "label.variant__label",
+          "options": [
+            {
+              "value": "Size",
+              "text": "Size",
+              "disabled": false
+            },
+            {
+              "value": "Color",
+              "text": "Color",
+              "disabled": false
+            }
+          ],
+          "interaction_method": "clickButton"
+        },
+        {
+          "name": "Size",
+          "type": "button_group",
+          "selector": "#ProductSelect-template--24325160272119__main-9680073588983-option-0",
+          "options": [
+            {
+              "value": "Size\n        0\n        2\n        4\n        6\n        8\n        10\n        12",
+              "text": "Size\n        0\n        2\n        4\n        6\n        8\n        10\n        12",
+              "disabled": false
+            },
+            {
+              "value": "Size\n        0\n        2\n        4\n        6\n        8\n        10\n        12",
+              "text": "Size\n        0\n        2\n        4\n        6\n        8\n        10\n        12",
+              "disabled": false
+            }
+          ],
+          "interaction_method": "clickButton"
+        },
+        {
+          "name": "variant-input",
+          "type": "button_group",
+          "selector": "div.variant-input",
+          "options": [
+            {
+              "value": "0",
+              "text": "0",
+              "disabled": false
+            },
+            {
+              "value": "2",
+              "text": "2",
+              "disabled": false
+            },
+            {
+              "value": "4",
+              "text": "4",
+              "disabled": false
+            },
+            {
+              "value": "6",
+              "text": "6",
+              "disabled": false
+            },
+            {
+              "value": "8",
+              "text": "8",
+              "disabled": false
+            },
+            {
+              "value": "10",
+              "text": "10",
+              "disabled": false
+            },
+            {
+              "value": "12",
+              "text": "12",
+              "disabled": false
+            },
+            {
+              "value": "BLACK",
+              "text": "BLACK",
+              "disabled": false
+            }
+          ],
+          "interaction_method": "clickButton"
+        },
+        {
+          "name": "variant__button-label disabled",
+          "type": "button_group",
+          "selector": "label.variant__button-label.disabled",
+          "options": [
+            {
+              "value": "0",
+              "text": "0",
+              "disabled": true
+            },
+            {
+              "value": "2",
+              "text": "2",
+              "disabled": true
+            },
+            {
+              "value": "4",
+              "text": "4",
+              "disabled": true
+            },
+            {
+              "value": "10",
+              "text": "10",
+              "disabled": true
+            },
+            {
+              "value": "12",
+              "text": "12",
+              "disabled": true
+            }
+          ],
+          "interaction_method": "clickButton"
+        },
+        {
+          "name": "variant__button-label",
+          "type": "button_group",
+          "selector": "label.variant__button-label",
+          "options": [
+            {
+              "value": "6",
+              "text": "6",
+              "disabled": false
+            },
+            {
+              "value": "8",
+              "text": "8",
+              "disabled": false
+            },
+            {
+              "value": "BLACK",
+              "text": "BLACK",
+              "disabled": false
+            }
+          ],
+          "interaction_method": "clickButton"
+        },
+        {
+          "name": "Color",
+          "type": "button_group",
+          "selector": "#ProductSelect-template--24325160272119__main-9680073588983-option-1",
+          "options": [
+            {
+              "value": "Color\n        BLACK",
+              "text": "Color\n        BLACK",
+              "disabled": false
+            },
+            {
+              "value": "Color\n        BLACK",
+              "text": "Color\n        BLACK",
+              "disabled": false
+            }
+          ],
+          "interaction_method": "clickButton"
+        },
+        {
+          "name": "Size",
+          "type": "radio_group",
+          "selector": "input[name=\"Size\"]",
+          "options": [
+            {
+              "value": "0",
+              "text": "0",
+              "disabled": false,
+              "selected": false
+            },
+            {
+              "value": "2",
+              "text": "2",
+              "disabled": false,
+              "selected": false
+            },
+            {
+              "value": "4",
+              "text": "4",
+              "disabled": false,
+              "selected": false
+            },
+            {
+              "value": "6",
+              "text": "6",
+              "disabled": false,
+              "selected": true
+            },
+            {
+              "value": "8",
+              "text": "8",
+              "disabled": false,
+              "selected": false
+            },
+            {
+              "value": "10",
+              "text": "10",
+              "disabled": false,
+              "selected": false
+            },
+            {
+              "value": "12",
+              "text": "12",
+              "disabled": false,
+              "selected": false
+            },
+            {
+              "value": "0",
+              "text": "0",
+              "disabled": false,
+              "selected": false
+            },
+            {
+              "value": "2",
+              "text": "2",
+              "disabled": false,
+              "selected": false
+            },
+            {
+              "value": "4",
+              "text": "4",
+              "disabled": false,
+              "selected": false
+            },
+            {
+              "value": "6",
+              "text": "6",
+              "disabled": false,
+              "selected": true
+            },
+            {
+              "value": "8",
+              "text": "8",
+              "disabled": false,
+              "selected": false
+            },
+            {
+              "value": "10",
+              "text": "10",
+              "disabled": false,
+              "selected": false
+            },
+            {
+              "value": "12",
+              "text": "12",
+              "disabled": false,
+              "selected": false
+            }
+          ],
+          "current_value": "6",
+          "interaction_method": "selectRadio"
+        },
+        {
+          "name": "Color",
+          "type": "radio_group",
+          "selector": "input[name=\"Color\"]",
+          "options": [
+            {
+              "value": "BLACK",
+              "text": "BLACK",
+              "disabled": false,
+              "selected": true
+            },
+            {
+              "value": "BLACK",
+              "text": "BLACK",
+              "disabled": false,
+              "selected": true
+            }
+          ],
+          "current_value": "BLACK",
+          "interaction_method": "selectRadio"
+        }
+      ],
+      "cart_button": {
+        "selector": "button[name=\"add\"]",
+        "text": "Add to cart",
+        "disabled": false,
+        "interaction_method": "click"
+      },
+      "price_elements": [
+        {
+          "selector": "div[data-subtotal=\"\"]",
+          "text": "$0.00",
+          "value": "0.00"
+        },
+        {
+          "selector": "span.product__price",
+          "text": "$890.00",
+          "value": "890.00"
+        },
+        {
+          "selector": "option:nth-child(4)",
+          "text": "6 / BLACK - $890.00 USD",
+          "value": "6"
+        },
+        {
+          "selector": "option:nth-child(5)",
+          "text": "8 / BLACK - $890.00 USD",
+          "value": "8"
+        },
+        {
+          "selector": "div:nth-child(3)",
+          "text": "$890.00",
+          "value": "890.00"
+        }
+      ],
+      "image_elements": [
+        {
+          "selector": "img[data-photoswipe-src=\"//liana.nyc/cdn/shop/files/AsterDress-MaxmAra.jpg?v=1750088731&width=1800\"][data-photoswipe-width=\"1200\"]",
+          "src": "https://liana.nyc/cdn/shop/files/AsterDress-MaxmAra.jpg?v=1750088731&width=1080",
+          "alt": "Aster Dress"
+        },
+        {
+          "selector": "img[data-photoswipe-src=\"//liana.nyc/cdn/shop/files/asterdress-maxmara1.jpg?v=1750088731&width=1800\"][data-photoswipe-width=\"1920\"]",
+          "src": "https://liana.nyc/cdn/shop/files/asterdress-maxmara1.jpg?v=1750088731&width=1080",
+          "alt": "Aster Dress"
+        },
+        {
+          "selector": "img[data-photoswipe-src=\"//liana.nyc/cdn/shop/files/asterdress-maxmara2.jpg?v=1750088731&width=1800\"][data-photoswipe-width=\"1920\"]",
+          "src": "https://liana.nyc/cdn/shop/files/asterdress-maxmara2.jpg?v=1750088731&width=1080",
+          "alt": "Aster Dress"
+        }
+      ],
+      "hidden_inputs": [
+        {
+          "name": "product-id",
+          "selector": "input[name=\"product-id\"]",
+          "current_value": "9680073588983"
+        },
+        {
+          "name": "section-id",
+          "selector": "input[name=\"section-id\"]",
+          "current_value": "template--24325160272119__main"
+        }
+      ]
+    },
+    "errors": [],
+    "success": true
+  }
+]

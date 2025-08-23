@@ -101,7 +101,7 @@ class NavigationPatternStrategy extends NavigationStrategy {
 
       // Convert NavigationPatternExtractor result to strategy format
       this.logger.info(`🔍 DEBUG: About to call convertToStrategyResult`);
-      const strategyResult = this.convertToStrategyResult(extractionResult, pattern, startTime);
+      const strategyResult = this.convertToStrategyResult(extractionResult, pattern, startTime, tracker);
       
       this.logger.info(`NavigationPatternStrategy completed`, {
         domain: domain,
@@ -122,7 +122,7 @@ class NavigationPatternStrategy extends NavigationStrategy {
   /**
    * Convert NavigationPatternExtractor result to standard strategy format
    */
-  convertToStrategyResult(extractionResult, pattern, startTime) {
+  convertToStrategyResult(extractionResult, pattern, startTime, tracker) {
     // DEBUG: Log the actual extraction result to trace data loss
     this.logger.info(`🔍 DEBUG: convertToStrategyResult received:`, {
       success: extractionResult?.success,
@@ -221,14 +221,14 @@ class NavigationPatternStrategy extends NavigationStrategy {
     });
 
     // Add navigation path data for ML training
-    const navigationPath = tracker.getNavigationPath();
+    const navigationPath = tracker ? tracker.getNavigationPath() : [];
     
     return {
       success: true,
       strategy: this.name,
       patternUsed: pattern.name,
       confidence: extractionResult.confidence || (totalNavigationItems > 50 ? 0.95 : totalNavigationItems > 10 ? 0.8 : 0.6),
-      main_sections: main_sections,
+      navigation: main_sections,
       totalNavigationItems: totalNavigationItems,
       extractionStats: {
         mainNavigationCount: mainNavigation.count || 0,
@@ -247,7 +247,7 @@ class NavigationPatternStrategy extends NavigationStrategy {
         domain: new URL(extractionResult.url || 'https://unknown.com').hostname,
         extractedAt: new Date().toISOString(),
         duration: Date.now() - startTime,
-        navigationSummary: tracker.getSummary() // Include summary stats
+        navigationSummary: tracker ? tracker.getSummary() : {} // Include summary stats
       }
     };
   }

@@ -5,7 +5,7 @@
 
 const express = require('express');
 const router = express.Router();
-const BrowserManager = require('../common/BrowserManager');
+const BrowserManagerBrowserless = require('../common/BrowserManagerBrowserless');
 const ProductCatalogStrategy = require('../core/collection/strategies/ProductCatalogStrategy');
 const { logger } = require('../utils/logger');
 
@@ -25,7 +25,7 @@ router.get('/glasswing', async (req, res) => {
   
   try {
     // Create browser manager and product catalog strategy directly (no Redis deps)
-    browserManager = new BrowserManager();
+    browserManager = new BrowserManagerBrowserless();
     const productCatalogStrategy = new ProductCatalogStrategy(logger);
     
     logger.info('Creating browser with stealth profile...');

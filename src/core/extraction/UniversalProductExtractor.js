@@ -12,10 +12,9 @@
 const { chromium } = require('playwright');
 const WorldModel = require('../../data/WorldModel');
 // const AdvancedFallbackSystem = require('../intelligence/AdvancedFallbackSystem'); // REMOVED - over-engineered
-const IntelligentSelectorGenerator = require('../selectors/IntelligentSelectorGenerator');
-const SelectorValidator = require('../validation/SelectorValidator');
 // Removed ProductPatternLearner - was fake learning system
 const ExtractorIntelligence = require('./ExtractorIntelligence');
+const { HTTPJsonLdExtractor } = require('./http');
 
 class UniversalProductExtractor {
   constructor(logger, worldModel = null) {
@@ -25,18 +24,18 @@ class UniversalProductExtractor {
     this.extractionTimeout = 30000; // 30 seconds default
     this.quickCheckTimeout = 5000; // 5 seconds for quick checks
 
-    // Initialize intelligence services
-    this.fallbackSystem = new AdvancedFallbackSystem(logger);
-    this.selectorGenerator = new IntelligentSelectorGenerator(logger);
-    this.selectorValidator = new SelectorValidator(logger);
-    // Removed patternLearner - was fake learning system
+    // Initialize intelligence services (removed unused services)
 
     // Initialize advanced extractor intelligence with interactive validation
     this.extractorIntelligence = new ExtractorIntelligence(logger, worldModel);
+    
+    // Initialize HTTP-first extraction (configurable)
+    this.httpExtractor = new HTTPJsonLdExtractor(logger);
 
     // Extraction strategies in priority order
     this.strategies = [
-      'validatedSelectors',   // Interactively validated selectors (NEW - HIGHEST PRIORITY)
+      'jsonLd',              // JSON-LD structured data (HIGHEST PRIORITY - fastest and most reliable)
+      'validatedSelectors',   // Interactively validated selectors
       'storedPatterns',      // Previously learned patterns from MongoDB/Redis
       'platformSpecific',    // Patterns passed in for known platforms
       'intelligentDiscovery', // Use intelligence services to discover
@@ -44,12 +43,66 @@ class UniversalProductExtractor {
       'structuralPatterns',  // Common structural patterns
       'textPatterns',        // Text-based detection
       'metaTags',           // Meta tags fallback
-      'jsonLd',              // Structured data fallback
     ];
 
     // No hardcoded patterns - will be loaded from storage or passed in
     this.platformPatterns = null;
     this.learnedSelectors = new Map(); // Cache for this session
+  }
+
+
+  /**
+   * Simple extract method for PipelineOrchestrator compatibility
+   * Extracts product data from an existing page (no browser management)
+   */
+  async extract(page, options = {}) {
+    const url = options.url || page.url();
+    
+    try {
+      // HTTP-first extraction attempt (if enabled)
+      const httpResult = await this.tryHTTPFirst(url);
+      if (httpResult && httpResult.ok) {
+        this.logger.info(`HTTP extraction successful for ${url}`);
+        return httpResult.product;
+      }
+      
+      // Fallback to browser-based extraction
+      if (httpResult) {
+        this.logger.debug(`HTTP extraction failed for ${url}: ${httpResult.reason}, falling back to browser`);
+      }
+      
+      // Extract using JSON-LD first (priority #1)
+      const jsonLdData = await this.extractJsonLd(page);
+      
+      const productData = {
+        source_url: url,
+        extractionMethod: jsonLdData ? 'jsonLd' : 'domFallback',
+        extractedAt: new Date().toISOString()
+      };
+
+      if (jsonLdData) {
+        // Use JSON-LD data as primary source
+        Object.assign(productData, jsonLdData);
+        this.logger.info(`JSON-LD extraction successful for ${url}`);
+      } else {
+        // Fall back to DOM extraction
+        this.logger.info(`JSON-LD failed, using DOM fallback for ${url}`);
+        productData.title = await this.extractTitleFallback(page);
+        productData.price = await this.extractPriceFallback(page);
+        productData.brand = await this.extractBrandFallback(page);
+      }
+
+      // Add missing basic fields if not present
+      if (!productData.title) productData.title = await page.title();
+      if (!productData.images) productData.images = [];
+      if (!productData.variants) productData.variants = [];
+      
+      return productData;
+      
+    } catch (error) {
+      this.logger.error(`Failed to extract product from ${url}:`, error);
+      throw error;
+    }
   }
 
   /**
@@ -292,12 +345,33 @@ class UniversalProductExtractor {
       productData._extractionMetadata.validated_fields = Object.keys(validatedData).filter(key => validatedData[key] !== null);
     }
 
-    // Strategy 2: Fill any missing fields with traditional methods
+    // Strategy 2: Try JSON-LD first (fastest and most complete)
+    const jsonLdData = await this.extractJsonLd(page);
+    if (jsonLdData) {
+      this.logger.info('Using JSON-LD structured data for extraction');
+      Object.assign(productData, jsonLdData);
+      productData._extractionMetadata.primary_strategy = 'jsonLd';
+      productData._extractionMetadata.jsonld_fields = Object.keys(jsonLdData).filter(key => jsonLdData[key] !== null);
+    }
+
+    // Strategy 3: Fill any missing fields with DOM fallback methods
     if (!productData.title) {
-      productData.title = await this.extractTitle(page, platform, availablePatterns);
+      productData.title = await this.extractTitleFallback(page);
+      if (!productData.title) {
+        productData.title = await this.extractTitle(page, platform, availablePatterns);
+      }
     }
     if (!productData.price) {
-      productData.price = await this.extractPrice(page, platform, availablePatterns);
+      productData.price = await this.extractPriceFallback(page);
+      if (!productData.price) {
+        productData.price = await this.extractPrice(page, platform, availablePatterns);
+      }
+    }
+    if (!productData.brand) {
+      productData.brand = await this.extractBrandFallback(page);
+      if (!productData.brand) {
+        productData.brand = await this.extractBrand(page, platform, availablePatterns);
+      }
     }
     if (!productData.original_price) {
       productData.original_price = await this.extractOriginalPrice(page, platform, availablePatterns);
@@ -559,24 +633,7 @@ class UniversalProductExtractor {
       });
     }
 
-    // If no stored patterns work, use intelligence services to generate fallbacks
-    if (strategies.length === 0 && this.fallbackSystem?.generateAllFallbackStrategies) {
-      const fallbackStrategies = await this.fallbackSystem.generateAllFallbackStrategies(page, {
-        elementType: 'title',
-        context: 'product_page',
-        platform: platform,
-      });
-
-      if (fallbackStrategies && Array.isArray(fallbackStrategies)) {
-        fallbackStrategies.forEach(fallback => {
-          strategies.push({
-            name: 'fallback',
-            selector: fallback.selector || fallback,
-            confidence: fallback.confidence || 0.5,
-          });
-        });
-      }
-    }
+    // Fallback system was removed - rely on common patterns below
 
     // Add common patterns as last resort
     strategies.push(
@@ -1378,6 +1435,242 @@ class UniversalProductExtractor {
     } catch (e) {
       return null;
     }
+  }
+
+  /**
+   * Try HTTP-first extraction before browser-based extraction
+   * Returns null if HTTP extraction should be skipped
+   */
+  async tryHTTPFirst(url) {
+    try {
+      return await this.httpExtractor.extract(url);
+    } catch (error) {
+      this.logger.debug(`HTTP extraction error for ${url}:`, error.message);
+      return { ok: false, reason: 'http_error', errorMessage: error.message };
+    }
+  }
+
+  /**
+   * Extract product data from JSON-LD structured data
+   */
+  async extractJsonLd(page) {
+    try {
+      const jsonLdData = await page.evaluate(() => {
+        const scripts = document.querySelectorAll('script[type="application/ld+json"]');
+        
+        for (const script of scripts) {
+          try {
+            const data = JSON.parse(script.textContent);
+            
+            // Look for Product schema
+            if (data['@type'] === 'Product') {
+              return {
+                title: data.name, // Map name → title for consistency
+                name: data.name, // Keep both for backward compatibility
+                price: data.offers ? (Array.isArray(data.offers) ? data.offers[0].price : data.offers.price) : null,
+                currency: data.offers ? (Array.isArray(data.offers) ? data.offers[0].priceCurrency : data.offers.priceCurrency) : null,
+                original_price: data.offers ? (Array.isArray(data.offers) ? data.offers[0].highPrice : data.offers.highPrice) : null,
+                description: data.description,
+                brand: data.brand ? (data.brand.name || data.brand) : null,
+                images: data.image ? (Array.isArray(data.image) ? data.image.map(img => ({ url: img, type: 'product' })) : [{ url: data.image, type: 'product' }]) : null,
+                availability: data.offers ? (Array.isArray(data.offers) ? data.offers[0].availability : data.offers.availability) : null,
+                sku: data.sku,
+                gtin: data.gtin, // Global Trade Item Number
+                mpn: data.mpn, // Manufacturer Part Number
+                categories: data.category ? (Array.isArray(data.category) ? data.category : [data.category]) : null,
+                reviews: data.aggregateRating ? {
+                  average_rating: data.aggregateRating.ratingValue,
+                  review_count: data.aggregateRating.reviewCount,
+                  best_rating: data.aggregateRating.bestRating,
+                  worst_rating: data.aggregateRating.worstRating
+                } : null,
+                // Extract product variants from offers array
+                variants: Array.isArray(data.offers) && data.offers.length > 1 ? data.offers.map((offer, index) => ({
+                  variant_id: offer.sku || offer.gtin || offer.mpn || `variant_${index}`,
+                  price: offer.price,
+                  currency: offer.priceCurrency,
+                  availability: offer.availability,
+                  sku: offer.sku,
+                  // Try to extract variant properties from offer name or additionalProperty
+                  properties: offer.additionalProperty ? offer.additionalProperty.reduce((props, prop) => {
+                    props[prop.name] = prop.value;
+                    return props;
+                  }, {}) : null
+                })) : null,
+                // Extract rich product data
+                model: data.model,
+                manufacturer: data.manufacturer ? (data.manufacturer.name || data.manufacturer) : null,
+                product_id: data.productID,
+                // Additional metadata
+                extractionMethod: 'jsonLd',
+                extractedAt: new Date().toISOString()
+              };
+            }
+          } catch (e) {
+            // Skip malformed JSON-LD scripts
+            continue;
+          }
+        }
+        
+        return null;
+      });
+
+      if (jsonLdData) {
+        // Normalize price to cents if it exists
+        if (jsonLdData.price) {
+          jsonLdData.price = Math.round(parseFloat(jsonLdData.price) * 100);
+        }
+        if (jsonLdData.original_price) {
+          jsonLdData.original_price = Math.round(parseFloat(jsonLdData.original_price) * 100);
+        }
+        
+        // Normalize variant prices to cents
+        if (jsonLdData.variants) {
+          jsonLdData.variants = jsonLdData.variants.map(variant => ({
+            ...variant,
+            price: variant.price ? Math.round(parseFloat(variant.price) * 100) : null
+          }));
+        }
+
+        // Normalize availability
+        if (jsonLdData.availability) {
+          const availability = jsonLdData.availability.toLowerCase();
+          if (availability.includes('instock')) {
+            jsonLdData.availability = 'in_stock';
+          } else if (availability.includes('outofstock')) {
+            jsonLdData.availability = 'out_of_stock';
+          } else {
+            jsonLdData.availability = 'unknown';
+          }
+        }
+
+        // Use name as title for consistency
+        if (jsonLdData.name) {
+          jsonLdData.title = jsonLdData.name;
+          delete jsonLdData.name;
+        }
+
+        this.logger.info('Successfully extracted JSON-LD product data', {
+          fields: Object.keys(jsonLdData).filter(key => jsonLdData[key] !== null),
+          title: jsonLdData.title?.substring(0, 50),
+          price: jsonLdData.price,
+          brand: jsonLdData.brand
+        });
+
+        return jsonLdData;
+      }
+
+      return null;
+    } catch (error) {
+      this.logger.warn('Failed to extract JSON-LD data:', error.message);
+      return null;
+    }
+  }
+
+  /**
+   * DOM fallback extraction methods for when JSON-LD fails
+   */
+  async extractTitleFallback(page) {
+    const selectors = [
+      'h1.product-title, h1[class*="product-title"]',
+      'h1.product-name, h1[class*="product-name"]', 
+      '.product-title, .product-name',
+      '[data-product-title]',
+      '[itemprop="name"]',
+      'h1',
+      'meta[property="og:title"]'
+    ];
+
+    for (const selector of selectors) {
+      try {
+        let title;
+        if (selector.includes('meta')) {
+          title = await page.$eval(selector, el => el.getAttribute('content'));
+        } else {
+          title = await page.$eval(selector, el => el.textContent?.trim());
+        }
+        
+        if (title && title.length > 2) {
+          this.logger.debug(`Extracted title using fallback selector: ${selector}`);
+          return title;
+        }
+      } catch (e) {
+        // Try next selector
+      }
+    }
+
+    // Last resort: page title
+    return await page.title();
+  }
+
+  async extractBrandFallback(page) {
+    const selectors = [
+      '[itemprop="brand"] [itemprop="name"]',
+      '[itemprop="brand"]',
+      '.product-brand, .brand-name',
+      '.breadcrumb a:first-child, .breadcrumbs a:first-child',
+      'meta[property="product:brand"]',
+      '[data-brand]'
+    ];
+
+    for (const selector of selectors) {
+      try {
+        let brand;
+        if (selector.includes('meta')) {
+          brand = await page.$eval(selector, el => el.getAttribute('content'));
+        } else {
+          brand = await page.$eval(selector, el => el.textContent?.trim());
+        }
+        
+        if (brand && brand.length > 1 && brand.toLowerCase() !== 'home') {
+          this.logger.debug(`Extracted brand using fallback selector: ${selector}`);
+          return brand;
+        }
+      } catch (e) {
+        // Try next selector
+      }
+    }
+
+    return null;
+  }
+
+  async extractPriceFallback(page) {
+    const selectors = [
+      '.price:not(.old-price):not(.was-price)',
+      '.product-price .price',
+      '.current-price, .sale-price',
+      '[data-price]',
+      '[itemprop="price"]',
+      '.price-now',
+      'meta[property="product:price:amount"]'
+    ];
+
+    for (const selector of selectors) {
+      try {
+        let priceText;
+        if (selector.includes('meta')) {
+          priceText = await page.$eval(selector, el => el.getAttribute('content'));
+        } else {
+          priceText = await page.$eval(selector, el => el.textContent?.trim());
+        }
+        
+        if (priceText) {
+          // Extract numeric price
+          const match = priceText.match(/[\d,]+\.?\d*/);
+          if (match) {
+            const price = parseFloat(match[0].replace(/,/g, ''));
+            if (!isNaN(price) && price > 0) {
+              this.logger.debug(`Extracted price using fallback selector: ${selector}`);
+              return Math.round(price * 100); // Convert to cents
+            }
+          }
+        }
+      } catch (e) {
+        // Try next selector
+      }
+    }
+
+    return null;
   }
 
   /**

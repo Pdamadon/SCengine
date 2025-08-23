@@ -3,10 +3,10 @@
  * Used for Cloudflare-protected sites that block datacenter/ISP proxies
  */
 
-const BrowserManager = require('./BrowserManager');
+const BrowserManagerBrowserless = require('./BrowserManagerBrowserless');
 const { logger } = require('../utils/logger');
 
-class ProxyBrowserManagerResidential extends BrowserManager {
+class ProxyBrowserManagerResidential extends BrowserManagerBrowserless {
   constructor(options = {}) {
     super(options);
     this.maxRetries = options.maxRetries || 2;

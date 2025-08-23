@@ -110,6 +110,11 @@ const collections = {
   // Service collections
   serviceProviders: 'service_providers',
   availableAppointments: 'available_appointments',
+  
+  // Checkpoint collections (Week 1 - checkpoint/resume system)
+  checkpoints: 'checkpoints',
+  userQueries: 'user_queries',
+  querySessions: 'query_sessions',
 };
 
 // Validation function to check connection string

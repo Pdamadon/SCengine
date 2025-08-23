@@ -47,7 +47,11 @@ router.post('/scrape', async (req, res) => {
       enableCollection: options.enableCollection !== false,  // Default true
       enableExtraction: options.enableExtraction !== false,  // Default true
       maxProducts: options.maxProducts || 10,
-      timeout: options.timeout || 60000
+      timeout: options.timeout || 60000,
+      // Filter options for FilterBasedExplorationStrategy
+      enableFilters: options.enableFilters,
+      maxFilters: options.maxFilters,
+      features: options.features  // For canonicalizedDedup and filterExclusions
     });
 
     res.json({

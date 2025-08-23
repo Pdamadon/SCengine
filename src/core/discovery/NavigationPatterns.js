@@ -16,7 +16,7 @@ const NAVIGATION_PATTERNS = [
     description: 'Shopify-style dropdown navigation (glasswingshop.com)',
     selectors: {
       container: 'li.dropdown-toggle',
-      trigger: 'p.dropdown-title', 
+      trigger: 'p.dropdown-title a, p.dropdown-title', // Look for link within title or title itself
       dropdown: '.dropdown-content'
     },
     interactionType: 'hover',

@@ -1,0 +1,222 @@
+{
+  "metadata": {
+    "generated_at": "2024-01-20T10:00:00Z",
+    "scope": ["src/core/discovery/**", "src/core/collection/**"],
+    "primary_flow": "navigation_extraction_to_product_collection"
+  },
+  "entry_points": [
+    {
+      "name": "NavigationMapper.mapSiteTaxonomy",
+      "input": {
+        "type": "string",
+        "schema": "URL",
+        "example": "https://example.com"
+      },
+      "output": {
+        "type": "object",
+        "schema": {
+          "main_sections": "array",
+          "totalNavigationItems": "number",
+          "metadata": "object"
+        }
+      }
+    },
+    {
+      "name": "NavigationMapperBrowserless.extractNavigation",
+      "input": {
+        "type": "string",
+        "schema": "URL",
+        "options": "object"
+      },
+      "output": {
+        "type": "object",
+        "schema": {
+          "navigation": "array",
+          "success": "boolean",
+          "patternUsed": "string"
+        }
+      }
+    }
+  ],
+  "data_transformations": [
+    {
+      "stage": "url_to_page",
+      "from": "URL string",
+      "to": "Playwright Page instance",
+      "processor": "BrowserManager.createBrowser",
+      "validation": "URL validation, domain normalization"
+    },
+    {
+      "stage": "page_to_raw_navigation",
+      "from": "Playwright Page",
+      "to": "Raw navigation elements",
+      "processor": "NavigationPatternExtractor.extractUsingPattern",
+      "validation": "Pattern matching, selector validation"
+    },
+    {
+      "stage": "raw_to_structured_navigation",
+      "from": "Raw navigation elements",
+      "to": "Structured navigation hierarchy",
+      "processor": "NavigationPatternStrategy.convertToStrategyResult",
+      "validation": "Deduplication, URL filtering"
+    },
+    {
+      "stage": "navigation_to_taxonomy",
+      "from": "Navigation hierarchy",
+      "to": "Classified taxonomy",
+      "processor": "TaxonomyDiscoveryProcessor.processNavigationData",
+      "validation": "Category classification, priority scoring"
+    },
+    {
+      "stage": "taxonomy_to_product_discovery",
+      "from": "Classified categories",
+      "to": "Product catalog detection",
+      "processor": "ProductCatalogStrategy.analyzePageForProducts",
+      "validation": "Product density threshold, URL patterns"
+    },
+    {
+      "stage": "product_page_to_urls",
+      "from": "Product catalog page",
+      "to": "Product URL collection",
+      "processor": "ProductCatalogStrategy.collectProductURLs",
+      "validation": "URL deduplication, product patterns"
+    },
+    {
+      "stage": "single_page_to_paginated",
+      "from": "Single page products",
+      "to": "All paginated products",
+      "processor": "ProductPaginationStrategy.handlePagination",
+      "validation": "Page limits, duplicate detection"
+    }
+  ],
+  "error_propagation": {
+    "patterns": [
+      {
+        "type": "try_catch_return",
+        "description": "Most functions catch errors and return empty/default results",
+        "example": "NavigationMapper.extractNavigationIntelligence"
+      },
+      {
+        "type": "fallback_strategies",
+        "description": "Multiple strategy attempts with fallbacks",
+        "example": "RedundantNavigationExtractor.extractNavigationWithFallbacks"
+      },
+      {
+        "type": "timeout_protection",
+        "description": "Race conditions with timeout promises",
+        "example": "NavigationPatternExtractor.extractDropdownContent"
+      }
+    ],
+    "retry_mechanisms": [
+      {
+        "component": "NavigationMapperBrowserless",
+        "mechanism": "maxNavigationAttempts",
+        "default_retries": 3
+      },
+      {
+        "component": "RedundantNavigationExtractor",
+        "mechanism": "pattern fallbacks",
+        "max_patterns": 8
+      }
+    ]
+  },
+  "state_management": {
+    "in_memory": [
+      {
+        "component": "NavigationMapper",
+        "state": "isHeadless, headlessReason, strategies",
+        "lifecycle": "per_instance"
+      },
+      {
+        "component": "SimpleSelectorCache",
+        "state": "Map of domain->selector",
+        "lifecycle": "singleton"
+      },
+      {
+        "component": "ProductPaginationStrategy",
+        "state": "stats object",
+        "lifecycle": "per_instance"
+      }
+    ],
+    "external_state": [
+      {
+        "component": "ProductCatalogCache",
+        "storage": "Redis/MongoDB",
+        "lifecycle": "persistent"
+      },
+      {
+        "component": "WorldModel",
+        "storage": "MongoDB",
+        "lifecycle": "persistent"
+      }
+    ]
+  },
+  "async_patterns": [
+    {
+      "pattern": "async/await",
+      "usage": "All main functions",
+      "error_handling": "try/catch blocks"
+    },
+    {
+      "pattern": "Promise.race",
+      "usage": "Timeout protection",
+      "example": "NavigationPatternExtractor timeout handling"
+    },
+    {
+      "pattern": "Sequential processing",
+      "usage": "Dropdown extraction, pagination",
+      "reason": "Avoid overwhelming sites"
+    }
+  ],
+  "validation_points": [
+    {
+      "location": "NavigationMapper.initializeForSite",
+      "validates": "Domain configuration, headless mode compatibility"
+    },
+    {
+      "location": "ProductCatalogStrategy.analyzePageForProducts",
+      "validates": "Product density threshold, URL patterns"
+    },
+    {
+      "location": "NavigationPatternExtractor.extractMainNavigation",
+      "validates": "Selector existence, element visibility"
+    },
+    {
+      "location": "ProductPaginationStrategy.isProductUrl",
+      "validates": "URL patterns, exclusion filters"
+    }
+  ],
+  "data_shapes": {
+    "NavigationItem": {
+      "name": "string",
+      "url": "string|null",
+      "type": "string",
+      "children": "array<NavigationItem>",
+      "metadata": "object"
+    },
+    "ExtractionResult": {
+      "success": "boolean",
+      "pattern": "string",
+      "mainNavigation": "object",
+      "dropdownExtraction": "object",
+      "summary": "object"
+    },
+    "ProductItem": {
+      "url": "string",
+      "title": "string",
+      "price": "string|null",
+      "image": "string|null",
+      "availability": "string",
+      "categoryUrl": "string",
+      "categoryName": "string"
+    },
+    "TaxonomyResult": {
+      "productCategories": "array",
+      "brandCollections": "array",
+      "genderSections": "array",
+      "featuredCollections": "array",
+      "utilityPages": "array",
+      "metadata": "object"
+    }
+  }
+}

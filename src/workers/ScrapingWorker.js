@@ -1,12 +1,15 @@
 /**
  * Scraping Worker Service
- * Processes scraping jobs from Redis queue using PipelineOrchestrator
+ * Processes scraping jobs from Redis queue using the unified PipelineOrchestrator
+ * Supports feature flag for gradual migration from legacy architecture
  */
 
 const { queueManager } = require('../services/QueueManager');
 const { logger } = require('../utils/logger');
 const { metrics } = require('../utils/metrics');
 const PipelineOrchestrator = require('../core/PipelineOrchestrator');
+const ScraperCoordinator = require('../core/ScraperCoordinator'); // Original orchestrator for fallback
+const CheckpointManager = require('../core/checkpoint/CheckpointManager');
 const { performance } = require('perf_hooks');
 
 class ScrapingWorker {
@@ -17,11 +20,39 @@ class ScrapingWorker {
     this.isProcessing = false;
     this.activeJobs = new Map();
 
-    // Initialize pipeline orchestrator
-    this.pipelineOrchestrator = new PipelineOrchestrator(logger, {
-      persistResults: true,
-      maxConcurrency: concurrency
-    });
+    // Feature flag for orchestrator selection
+    this.usePipelineOrchestrator = process.env.USE_PIPELINE_ORCHESTRATOR !== 'false'; // Default to true
+    
+    // Initialize orchestrators
+    if (this.usePipelineOrchestrator) {
+      logger.info('ScrapingWorker: Using unified PipelineOrchestrator (new architecture)');
+      this.pipelineOrchestrator = new PipelineOrchestrator({
+        logger: logger,
+        saveToDatabase: true,
+        parallelCategories: concurrency,
+        maxPagesPerCategory: 20,
+        maxProductsPerCategory: 500,
+        extractVariants: true, // Enable variant extraction
+        enableFilters: true,   // Enable filter detection
+        maxFilters: 20,
+        captureFilterCombinations: false
+      });
+      
+      // Initialize CheckpointManager for resumable operations
+      this.checkpointManager = new CheckpointManager(logger, mongoClient);
+    } else {
+      logger.info('ScrapingWorker: Using original ScraperCoordinator (fallback)');
+      // Keep old ScraperCoordinator for fallback
+      this.scraperCoordinator = new ScraperCoordinator({
+        logger: logger,
+        saveToDatabase: true,
+        parallelCategories: concurrency,
+        maxPagesPerCategory: 20,
+        maxProductsPerCategory: 500
+      });
+      // Also initialize CheckpointManager for old coordinator
+      this.checkpointManager = new CheckpointManager(logger, mongoClient);
+    }
 
     // Database collections
     this.jobsCollection = 'scraping_jobs';
@@ -39,15 +70,37 @@ class ScrapingWorker {
         await queueManager.initialize();
       }
 
-      // Initialize pipeline orchestrator
-      await this.pipelineOrchestrator.initialize();
+      // Initialize orchestrator based on feature flag
+      if (this.usePipelineOrchestrator) {
+        // PipelineOrchestrator doesn't need explicit initialization
+        // But initialize CheckpointManager if available
+        if (this.checkpointManager) {
+          await this.checkpointManager.initialize();
+        }
+        logger.info('ScrapingWorker: PipelineOrchestrator and CheckpointManager ready');
+      } else {
+        // Initialize CheckpointManager for fallback ScraperCoordinator
+        if (this.checkpointManager) {
+          await this.checkpointManager.initialize();
+        }
+        logger.info('ScrapingWorker: ScraperCoordinator (fallback) and CheckpointManager ready');
+      }
 
       this.isProcessing = true;
 
-      // Start processing jobs
-      queueManager.scrapingQueue.process(this.concurrency, async (job) => {
-        return this.processJob(job);
-      });
+      // Start processing jobs - register named processors for each job type
+      const scrapingQueue = queueManager.getQueue('scraping');
+      
+      // Register processors for each supported job type
+      const jobTypes = ['full_site', 'category', 'category_search', 'product', 'search'];
+      
+      for (const jobType of jobTypes) {
+        scrapingQueue.process(jobType, this.concurrency, async (job) => {
+          logger.info(`ScrapingWorker: Processing ${jobType} job`, { jobId: job.id });
+          return this.processJob(job);
+        });
+        logger.info(`ScrapingWorker: Registered processor for job type: ${jobType}`);
+      }
 
       logger.info(`ScrapingWorker: Started with concurrency ${this.concurrency}`);
 
@@ -164,6 +217,7 @@ class ScrapingWorker {
 
   /**
    * Execute pipeline orchestrator for the job
+   * Routes to either ScraperCoordinator or PipelineOrchestrator based on feature flag
    */
   async executePipeline(job, progressCallback) {
     const jobData = job.data;
@@ -172,6 +226,155 @@ class ScrapingWorker {
     try {
       progressCallback(10, 'Starting pipeline execution...');
 
+      if (this.usePipelineOrchestrator) {
+        // Use unified PipelineOrchestrator with CheckpointManager support
+        return await this.executeWithPipelineOrchestrator(job, progressCallback);
+      } else {
+        // Use legacy orchestrator
+        return await this.executeWithLegacyOrchestrator(job, progressCallback);
+      }
+
+    } catch (error) {
+      logger.error('Pipeline execution failed in worker', {
+        jobId: job.id,
+        targetUrl: targetUrl,
+        orchestrator: this.usePipelineOrchestrator ? 'PipelineOrchestrator' : 'LegacyPipelineOrchestrator',
+        error: error.message
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Execute using unified PipelineOrchestrator with CheckpointManager integration
+   */
+  async executeWithPipelineOrchestrator(job, progressCallback) {
+    const jobData = job.data;
+    const targetUrl = jobData.target_url;
+
+    try {
+      // Check for existing checkpoint for resumable operations
+      let checkpoint = null;
+      if (this.checkpointManager && this.checkpointManager.isEnabled()) {
+        const resumePoint = await this.checkpointManager.getResumePoint(job.id);
+        if (resumePoint.canResume) {
+          checkpoint = resumePoint.checkpoint;
+          progressCallback(15, `Resuming from checkpoint at step ${resumePoint.startStep}...`);
+          logger.info('ScrapingWorker: Resuming job from checkpoint', {
+            jobId: job.id,
+            checkpointStep: resumePoint.startStep,
+            checkpointId: checkpoint.checkpoint_id
+          });
+        }
+      }
+
+      // Create checkpoint for new jobs
+      if (!checkpoint && this.checkpointManager && this.checkpointManager.isEnabled()) {
+        progressCallback(15, 'Creating checkpoint for resumable execution...');
+        checkpoint = await this.checkpointManager.createCheckpoint(
+          job.id,
+          new URL(targetUrl).hostname,
+          {
+            scraping_type: jobData.scraping_type,
+            max_pages: jobData.max_pages || 100,
+            started_at: new Date()
+          }
+        );
+        logger.info('ScrapingWorker: Created checkpoint for job', {
+          jobId: job.id,
+          checkpointId: checkpoint.checkpoint_id
+        });
+      }
+
+      progressCallback(25, 'Executing PipelineOrchestrator pipeline...');
+
+      // Execute PipelineOrchestrator with progress tracking and scraping type
+      const orchestratorResult = await this.pipelineOrchestrator.execute(targetUrl, {
+        scraping_type: jobData.scraping_type || 'full_site',
+        max_pages: jobData.max_pages,
+        extractVariants: true
+      });
+
+      // Save progress to checkpoint after completion
+      if (checkpoint && this.checkpointManager) {
+        await this.checkpointManager.saveProgress(
+          checkpoint.checkpoint_id,
+          5, // Final step (now 5 steps with filter detection)
+          {
+            navigation: orchestratorResult.initialNavigation || orchestratorResult.navigation,
+            hierarchy: orchestratorResult.categoryHierarchy || orchestratorResult.hierarchy,
+            filters: orchestratorResult.filterResults,
+            products: orchestratorResult.productResults || orchestratorResult.products,
+            completed_at: new Date()
+          },
+          true // Step complete
+        );
+      }
+
+      progressCallback(80, 'PipelineOrchestrator execution completed');
+
+      // Transform PipelineOrchestrator result to expected worker format
+      const totalProducts = this.extractTotalProducts(orchestratorResult);
+
+      const result = {
+        success: orchestratorResult.success !== false,
+        jobId: job.id,
+        targetUrl: targetUrl,
+        scrapingType: jobData.scraping_type,
+        timestamp: new Date(),
+        
+        // PipelineOrchestrator results mapped to expected format
+        navigationResults: this.extractNavigationResults(orchestratorResult),
+        collectionResults: this.extractCollectionResults(orchestratorResult),
+        extractionResults: this.extractProductResults(orchestratorResult),
+        
+        // Summary for compatibility
+        summary: {
+          total_items: totalProducts,
+          navigation_sections: this.extractNavigationResults(orchestratorResult).totalNavigationItems || 0,
+          product_categories: this.extractCollectionResults(orchestratorResult).totalCategories || 0,
+          product_urls: this.extractCollectionResults(orchestratorResult).totalFilterProducts || 0,
+          extracted_products: totalProducts,
+          duration: orchestratorResult.duration || 0,
+          processing_time: orchestratorResult.duration || 0,
+          orchestrator: 'PipelineOrchestrator',
+          scraping_type: jobData.scraping_type,
+          status: 'completed'
+        }
+      };
+      
+      return result;
+      
+    } catch (error) {
+      // Mark checkpoint as failed if it exists
+      if (checkpoint && this.checkpointManager) {
+        try {
+          await this.checkpointManager.markFailed(checkpoint.checkpoint_id, error);
+        } catch (checkpointError) {
+          logger.warn('Failed to mark checkpoint as failed', { 
+            checkpointId: checkpoint.checkpoint_id,
+            error: checkpointError.message 
+          });
+        }
+      }
+      
+      logger.error('PipelineOrchestrator execution failed', {
+        jobId: job.id,
+        targetUrl: targetUrl,
+        error: error.message
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Execute using legacy PipelineOrchestrator
+   */
+  async executeWithPipelineOrchestrator(job, progressCallback) {
+    const jobData = job.data;
+    const targetUrl = jobData.target_url;
+
+    try {
       // Configure pipeline options based on job data
       const pipelineOptions = {
         jobId: job.id,
@@ -227,6 +430,161 @@ class ScrapingWorker {
       });
       throw error;
     }
+  }
+
+  /**
+   * Execute using legacy PipelineOrchestrator (fallback)
+   */
+  async executeWithLegacyOrchestrator(job, progressCallback) {
+    const jobData = job.data;
+    const targetUrl = jobData.target_url;
+
+    try {
+      progressCallback(25, 'Executing legacy PipelineOrchestrator...');
+      
+      if (!this.legacyOrchestrator || !this.legacyOrchestrator.executePipeline) {
+        throw new Error('Legacy orchestrator not available');
+      }
+      
+      const result = await this.legacyOrchestrator.executePipeline(targetUrl, {
+        jobId: job.id,
+        max_pages: jobData.max_pages
+      });
+      
+      progressCallback(80, 'Legacy orchestrator execution completed');
+      
+      return {
+        success: result.status === 'completed',
+        jobId: job.id,
+        targetUrl: targetUrl,
+        scrapingType: jobData.scraping_type,
+        timestamp: new Date(),
+        navigationResults: result.navigation || {},
+        collectionResults: result.collection || {},
+        extractionResults: result.extraction || {},
+        summary: {
+          total_items: result.extraction?.products?.length || 0,
+          processing_time: result.duration || 0
+        }
+      };
+      
+    } catch (error) {
+      logger.error('Legacy orchestrator execution failed', {
+        jobId: job.id,
+        targetUrl: targetUrl,
+        error: error.message
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Extract total products from orchestrator result
+   */
+  extractTotalProducts(result) {
+    // Handle different result formats from different scraping types
+    if (result.scraping_type === 'product') {
+      return result.product ? 1 : 0;
+    }
+    
+    if (result.productResults) {
+      // Full pipeline format
+      return result.productResults.reduce((sum, categoryResult) => 
+        sum + (categoryResult.products?.length || 0), 0
+      );
+    }
+    
+    if (result.products) {
+      // Category scraping format
+      return Array.isArray(result.products) ? result.products.length : 0;
+    }
+    
+    return 0;
+  }
+
+  /**
+   * Extract navigation results from orchestrator result
+   */
+  extractNavigationResults(result) {
+    if (result.navigation) {
+      return {
+        main_sections: result.navigation.main_sections || [],
+        strategy: result.navigation.strategy,
+        totalNavigationItems: result.navigation.totalNavigationItems || 0
+      };
+    }
+    
+    if (result.initialNavigation) {
+      return {
+        main_sections: result.initialNavigation.main_sections || [],
+        strategy: result.initialNavigation.strategy,
+        totalNavigationItems: result.initialNavigation.totalNavigationItems || 0
+      };
+    }
+    
+    return { main_sections: [], strategy: 'none', totalNavigationItems: 0 };
+  }
+
+  /**
+   * Extract collection results from orchestrator result
+   */
+  extractCollectionResults(result) {
+    if (result.hierarchy) {
+      return {
+        categories: result.hierarchy.categories || [],
+        totalCategories: result.hierarchy.totalCategories || 0,
+        filterEnhanced: result.hierarchy.filterEnhanced || false,
+        totalFilterProducts: result.hierarchy.totalFilterProducts || 0
+      };
+    }
+    
+    if (result.categoryHierarchy) {
+      return {
+        categories: result.categoryHierarchy.categories || [],
+        totalCategories: result.categoryHierarchy.totalCategories || 0,
+        filterEnhanced: result.categoryHierarchy.filterEnhanced || false,
+        totalFilterProducts: result.categoryHierarchy.totalFilterProducts || 0
+      };
+    }
+    
+    if (result.category) {
+      return {
+        categories: [result.category],
+        totalCategories: 1
+      };
+    }
+    
+    return { categories: [], totalCategories: 0 };
+  }
+
+  /**
+   * Extract product results from orchestrator result
+   */
+  extractProductResults(result) {
+    const totalProducts = this.extractTotalProducts(result);
+    
+    if (result.scraping_type === 'product') {
+      return {
+        products: result.product ? [result.product] : [],
+        totalProducts: totalProducts
+      };
+    }
+    
+    if (result.productResults) {
+      return {
+        products: result.productResults,
+        totalProducts: totalProducts
+      };
+    }
+    
+    if (result.products) {
+      return {
+        products: result.products,
+        totalProducts: totalProducts
+      };
+    }
+    
+    return { products: [], totalProducts: 0 };
   }
 
   /**

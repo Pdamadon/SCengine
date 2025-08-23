@@ -58,6 +58,12 @@ class RedisCacheManager {
         ttl: 1 * 60 * 60, // 1 hour
         description: 'Recent discoveries cache',
       },
+      checkpoint: {
+        prefix: 'cp',
+        ttl: 48 * 60 * 60, // 48 hours
+        description: 'Pipeline checkpoint state',
+        noFallback: true, // Prevent memory fallback for checkpoints
+      },
     };
 
     // Connection statistics
@@ -101,7 +107,6 @@ class RedisCacheManager {
       const redisConfig = {
         retryDelayOnFailover: 100,
         enableReadyCheck: false,
-        maxRetriesPerRequest: null,
         lazyConnect: true,
         // Optimizations for high concurrency
         maxRetriesPerRequest: 3,
@@ -124,6 +129,9 @@ class RedisCacheManager {
           ...redisConfig,
         });
       }
+
+      // Connect explicitly since we're using lazyConnect
+      await this.redis.connect();
 
       // Test connection
       await this.redis.ping();
@@ -196,6 +204,13 @@ class RedisCacheManager {
         await this.redis.setex(key, ttl, serializedValue);
         this.logger.debug(`Cached ${namespace} data for ${domain}${identifier ? ':' + identifier : ''} (TTL: ${ttl}s)`);
       } else {
+        // Check if namespace allows memory fallback
+        const config = this.namespaceConfig[namespace];
+        if (config.noFallback) {
+          this.logger.warn(`Redis unavailable and memory fallback disabled for ${namespace}`);
+          return false;
+        }
+        
         // Memory cache fallback
         this.memoryCache.set(key, {
           value: serializedValue,
@@ -226,12 +241,21 @@ class RedisCacheManager {
 
       if (this.connected && this.redis) {
         cached = await this.redis.get(key);
-      } else if (this.memoryCache.has(key)) {
-        const entry = this.memoryCache.get(key);
-        if (entry.expires > Date.now()) {
-          cached = entry.value;
-        } else {
-          this.memoryCache.delete(key);
+      } else {
+        // Check if namespace allows memory fallback
+        const config = this.namespaceConfig[namespace];
+        if (config.noFallback) {
+          this.logger.warn(`Redis unavailable and memory fallback disabled for ${namespace}`);
+          return null;
+        }
+        
+        if (this.memoryCache.has(key)) {
+          const entry = this.memoryCache.get(key);
+          if (entry.expires > Date.now()) {
+            cached = entry.value;
+          } else {
+            this.memoryCache.delete(key);
+          }
         }
       }
 
@@ -377,6 +401,40 @@ class RedisCacheManager {
         size: this.memoryCache.size,
       },
     };
+  }
+
+  /**
+   * Get namespace configuration (for testing and debugging)
+   */
+  get namespaces() {
+    return this.namespaceConfig;
+  }
+  
+  /**
+   * Check if Redis is connected
+   */
+  async isConnected() {
+    return this.connected;
+  }
+  
+  /**
+   * Check if a key exists in cache
+   */
+  async exists(namespace, domain, identifier = null) {
+    const key = this.generateKey(namespace, domain, identifier);
+    
+    try {
+      if (this.connected && this.redis) {
+        const exists = await this.redis.exists(key);
+        return exists === 1;
+      } else {
+        // Check memory cache
+        return this.memoryCache.has(key);
+      }
+    } catch (error) {
+      this.logger.error(`Failed to check existence for ${namespace}:${domain}`, error);
+      return false;
+    }
   }
 
   /**

@@ -14,7 +14,8 @@ const { performance } = require('perf_hooks');
 class MasterOrchestrator {
   constructor(logger) {
     this.logger = logger || require('../utils/logger').logger;
-    this.pipeline = new PipelineOrchestrator(this.logger, {
+    this.pipeline = new PipelineOrchestrator({
+      logger: this.logger,
       enableNavigation: true,
       enableCollection: true,
       enableExtraction: true,
@@ -77,8 +78,8 @@ class MasterOrchestrator {
     try {
       this.logger.info('Initializing MasterOrchestrator...');
       
-      // Initialize the underlying pipeline
-      await this.pipeline.initialize();
+      // PipelineOrchestrator is fully initialized in its constructor
+      // No additional initialization needed
       
       this.initialized = true;
       this.logger.info('MasterOrchestrator initialized successfully');

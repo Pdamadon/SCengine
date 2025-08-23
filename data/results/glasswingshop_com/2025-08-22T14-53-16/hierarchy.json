@@ -1,0 +1,765 @@
+{
+  "totalCategories": 0,
+  "maxDepth": 0,
+  "leafCategories": 0,
+  "categoriesWithProducts": 0,
+  "categories": [],
+  "navigationPaths": {
+    "totalSteps": 50,
+    "duration": 57075,
+    "startUrl": "https://glasswingshop.com/collections/unisex",
+    "finalUrl": "https://glasswingshop.com/collections/camiel-fortgens-mens-collection",
+    "path": [
+      {
+        "step": 1,
+        "timestamp": 1755874339867,
+        "elapsed": 896,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/unisex",
+        "from": null,
+        "path": [
+          "Unisex"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:19.867Z"
+        }
+      },
+      {
+        "step": 2,
+        "timestamp": 1755874341026,
+        "elapsed": 2055,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/clothing-collection",
+        "from": null,
+        "path": [
+          "All Clothing"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:21.026Z"
+        }
+      },
+      {
+        "step": 3,
+        "timestamp": 1755874341953,
+        "elapsed": 2982,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/shoe-collection",
+        "from": null,
+        "path": [
+          "All Shoes"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:21.953Z"
+        }
+      },
+      {
+        "step": 4,
+        "timestamp": 1755874342937,
+        "elapsed": 3966,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/sale",
+        "from": null,
+        "path": [
+          "All Sale"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:22.937Z"
+        }
+      },
+      {
+        "step": 5,
+        "timestamp": 1755874343633,
+        "elapsed": 4662,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/7115-by-szeki-1",
+        "from": null,
+        "path": [
+          "7115 by Szeki"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:23.633Z"
+        }
+      },
+      {
+        "step": 6,
+        "timestamp": 1755874344386,
+        "elapsed": 5415,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/ayame-eyewear",
+        "from": null,
+        "path": [
+          "Ayame Eyewear"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:24.386Z"
+        }
+      },
+      {
+        "step": 7,
+        "timestamp": 1755874345218,
+        "elapsed": 6247,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/arpenteur",
+        "from": null,
+        "path": [
+          "Arpenteur"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:25.218Z"
+        }
+      },
+      {
+        "step": 8,
+        "timestamp": 1755874346123,
+        "elapsed": 7152,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/black-crane",
+        "from": null,
+        "path": [
+          "Black Crane"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:26.123Z"
+        }
+      },
+      {
+        "step": 9,
+        "timestamp": 1755874347222,
+        "elapsed": 8251,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/braindead",
+        "from": null,
+        "path": [
+          "Brain Dead"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:27.222Z"
+        }
+      },
+      {
+        "step": 10,
+        "timestamp": 1755874348182,
+        "elapsed": 9211,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/camiel-fortgens",
+        "from": null,
+        "path": [
+          "Camiel Fortgens"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:28.182Z"
+        }
+      },
+      {
+        "step": 11,
+        "timestamp": 1755874349091,
+        "elapsed": 10120,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/cawley",
+        "from": null,
+        "path": [
+          "Cawley"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:29.091Z"
+        }
+      },
+      {
+        "step": 12,
+        "timestamp": 1755874350292,
+        "elapsed": 11321,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/colbo",
+        "from": null,
+        "path": [
+          "Colbo"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:30.292Z"
+        }
+      },
+      {
+        "step": 13,
+        "timestamp": 1755874351570,
+        "elapsed": 12599,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/monica-cordera",
+        "from": null,
+        "path": [
+          "Cordera"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:31.570Z"
+        }
+      },
+      {
+        "step": 14,
+        "timestamp": 1755874352586,
+        "elapsed": 13615,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/engineered-garments",
+        "from": null,
+        "path": [
+          "Engineered Garments"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:32.586Z"
+        }
+      },
+      {
+        "step": 15,
+        "timestamp": 1755874353351,
+        "elapsed": 14380,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/evan-kinori",
+        "from": null,
+        "path": [
+          "Evan Kinori"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:33.351Z"
+        }
+      },
+      {
+        "step": 16,
+        "timestamp": 1755874354271,
+        "elapsed": 15300,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/henrik-vibskov-1",
+        "from": null,
+        "path": [
+          "Henrik Vibskov"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:34.271Z"
+        }
+      },
+      {
+        "step": 17,
+        "timestamp": 1755874355126,
+        "elapsed": 16155,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/hernan-herdez",
+        "from": null,
+        "path": [
+          "Hernán Herdez"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:35.126Z"
+        }
+      },
+      {
+        "step": 18,
+        "timestamp": 1755874355758,
+        "elapsed": 16787,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/history-industry",
+        "from": null,
+        "path": [
+          "History + Industry"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:35.758Z"
+        }
+      },
+      {
+        "step": 19,
+        "timestamp": 1755874357115,
+        "elapsed": 18144,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/illesteva",
+        "from": null,
+        "path": [
+          "Illesteva"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:37.115Z"
+        }
+      },
+      {
+        "step": 20,
+        "timestamp": 1755874358541,
+        "elapsed": 19570,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/jacques-soloviere",
+        "from": null,
+        "path": [
+          "Jacques Solovière"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:38.541Z"
+        }
+      },
+      {
+        "step": 21,
+        "timestamp": 1755874360070,
+        "elapsed": 21099,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/jan-jan-van-essche-collection",
+        "from": null,
+        "path": [
+          "Jan-Jan Van Essche"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:40.070Z"
+        }
+      },
+      {
+        "step": 22,
+        "timestamp": 1755874361381,
+        "elapsed": 22410,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/jesse-kamm",
+        "from": null,
+        "path": [
+          "jesse kamm"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:41.381Z"
+        }
+      },
+      {
+        "step": 23,
+        "timestamp": 1755874362713,
+        "elapsed": 23742,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/kapital",
+        "from": null,
+        "path": [
+          "Kapital"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:42.713Z"
+        }
+      },
+      {
+        "step": 24,
+        "timestamp": 1755874364860,
+        "elapsed": 25889,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/kara-yoo",
+        "from": null,
+        "path": [
+          "Kara Yoo"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:44.860Z"
+        }
+      },
+      {
+        "step": 25,
+        "timestamp": 1755874366451,
+        "elapsed": 27480,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/lady-white-mens",
+        "from": null,
+        "path": [
+          "Lady White Co."
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:46.451Z"
+        }
+      },
+      {
+        "step": 26,
+        "timestamp": 1755874367575,
+        "elapsed": 28604,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/the-la-paz-collection",
+        "from": null,
+        "path": [
+          "La Paz"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:47.575Z"
+        }
+      },
+      {
+        "step": 27,
+        "timestamp": 1755874369290,
+        "elapsed": 30319,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/lauren-manoogian",
+        "from": null,
+        "path": [
+          "Lauren Manoogian"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:49.290Z"
+        }
+      },
+      {
+        "step": 28,
+        "timestamp": 1755874370254,
+        "elapsed": 31283,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/lownn",
+        "from": null,
+        "path": [
+          "Lownn"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:50.254Z"
+        }
+      },
+      {
+        "step": 29,
+        "timestamp": 1755874371433,
+        "elapsed": 32462,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/man-tle-1",
+        "from": null,
+        "path": [
+          "MAN-TLE"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:51.433Z"
+        }
+      },
+      {
+        "step": 30,
+        "timestamp": 1755874372614,
+        "elapsed": 33643,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/merz-b-schwanen",
+        "from": null,
+        "path": [
+          "Merz b Schwanen"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:52.614Z"
+        }
+      },
+      {
+        "step": 31,
+        "timestamp": 1755874373629,
+        "elapsed": 34658,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/mijeong-park",
+        "from": null,
+        "path": [
+          "Mijeong Park"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:53.629Z"
+        }
+      },
+      {
+        "step": 32,
+        "timestamp": 1755874374652,
+        "elapsed": 35681,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/o-project-1",
+        "from": null,
+        "path": [
+          "O-Project"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:54.652Z"
+        }
+      },
+      {
+        "step": 33,
+        "timestamp": 1755874376268,
+        "elapsed": 37297,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/orslow",
+        "from": null,
+        "path": [
+          "orSlow"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:56.268Z"
+        }
+      },
+      {
+        "step": 34,
+        "timestamp": 1755874377272,
+        "elapsed": 38301,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/petrosolaum",
+        "from": null,
+        "path": [
+          "Petrosolaum"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:57.272Z"
+        }
+      },
+      {
+        "step": 35,
+        "timestamp": 1755874378766,
+        "elapsed": 39795,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/postalco",
+        "from": null,
+        "path": [
+          "Postalco"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:52:58.766Z"
+        }
+      },
+      {
+        "step": 36,
+        "timestamp": 1755874380112,
+        "elapsed": 41141,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/sillage",
+        "from": null,
+        "path": [
+          "Sillage"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:53:00.112Z"
+        }
+      },
+      {
+        "step": 37,
+        "timestamp": 1755874381740,
+        "elapsed": 42769,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/stutterheim",
+        "from": null,
+        "path": [
+          "Stutterheim"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:53:01.740Z"
+        }
+      },
+      {
+        "step": 38,
+        "timestamp": 1755874382869,
+        "elapsed": 43898,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/universal-works",
+        "from": null,
+        "path": [
+          "Universal Works"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:53:02.869Z"
+        }
+      },
+      {
+        "step": 39,
+        "timestamp": 1755874384087,
+        "elapsed": 45116,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/yoko-sakamoto-collection",
+        "from": null,
+        "path": [
+          "Yoko Sakamoto"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:53:04.087Z"
+        }
+      },
+      {
+        "step": 40,
+        "timestamp": 1755874384892,
+        "elapsed": 45921,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/zii-ropa",
+        "from": null,
+        "path": [
+          "Zii Ropa"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:53:04.892Z"
+        }
+      },
+      {
+        "step": 41,
+        "timestamp": 1755874385703,
+        "elapsed": 46732,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/tacoma-fuji-records",
+        "from": null,
+        "path": [
+          "Tacoma Fuji Records"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:53:05.703Z"
+        }
+      },
+      {
+        "step": 42,
+        "timestamp": 1755874386919,
+        "elapsed": 47948,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/new-arrivals-for-him",
+        "from": null,
+        "path": [
+          "New Arrivals"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:53:06.919Z"
+        }
+      },
+      {
+        "step": 43,
+        "timestamp": 1755874387706,
+        "elapsed": 48735,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/mens-collection",
+        "from": null,
+        "path": [
+          "Clothing"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:53:07.706Z"
+        }
+      },
+      {
+        "step": 44,
+        "timestamp": 1755874389010,
+        "elapsed": 50039,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/mens-shoes",
+        "from": null,
+        "path": [
+          "Shoes"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:53:09.010Z"
+        }
+      },
+      {
+        "step": 45,
+        "timestamp": 1755874390128,
+        "elapsed": 51157,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/mens-accessories",
+        "from": null,
+        "path": [
+          "Accessories"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:53:10.128Z"
+        }
+      },
+      {
+        "step": 46,
+        "timestamp": 1755874391308,
+        "elapsed": 52337,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/mens-sale",
+        "from": null,
+        "path": [
+          "Sale"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:53:11.308Z"
+        }
+      },
+      {
+        "step": 47,
+        "timestamp": 1755874392625,
+        "elapsed": 53654,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/shop-all-mens",
+        "from": null,
+        "path": [
+          "Shop All"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:53:12.625Z"
+        }
+      },
+      {
+        "step": 48,
+        "timestamp": 1755874393906,
+        "elapsed": 54935,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/7115-by-szeki-mens-collection",
+        "from": null,
+        "path": [
+          "7115 by Szeki"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:53:13.906Z"
+        }
+      },
+      {
+        "step": 49,
+        "timestamp": 1755874394776,
+        "elapsed": 55805,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/brain-dead-mens-collection",
+        "from": null,
+        "path": [
+          "Brain Dead"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:53:14.776Z"
+        }
+      },
+      {
+        "step": 50,
+        "timestamp": 1755874395854,
+        "elapsed": 56883,
+        "action": "goto",
+        "url": "https://glasswingshop.com/collections/camiel-fortgens-mens-collection",
+        "from": null,
+        "path": [
+          "Camiel Fortgens"
+        ],
+        "depth": 0,
+        "metadata": {
+          "recordedAt": "2025-08-22T14:53:15.854Z"
+        }
+      }
+    ]
+  }
+}

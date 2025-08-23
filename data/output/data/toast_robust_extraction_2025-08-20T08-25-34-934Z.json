@@ -1,8 +1,0 @@
-[
-  {
-    "restaurant": "Biang Biang Noodles",
-    "url": "https://www.toasttab.com/local/order/biang-biang-noodles-601-e-pike-st",
-    "error": "page.evaluate: Execution context was destroyed, most likely because of a navigation",
-    "timestamp": "2025-08-20T08:25:34.933Z"
-  }
-]

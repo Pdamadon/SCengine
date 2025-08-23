@@ -80,8 +80,20 @@ async function extractMainNavigation(page, pattern) {
         if (titleElement) {
           const boundingBox = titleElement.getBoundingClientRect();
           
+          // Extract URL from trigger element (if it's a link) or find link inside
+          let href = null;
+          if (titleElement.tagName === 'A') {
+            href = titleElement.href;
+          } else {
+            const linkElement = titleElement.querySelector('a');
+            if (linkElement) {
+              href = linkElement.href;
+            }
+          }
+
           items.push({
             text: titleElement.textContent.trim(),
+            href: href,
             index: index,
             selectors: {
               container: `${selectors.container}:nth-child(${index + 1})`,

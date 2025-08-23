@@ -55,7 +55,7 @@ class TaxonomyDiscoveryProcessor {
    * Process navigation data and create structured taxonomy
    */
   async processNavigationData(navigationData) {
-    if (!navigationData || !navigationData.main_sections) {
+    if (!navigationData || !navigationData.navigation) {
       return this.createEmptyTaxonomy();
     }
 
@@ -67,14 +67,14 @@ class TaxonomyDiscoveryProcessor {
       utilityPages: [],
       unclassified: [],
       metadata: {
-        totalSections: navigationData.main_sections.length,
+        totalSections: navigationData.navigation.length,
         classificationConfidence: 0,
         processingDate: new Date().toISOString()
       }
     };
 
     // Classify each navigation section
-    for (const section of navigationData.main_sections) {
+    for (const section of navigationData.navigation) {
       const classification = this.classifyNavigationSection(section);
       
       switch (classification.type) {
@@ -136,12 +136,16 @@ class TaxonomyDiscoveryProcessor {
                               taxonomy.featuredCollections.length + 
                               taxonomy.utilityPages.length;
     
-    taxonomy.metadata.classificationConfidence = classifiedSections / navigationData.main_sections.length;
+    taxonomy.metadata.classificationConfidence = classifiedSections / navigationData.navigation.length;
 
     // Sort sections by priority within each category
     this.sortSectionsByPriority(taxonomy);
 
-    return taxonomy;
+    // Return both the original navigation data and the taxonomy
+    return {
+      ...navigationData, // preserve original fields like navigation, strategy, etc.
+      taxonomy: taxonomy  // add the classified taxonomy
+    };
   }
 
   /**
