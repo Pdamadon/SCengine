@@ -17,8 +17,8 @@
  */
 
 const { chromium } = require('playwright');
-const { logger } = require('../utils/logger');
-const ProxyConfig = require('../config/ProxyConfig');
+const { logger } = require('../../../utils/logger');
+const ProxyConfig = require('../../../config/ProxyConfig');
 const path = require('path');
 const fs = require('fs');
 const fetch = require('node-fetch');
@@ -39,6 +39,19 @@ class BrowserManagerBrowserless {
       sessionTimeout: config.sessionTimeout || 60000, // 60 seconds (Browserless max)
       maxConcurrentSessions: config.maxConcurrentSessions || 10
     };
+
+    // Site config resolver - injectable for testing, defaults to BrowserSiteConfig
+    this.siteConfigResolver = 
+      typeof config.getBrowserConfigForDomain === 'function'
+        ? config.getBrowserConfigForDomain
+        : (() => {
+            try {
+              const { getBrowserConfigForDomain } = require('../../../config/BrowserSiteConfig');
+              return getBrowserConfigForDomain;
+            } catch {
+              return () => null;
+            }
+          })();
     
     // Session management
     this.activeSessions = new Map();
@@ -200,6 +213,9 @@ class BrowserManagerBrowserless {
    */
   async createBrowser(profile = 'stealth', options = {}) {
     const startTime = Date.now();
+    
+    // Merge site configuration with options
+    options = this.mergeOptionsWithSiteConfig(options);
     
     // Determine if we should use Browserless
     const shouldUseBrowserless = this.shouldUseBrowserless(options);
@@ -639,32 +655,65 @@ class BrowserManagerBrowserless {
   }
 
   /**
+   * Merge site configuration with options (site config fills gaps, options override)
+   */
+  mergeOptionsWithSiteConfig(options) {
+    const siteCfg = options.siteConfig || (options.site ? this.siteConfigResolver(options.site) : null);
+    if (!siteCfg) return options;
+
+    const merged = { ...options };
+
+    // Proxy
+    if (siteCfg.useProxy && merged.proxy == null) {
+      merged.proxy = 'brightdata';
+    }
+
+    // Headless
+    if (siteCfg.allowedHeadless === false && merged.headless == null) {
+      merged.headless = false;
+    }
+
+    // Backend preference
+    if (merged.backend == null && siteCfg.preferBrowserless === true) {
+      merged.backend = 'browserless';
+    }
+
+    // CAPTCHA solving
+    if (merged.autoSolveCaptcha == null && siteCfg.autoSolveCaptcha != null) {
+      merged.autoSolveCaptcha = siteCfg.autoSolveCaptcha;
+    }
+
+    return merged;
+  }
+
+  /**
    * Determine if we should use Browserless.io
    */
   shouldUseBrowserless(options) {
-    // Explicit backend selection
+    // Get site configuration
+    const siteCfg = options.siteConfig || (options.site ? this.siteConfigResolver(options.site) : null);
+    
+    // Explicit backend selection always wins
     if (options.backend === 'browserless') return true;
     if (options.backend === 'local') return false;
     
-    // Check if Browserless is available
+    // Token presence required for Browserless
     if (!this.config.browserlessToken) {
       logger.warn('Browserless token not configured, using local browser');
       return false;
     }
     
-    // Use Browserless for protected sites
-    const protectedSites = ['toasttab.com', 'doordash.com', 'ubereats.com'];
-    if (options.site && protectedSites.some(site => options.site.includes(site))) {
-      return true;
+    // Site-config-driven decisions
+    if (siteCfg) {
+      if (siteCfg.preferBrowserless) return true;
+      if (siteCfg.autoSolveCaptcha) return true;
     }
     
-    // Use Browserless for human-in-the-loop
+    // Option-driven decisions
     if (options.humanInLoop) return true;
-    
-    // Use Browserless for CAPTCHA handling
     if (options.autoSolveCaptcha) return true;
     
-    // Default to configuration
+    // Fallback to global configuration
     return this.config.useBrowserless;
   }
 

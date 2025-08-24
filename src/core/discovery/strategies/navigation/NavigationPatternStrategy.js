@@ -19,7 +19,7 @@
 const NavigationStrategy = require('./NavigationStrategy');
 const { extractUsingPattern } = require('../../NavigationPatternExtractor');
 const { getPatternsForSite } = require('../../NavigationPatterns');
-const NavigationTracker = require('../../../../common/NavigationTracker');
+const NavigationTracker = require('../../../../common/browser/tracking/NavigationTracker');
 
 class NavigationPatternStrategy extends NavigationStrategy {
   constructor(logger, options = {}) {

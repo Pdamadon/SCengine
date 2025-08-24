@@ -12,6 +12,8 @@
  * - Pagination handling for large product catalogs
  */
 
+const SmartPaginationHandler = require('../../../common/scraping/SmartPaginationHandler');
+
 class ProductDiscoveryProcessor {
   constructor(options = {}) {
     this.options = {
@@ -56,20 +58,24 @@ class ProductDiscoveryProcessor {
       '.item-card a[href]'
     ];
 
-    // Pagination selectors
+    // Pagination selectors (Playwright-compatible)
     this.paginationSelectors = [
       'a[rel="next"]',
-      'a[aria-label*="next"]',
-      'a[aria-label*="Next"]',
-      '.pagination a[href]:contains("Next")',
-      '.pagination a[href]:contains(">")',
-      '.pager a[href]:contains("Next")',
+      'a[aria-label*="next" i]',
+      '.pagination a:has-text("Next")',
+      '.pager a:has-text("Next")',
       '[class*="next"] a[href]',
       '[class*="pagination"] a[href*="page="]'
     ];
 
     // Cache for discovered products
     this.productCache = new Map();
+    
+    // Smart pagination handler
+    this.paginationHandler = new SmartPaginationHandler({
+      maxPages: this.options.maxPaginationDepth,
+      logger: console // Will use console until we add proper logger injection
+    });
   }
 
   /**
@@ -158,8 +164,11 @@ class ProductDiscoveryProcessor {
         stats.totalFound += paginatedProducts.length;
       }
 
-      // Validate and clean product URLs
-      const validProducts = products.filter(url => this.isValidProductUrl(url));
+      // Deduplicate then validate
+      const deduped = this.deduplicateUrls(products);
+      stats.duplicatesSkipped += (products.length - deduped.length);
+
+      const validProducts = deduped.filter(url => this.isValidProductUrl(url));
       stats.validProducts = validProducts.length;
 
       // Cache results if enabled
@@ -226,56 +235,80 @@ class ProductDiscoveryProcessor {
       console.warn('Error extracting products from page:', error.message);
     }
 
-    return products;
+    return this.deduplicateUrls(products);
   }
 
   /**
-   * Handle pagination to discover more products
+   * Handle pagination using smart detection - supports multiple pagination types
    */
-  async handlePagination(page, currentPageCount) {
-    const products = [];
-    let nextPageUrl = null;
-
-    if (currentPageCount >= this.options.maxPaginationDepth) {
-      return products;
-    }
-
+  async handlePagination(page, currentPageCount = 1) {
     try {
-      // Find next page link
-      for (const selector of this.paginationSelectors) {
-        try {
-          const nextLink = await page.locator(selector).first();
-          if (await nextLink.isVisible({ timeout: 1000 })) {
-            nextPageUrl = await nextLink.getAttribute('href');
-            if (nextPageUrl) {
-              nextPageUrl = this.resolveUrl(nextPageUrl, page.url());
-              break;
-            }
-          }
-        } catch (e) {
-          // Try next selector
-        }
-      }
-
-      if (nextPageUrl && nextPageUrl !== page.url()) {
-        await page.goto(nextPageUrl, { waitUntil: 'domcontentloaded', timeout: 10000 });
-        await page.waitForTimeout(1500);
-
-        const pageProducts = await this.extractProductsFromPage(page);
-        products.push(...pageProducts);
-
-        // Recursively handle next page
-        if (pageProducts.length > 0) {
-          const nextPageProducts = await this.handlePagination(page, currentPageCount + 1);
-          products.push(...nextPageProducts);
-        }
-      }
-
+      // Use the smart pagination handler for all pagination types
+      const allProducts = await this.paginationHandler.paginateAndExtract(
+        page,
+        (page) => this.extractProductsFromPage(page),
+        { maxPages: this.options.maxPaginationDepth }
+      );
+      
+      return allProducts;
+      
     } catch (error) {
       console.warn('Error handling pagination:', error.message);
+      return [];
     }
+  }
 
-    return products;
+  /**
+   * Find next page URL using multiple strategies
+   */
+  async findNextPageUrl(page) {
+    try {
+      let nextUrl = null;
+      
+      // Strategy 1: Look for rel="next" link in head
+      const relNextLink = await page.$('link[rel="next"]');
+      if (relNextLink) {
+        const href = await relNextLink.getAttribute('href');
+        if (href) nextUrl = href;
+      }
+      
+      // Strategy 2: Look for data-next-url attributes (Shopify themes)
+      if (!nextUrl) {
+        const dataNextUrl = await page.$('[data-next-url]');
+        if (dataNextUrl) {
+          const href = await dataNextUrl.getAttribute('data-next-url');
+          if (href) nextUrl = href;
+        }
+      }
+      
+      // Strategy 3: Traditional pagination selectors
+      if (!nextUrl) {
+        for (const selector of this.paginationSelectors) {
+          try {
+            const nextLink = await page.locator(selector).first();
+            if (await nextLink.isVisible({ timeout: 1000 })) {
+              const href = await nextLink.getAttribute('href');
+              if (href && !href.includes('#')) {
+                nextUrl = href;
+                break;
+              }
+            }
+          } catch (e) {
+            // Try next selector
+          }
+        }
+      }
+      
+      // Make URL absolute if found
+      if (nextUrl) {
+        return this.resolveUrl(nextUrl, page.url());
+      }
+      
+      return null;
+    } catch (error) {
+      console.warn('Error finding next page URL:', error.message);
+      return null;
+    }
   }
 
   /**
@@ -433,6 +466,13 @@ class ProductDiscoveryProcessor {
    */
   clearCache() {
     this.productCache.clear();
+  }
+
+  /**
+   * Deduplicate URLs array
+   */
+  deduplicateUrls(urls) {
+    return [...new Set(urls)];
   }
 }
 

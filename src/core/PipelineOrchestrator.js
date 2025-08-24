@@ -25,8 +25,8 @@ const FilterDiscoveryStrategy = require('./discovery/strategies/exploration/Filt
 const ProductPaginationStrategy = require('./collection/strategies/ProductPaginationStrategy');
 const ExtractorIntelligence = require('./extraction/ExtractorIntelligence');
 const UniversalProductExtractor = require('./extraction/UniversalProductExtractor');
-const SelectorDiscovery = require('../common/SelectorDiscovery');
-const BrowserManagerBrowserless = require('../common/BrowserManagerBrowserless');
+const SelectorDiscovery = require('../common/scraping/dom/SelectorDiscovery');
+const BrowserManagerBrowserless = require('../common/browser/managers/BrowserManagerBrowserless');
 const { logger } = require('../utils/logger');
 const WorldModel = require('../data/WorldModel');
 

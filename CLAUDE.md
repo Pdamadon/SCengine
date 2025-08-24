@@ -1,8 +1,70 @@
 # CLAUDE.md - AI Assistant Operating Instructions
 
+## 🚀 DO.AI Unified Roadmap Playbook (Updated)
+
+### Vision
+DO.AI = AI Concierge for life & commerce
+One place to say: "I want flowers / book me a massage / plan a dinner" → DO.AI finds it, builds the cart, fills forms, and gets it ready for checkout.
+Long-term: proactive concierge that remembers people, occasions, and recurring orders.
+
+### Phase 1 — MVP (0–6 months)
+🎯 Goals
+- Validate backend pipeline.
+- Launch $10/mo concierge with flowers, basic service bookings, gift lists with reminders & recurring orders.
+- Show measurable time saved.
+
+🔑 MVP Must-Work Items
+
+**1. Flowers / Simple Purchases**
+Backend essentials:
+- `routes/universalScraping.js` → reliable POST endpoint for scraping jobs.
+- `QueueManager` → enqueue scraping jobs, enforce per-domain concurrency.
+- `PipelineOrchestrator` → discovery → extraction → validation.
+- `UniversalProductExtractor` → JSON-LD first pass, fallback selectors.
+- `WorldModel` → store selectors/paths for reuse.
+- `BrowserManagerBrowserless` → stable Playwright session via Browserless SaaS.
+
+**2. Service Bookings (Massage/Nails)**
+Backend essentials:
+- Service-specific scrapers or API connectors (MindBody, Vagaro).
+- Routes to trigger service booking flows.
+- QueueManager job type: service-booking.
+
+**3. Gift Lists (Reminders + Recurring Orders)**
+Backend essentials:
+- Extend DB schema: person, occasions, preferences, delivery info, recurrence rules.
+- Scheduler service (Bull job, runs daily) → check upcoming occasions.
+- Auto-cart creation job: 7 days before → call PipelineOrchestrator with store prefs.
+
+**4. Cart Cleanup**
+Backend essentials:
+- Method in BrowserManager to reset cookies/session.
+- Cart cleanup routines: Attempt remove items via DOM, fallback: clear cookies/session.
+
+**5. Profile & Secure Data**
+Backend essentials:
+- Profile service storing: address, phone, email, preferences.
+- Encryption at rest (AES, KMS).
+
+**6. Time-Saved Counter**
+Backend essentials:
+- Timer metrics per job: Simulated manual baseline vs actual pipeline runtime.
+
+**💼 Business**: $10/mo subscription. Target: 1k users private beta → busy professionals & gift-givers.
+
+### Phase 2 — Expansion (6–18 months)
+- Categories: Restaurants (OpenTable/Resy), apparel, groceries.
+- Target: 10k users → $1.2M ARR.
+
+### Phase 3 — Scale (18+ months)
+- Travel planning, B2B API.
+- Target: 100k–1M users → $12M–$120M ARR.
+
+---
+
 ## Core Identity & Role
 
-You are a development assistant working alongside Peter (Zen) on this e-commerce extraction platform project. Your role is to support development efforts while strictly following the guidelines below. Always refer back to these principles before taking action or suggesting code changes.
+You are a development assistant working alongside Peter (Zen) on this DO.AI e-commerce extraction platform project. Your role is to support development efforts while strictly following the guidelines below. Always refer back to these principles before taking action or suggesting code changes.
 
 ## CRITICAL: Debugging & Problem Solving
 

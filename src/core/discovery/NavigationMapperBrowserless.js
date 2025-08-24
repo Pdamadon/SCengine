@@ -6,72 +6,23 @@
  */
 
 const { chromium } = require('playwright');
-const BrowserManagerBrowserless = require('../../common/BrowserManagerBrowserless');
+const BrowserManagerBrowserless = require('../../common/browser/managers/BrowserManagerBrowserless');
 // Navigation strategies organized by type
 const NavigationPatternStrategy = require('./strategies/navigation/NavigationPatternStrategy');
 const FallbackLinkStrategy = require('./strategies/navigation/FallbackLinkStrategy');
 const MegaMenuStrategy = require('./strategies/navigation/MegaMenuStrategy');
 const ProductCatalogCache = require('../../cache/ProductCatalogCache');
+const RedisCacheManager = require('../../cache/RedisCacheManager');
 const TaxonomyDiscoveryProcessor = require('./processors/TaxonomyDiscoveryProcessor');
-
-// Site-specific configuration for browser settings
-const SITE_CONFIG = {
-  // Protected sites that need Browserless.io
-  'toasttab.com': { 
-    allowedHeadless: false,
-    preferBrowserless: true,
-    useProxy: true,
-    autoSolveCaptcha: true
-  },
-  'doordash.com': { 
-    allowedHeadless: false,
-    preferBrowserless: true,
-    useProxy: true,
-    autoSolveCaptcha: true
-  },
-  'ubereats.com': { 
-    allowedHeadless: false,
-    preferBrowserless: true,
-    useProxy: true,
-    autoSolveCaptcha: true
-  },
-  
-  // Sites that work locally with specific settings
-  'macys.com': { 
-    allowedHeadless: false,
-    preferBrowserless: false,
-    useProxy: true
-  },
-  'nordstrom.com': { 
-    allowedHeadless: false,
-    preferBrowserless: false,
-    useProxy: true
-  },
-  'saks.com': { 
-    allowedHeadless: false,
-    preferBrowserless: false,
-    useProxy: false
-  },
-  
-  // Simple sites that work with local Chromium
-  'glasswingshop.com': {
-    allowedHeadless: true,
-    preferBrowserless: false,
-    useProxy: false
-  },
-  
-  // Default configuration
-  'default': { 
-    allowedHeadless: true,
-    preferBrowserless: false,
-    useProxy: false
-  }
-};
+const { getBrowserConfigForDomain } = require('../../config/BrowserSiteConfig');
 
 class NavigationMapperBrowserless {
   constructor(logger, worldModel) {
     this.logger = logger;
     this.worldModel = worldModel;
+    
+    // Initialize cache system (following SelectorLearningCache pattern)
+    this.cache = RedisCacheManager.getInstance(logger);
     
     // Use BrowserManagerBrowserless instead of original BrowserManager
     this.browserManager = new BrowserManagerBrowserless({
@@ -91,42 +42,27 @@ class NavigationMapperBrowserless {
 
   async initializeForSite(needsNonHeadless = false, domain = null) {
     const normalizedDomain = domain ? domain.toLowerCase().replace(/^www\./, '') : null;
-    const config = normalizedDomain ? (SITE_CONFIG[normalizedDomain] || SITE_CONFIG.default) : SITE_CONFIG.default;
     
     const forceHeadless = process.env.HEADLESS_MODE === 'true';
     const disableHeadless = process.env.HEADLESS_MODE === 'false';
     
     this.logger.info('Browser initialization with Browserless.io support:', {
       domain: normalizedDomain || 'not-provided',
-      siteConfig: config,
       browserlessEnabled: process.env.USE_BROWSERLESS === 'true'
     });
     
-    // Determine headless mode
-    let shouldUseHeadless;
-    let reason;
-    
-    if (!config.allowedHeadless || needsNonHeadless) {
-      shouldUseHeadless = false;
-      reason = !config.allowedHeadless ? 
-        `site-specific config - ${normalizedDomain} blocks headless` : 
-        'caller requested non-headless';
-    } else if (forceHeadless) {
-      shouldUseHeadless = true;
-      reason = 'global HEADLESS_MODE=true override';
+    // Determine headless mode (BrowserManagerBrowserless will handle site-specific overrides)
+    if (forceHeadless) {
+      this.isHeadless = true;
+      this.logger.info('HEADLESS_MODE=true: Forcing headless mode');
     } else if (disableHeadless) {
-      shouldUseHeadless = false;
-      reason = 'global HEADLESS_MODE=false override';
+      this.isHeadless = false;
+      this.logger.info('HEADLESS_MODE=false: Forcing non-headless mode');
     } else {
-      shouldUseHeadless = true;
-      reason = 'default performance optimization';
+      // Default headless behavior (BrowserManagerBrowserless will override per site config)
+      this.isHeadless = !needsNonHeadless;
+      this.logger.info(`Using headless=${this.isHeadless} for ${normalizedDomain || 'unknown'} (BrowserManagerBrowserless will handle site-specific overrides)`);
     }
-    
-    this.isHeadless = shouldUseHeadless;
-    this.headlessReason = reason;
-    this.siteConfig = config;
-    
-    this.logger.info(`Browser configuration: headless=${shouldUseHeadless}, preferBrowserless=${config.preferBrowserless}`);
     
     // Initialize strategies
     this.strategies = [
@@ -143,6 +79,152 @@ class NavigationMapperBrowserless {
         maxLinks: 500
       })
     ];
+  }
+
+  /**
+   * Execute all strategies in parallel and return the best result
+   * Implementation of user's optimization strategy for improved success rates
+   */
+  async executeStrategiesInParallel(page, url, tracker) {
+    this.logger.info(`🚀 Executing ${this.strategies.length} strategies in parallel for ${url}`);
+    
+    // Launch all strategies concurrently with timeout protection
+    const strategyPromises = this.strategies.map(async (strategy) => {
+      const strategyName = strategy.constructor.name;
+      const strategyTracker = {
+        name: strategyName,
+        startTime: Date.now(),
+        success: false
+      };
+
+      try {
+        this.logger.debug(`Starting ${strategyName}...`);
+        
+        // Add timeout protection for each strategy (90 seconds max)
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Strategy timeout')), 90000);
+        });
+        
+        const result = await Promise.race([
+          strategy.execute(page, url),
+          timeoutPromise
+        ]);
+        
+        if (result && result.navigation && result.navigation.length > 0) {
+          strategyTracker.success = true;
+          strategyTracker.itemCount = result.navigation.length;
+          strategyTracker.duration = Date.now() - strategyTracker.startTime;
+          strategyTracker.confidence = result.confidence || 0.5;
+          
+          this.logger.info(`✅ ${strategyName} succeeded:`, {
+            items: result.navigation.length,
+            duration: `${strategyTracker.duration}ms`,
+            confidence: strategyTracker.confidence
+          });
+          
+          return { result, tracker: strategyTracker };
+        } else {
+          strategyTracker.error = 'No navigation items extracted';
+          strategyTracker.duration = Date.now() - strategyTracker.startTime;
+          return { result: null, tracker: strategyTracker };
+        }
+        
+      } catch (error) {
+        strategyTracker.error = error.message;
+        strategyTracker.duration = Date.now() - strategyTracker.startTime;
+        
+        this.logger.warn(`${strategyName} failed:`, error.message);
+        return { result: null, tracker: strategyTracker };
+      }
+    });
+
+    try {
+      // Wait for all strategies to complete (or timeout individually)
+      const allResults = await Promise.allSettled(strategyPromises);
+      
+      // Process results and collect successful extractions
+      const successfulResults = [];
+      
+      for (const promiseResult of allResults) {
+        if (promiseResult.status === 'fulfilled' && promiseResult.value) {
+          const { result, tracker: strategyTracker } = promiseResult.value;
+          tracker.strategies.push(strategyTracker);
+          
+          if (result && result.navigation && result.navigation.length > 0) {
+            successfulResults.push({ result, tracker: strategyTracker });
+          }
+        } else if (promiseResult.status === 'rejected') {
+          this.logger.warn('Strategy promise rejected:', promiseResult.reason);
+        }
+      }
+
+      // Select the best result based on multiple criteria
+      if (successfulResults.length > 0) {
+        const bestResult = this.selectBestResult(successfulResults);
+        
+        this.logger.info(`🎯 Selected best result from ${successfulResults.length} successful strategies:`, {
+          chosenStrategy: bestResult.tracker.name,
+          itemCount: bestResult.result.navigation.length,
+          confidence: bestResult.tracker.confidence,
+          duration: bestResult.tracker.duration
+        });
+        
+        return bestResult.result;
+      } else {
+        this.logger.warn('❌ No strategies succeeded in parallel execution');
+        return null;
+      }
+      
+    } catch (error) {
+      this.logger.error('Parallel strategy execution failed:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Select the best result from multiple successful extractions
+   * Uses confidence, item count, and performance metrics
+   */
+  selectBestResult(results) {
+    return results.reduce((best, current) => {
+      const bestScore = this.calculateResultScore(best);
+      const currentScore = this.calculateResultScore(current);
+      
+      return currentScore > bestScore ? current : best;
+    });
+  }
+
+  /**
+   * Calculate a score for ranking extraction results
+   * Higher scores are better
+   */
+  calculateResultScore({ result, tracker }) {
+    let score = 0;
+    
+    // Primary: Number of navigation items found (more is better up to a point)
+    const itemCount = result.navigation.length;
+    score += Math.min(itemCount * 2, 100); // Cap at 100 points
+    
+    // Secondary: Confidence score from strategy
+    const confidence = tracker.confidence || 0.5;
+    score += confidence * 50; // Up to 50 points
+    
+    // Tertiary: Prefer NavigationPatternStrategy (proven 95% accuracy)
+    if (tracker.name === 'NavigationPatternStrategy') {
+      score += 25; // Bonus points for proven strategy
+    }
+    
+    // Performance penalty for very slow strategies (>60 seconds)
+    if (tracker.duration > 60000) {
+      score -= 10;
+    }
+    
+    // Quality bonus for structured results with metadata
+    if (result.metadata && result.metadata.patternUsed) {
+      score += 10;
+    }
+    
+    return score;
   }
 
   /**
@@ -300,17 +382,29 @@ class NavigationMapperBrowserless {
       const urlObj = new URL(url.startsWith('http') ? url : `https://${url}`);
       const domain = urlObj.hostname.replace(/^www\./, '');
       
+      // Check cache first (following SelectorLearningCache pattern)
+      await this.cache.initialize();
+      const cached = await this.cache.get('navigation', domain, 'taxonomy');
+      
+      if (cached && !options.bypassCache) {
+        this.logger.info(`Using cached navigation data for ${domain}`);
+        tracker.fromCache = true;
+        tracker.duration = Date.now() - startTime;
+        
+        return {
+          ...cached,
+          fromCache: true,
+          cacheAge: Date.now() - new Date(cached.metadata?.extractedAt || Date.now()).getTime()
+        };
+      }
+      
       // Initialize for this specific site
       await this.initializeForSite(false, domain);
       
-      // Create browser with site-specific configuration
+      // Create browser using BrowserManagerBrowserless (handles site config internally)
       const browserOptions = {
         site: url,
         headless: this.isHeadless,
-        backend: this.siteConfig.preferBrowserless ? 'browserless' : 'auto',
-        proxy: this.siteConfig.useProxy ? 'brightdata' : false,
-        proxyType: 'residential',
-        autoSolveCaptcha: this.siteConfig.autoSolveCaptcha || false,
         humanInLoop: options.requiresHumanAuth || false,
         onCaptcha: async (page, cdp) => {
           this.logger.warn('CAPTCHA detected on', url);
@@ -376,43 +470,8 @@ class NavigationMapperBrowserless {
           throw lastError || new Error('Failed to navigate past site protection');
         }
         
-        // Extract navigation using strategies
-        let result = null;
-        
-        for (const strategy of this.strategies) {
-          const strategyName = strategy.constructor.name;
-          this.logger.info(`Attempting ${strategyName} for ${url}`);
-          
-          const strategyTracker = {
-            name: strategyName,
-            startTime: Date.now(),
-            success: false
-          };
-          
-          try {
-            result = await strategy.execute(page, url);
-            
-            if (result && result.navigation && result.navigation.length > 0) {
-              strategyTracker.success = true;
-              strategyTracker.itemCount = result.navigation.length;
-              strategyTracker.duration = Date.now() - strategyTracker.startTime;
-              
-              this.logger.info(`✅ ${strategyName} succeeded:`, {
-                items: result.navigation.length,
-                duration: `${strategyTracker.duration}ms`
-              });
-              
-              tracker.strategies.push(strategyTracker);
-              break;
-            }
-          } catch (error) {
-            strategyTracker.error = error.message;
-            strategyTracker.duration = Date.now() - strategyTracker.startTime;
-            tracker.strategies.push(strategyTracker);
-            
-            this.logger.warn(`${strategyName} failed:`, error.message);
-          }
-        }
+        // Extract navigation using parallel strategies (optimization)
+        const result = await this.executeStrategiesInParallel(page, url, tracker);
         
         // Process results if we have them
         if (result && result.navigation && result.navigation.length > 0) {
@@ -425,11 +484,33 @@ class NavigationMapperBrowserless {
           tracker.itemCount = result.navigation.length;
           tracker.duration = Date.now() - startTime;
           
-          // Cache the results
+          // Cache the results using proper cache infrastructure
           if (result.navigation.length > 10) {
-            const cache = new ProductCatalogCache();
-            await cache.storeTaxonomy(url, result);
-            this.logger.info(`Cached ${result.navigation.length} navigation items for ${url}`);
+            const domain = new URL(url).hostname.replace('www.', '');
+            
+            // Cache in Redis for fast access (following WorldModel pattern)
+            await this.cache.initialize();
+            await this.cache.set('navigation', domain, result, 'taxonomy');
+            
+            // Persist to MongoDB for long-term storage
+            const catalogCache = new ProductCatalogCache();
+            await catalogCache.initialize();
+            
+            // Store each navigation item as a category context
+            for (const navItem of result.navigation) {
+              if (navItem.url) {
+                const navigationNode = {
+                  name: navItem.name,
+                  url: navItem.url,
+                  depth: 1,
+                  productCount: navItem.children ? navItem.children.length : 0,
+                  children: navItem.children || []
+                };
+                await catalogCache.storeNavigationContext(domain, navigationNode);
+              }
+            }
+            
+            this.logger.info(`Cached ${result.navigation.length} navigation items for ${domain} in Redis + MongoDB`);
           }
           
           return result;

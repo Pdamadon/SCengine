@@ -5,7 +5,7 @@
  * for selector discovery and validation.
  */
 
-const SelectorLearningCache = require('../cache/SelectorLearningCache');
+const SelectorLearningCache = require('../../../cache/SelectorLearningCache');
 
 class AdaptiveRetryStrategy {
   constructor(logger) {

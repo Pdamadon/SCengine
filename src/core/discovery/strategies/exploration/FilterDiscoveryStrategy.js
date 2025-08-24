@@ -42,14 +42,20 @@ class FilterDiscoveryStrategy {
     });
 
     try {
-      // Step 1: Extract all potential filter elements from the page
+      // Step 1: Activate hidden filter menus (common pattern)
+      await this.activateFilterMenus(page);
+      
+      // Step 2: Extract all potential filter elements from the page
       const rawCandidates = await this.extractFilterCandidates(page);
       
-      // Step 2: Score and filter candidates (Node.js context)
+      // Step 3: Score and filter candidates (Node.js context)
       const scoredCandidates = this.scoreFilterCandidates(rawCandidates);
       
-      // Step 3: Build final results
-      return this.buildCandidateResults(categoryUrl, scoredCandidates, page);
+      // Step 4: Apply exclusions (remove size/variant filters)
+      const filteredCandidates = this.applyFilterExclusions(scoredCandidates);
+      
+      // Step 5: Build final results
+      return this.buildCandidateResults(categoryUrl, filteredCandidates, page);
       
     } catch (error) {
       this.logger.error('❌ Filter discovery failed', {
@@ -65,6 +71,70 @@ class FilterDiscoveryStrategy {
         candidates: [],
         error: error.message
       };
+    }
+  }
+
+  /**
+   * Activate hidden filter menus by clicking filter toggle buttons
+   */
+  async activateFilterMenus(page) {
+    this.logger.info('🎯 Activating filter menus...');
+    
+    // Common filter activation patterns
+    const activationSelectors = [
+      // Text-based filter buttons (Fig & Willow pattern)
+      'button:has-text("Filter")',
+      'button:has-text("Filters")', 
+      'a:has-text("Filter")',
+      
+      // Class-based filter toggles
+      '.filter-toggle',
+      '.filters-toggle',
+      '.filter-button',
+      '.filters-button',
+      
+      // Icon-based filter buttons
+      'button[class*="filter"]',
+      'button[aria-label*="filter" i]',
+      'button[aria-label*="refine" i]',
+      
+      // Mobile/responsive filter buttons
+      '.mobile-filter-toggle',
+      '[data-filter-toggle]',
+      '[role="button"][aria-expanded="false"]'
+    ];
+
+    let activatedMenus = 0;
+    
+    for (const selector of activationSelectors) {
+      try {
+        const elements = await page.$$(selector);
+        
+        for (const element of elements) {
+          // Check if element is visible and clickable
+          const isVisible = await element.isVisible().catch(() => false);
+          if (isVisible) {
+            this.logger.info('🔘 Clicking filter activation button', { selector });
+            await element.click();
+            await page.waitForTimeout(1000); // Wait for menu to appear
+            activatedMenus++;
+            break; // Only click first matching button
+          }
+        }
+        
+        if (activatedMenus > 0) break; // Stop after first successful activation
+        
+      } catch (error) {
+        // Continue to next selector if this one fails
+      }
+    }
+    
+    if (activatedMenus > 0) {
+      this.logger.info('✅ Filter menu activated', { menusActivated: activatedMenus });
+      // Wait a bit longer for animations to complete
+      await page.waitForTimeout(1500);
+    } else {
+      this.logger.info('ℹ️  No filter activation buttons found (filters may already be visible)');
     }
   }
 
@@ -289,6 +359,60 @@ class FilterDiscoveryStrategy {
         return `a[href="${link.getAttribute('href')}"]`;
       }
     });
+  }
+
+  /**
+   * Apply exclusions to remove unwanted filter types (size, variants, etc.)
+   */
+  applyFilterExclusions(candidates) {
+    const excludedTypes = [
+      // Size-related filters
+      /\b(size|sizes|xs|sm|small|md|medium|lg|large|xl|xxl|xxxl)\b/i,
+      /\b(\d+(?:\.\d+)?\s*(in|inch|cm|mm|ft|foot|feet))\b/i, // Measurements
+      /\b(us|uk|eu)\s*\d+/i, // Shoe sizes
+      
+      // Variant filters that don't help discovery
+      /\b(color|colour|colors|colours)\b/i, // Usually variants, not categories
+      /\b(quantity|qty|stock|availability)\b/i,
+      /\b(price|\$|cost|budget)\b/i,
+      
+      // UI/Sort filters
+      /\b(sort|order|arrange|view|display|show|per\s*page)\b/i,
+      /\b(ascending|descending|asc|desc|newest|oldest|popular|featured)\b/i,
+      
+      // Action buttons (not filters)
+      /\b(apply|reset|clear|remove|done|cancel|submit|close)\b/i,
+      /\b(add\s*to\s*cart|buy\s*now|checkout|wishlist)\b/i
+    ];
+    
+    const filtered = candidates.filter(candidate => {
+      const label = candidate.label?.toLowerCase() || '';
+      const name = candidate.name?.toLowerCase() || '';
+      const value = candidate.value?.toLowerCase() || '';
+      
+      // Check if any exclusion pattern matches
+      const isExcluded = excludedTypes.some(pattern => 
+        pattern.test(label) || pattern.test(name) || pattern.test(value)
+      );
+      
+      if (isExcluded) {
+        this.logger.debug('🚫 Excluding filter candidate', {
+          label: candidate.label,
+          reason: 'matches exclusion pattern'
+        });
+        return false;
+      }
+      
+      return true;
+    });
+    
+    this.logger.info('🔧 Filter exclusions applied', {
+      original: candidates.length,
+      filtered: filtered.length,
+      excluded: candidates.length - filtered.length
+    });
+    
+    return filtered;
   }
 
   /**

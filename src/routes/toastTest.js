@@ -5,7 +5,7 @@
 
 const express = require('express');
 const router = express.Router();
-const ProxyBrowserManagerResidential = require('../common/ProxyBrowserManagerResidential');
+const ProxyBrowserManagerResidential = require('../common/browser/managers/proxy/ResidentialProxyBrowserManager');
 const ToastExtractor = require('../extractors/ToastExtractor');
 const { logger } = require('../utils/logger');
 

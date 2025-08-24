@@ -8,7 +8,7 @@
  * Output: Complete category hierarchy with navigation paths
  */
 
-const NavigationTracker = require('../../../../common/NavigationTracker');
+const NavigationTracker = require('../../../../common/browser/tracking/NavigationTracker');
 const { logger } = require('../../../../utils/logger');
 
 class SubCategoryExplorationStrategy {

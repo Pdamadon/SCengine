@@ -14,7 +14,7 @@
 
 const { chromium } = require('playwright');
 const BrowserIntelligence = require('./BrowserIntelligence');
-const AdaptiveRetryStrategy = require('../../common/AdaptiveRetryStrategy');
+const AdaptiveRetryStrategy = require('../../common/network/retry/AdaptiveRetryStrategy');
 const WorldModel = require('../../data/WorldModel');
 const SelectorLearningCache = require('../../cache/SelectorLearningCache');
 

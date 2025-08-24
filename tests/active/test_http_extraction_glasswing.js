@@ -4,7 +4,7 @@
  */
 
 const UniversalProductExtractor = require('../../src/core/extraction/UniversalProductExtractor');
-const BrowserManagerBrowserless = require('../../src/common/BrowserManagerBrowserless');
+const BrowserManagerBrowserless = require('../../src/common/browser/managers/BrowserManagerBrowserless');
 const logger = require('../../src/utils/logger');
 
 const testUrls = [

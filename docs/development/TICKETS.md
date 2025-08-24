@@ -255,6 +255,55 @@ Replace hardcoded filters with intelligent exploration system:
 
 ---
 
+### **TICKET-002B: Product Coverage Optimization System**
+**Priority:** Medium  
+**Complexity:** High  
+**Impact:** Crawl efficiency and product coverage maximization
+
+**Problem:**
+Current category deduplication only removes duplicate URLs, but doesn't optimize for unique product coverage. We may crawl 25 categories that contain mostly the same products, wasting resources.
+
+**Solution:**
+Implement intelligent category selection system that maximizes unique product coverage with minimal crawl effort:
+
+1. **Product Coverage Analysis:**
+   - For each category URL, sample first page of products
+   - Create product fingerprints (handles/IDs) to measure overlap
+   - Calculate Jaccard similarity between categories
+
+2. **Content-Based Deduplication:**
+   - Cluster categories with >90% product overlap
+   - Select representative category per cluster
+   - Keep track of which categories are aliases vs unique
+
+3. **Optimal Seed Set Selection:**
+   - Use greedy algorithm to select minimum categories for maximum coverage
+   - Budget-aware: "crawl X categories, get Y% of all unique products"
+   - Filter expansion analysis: which filters add unique products vs re-sort
+
+4. **Smart Filter Strategy:**
+   - Detect which filter dimensions add unique products (>10% new SKUs)
+   - Avoid combinatorial explosion (size x color unless disjoint product sets)
+   - Prioritize semantic filters (brand, subcategory) over sort/price
+
+**Expected Benefits:**
+- "Crawl 25 categories instead of 215, get 95% of unique products"
+- Resource optimization for FilterNavigationStrategy 
+- Scientific approach to filter expansion decisions
+- Measurable coverage vs effort tradeoffs
+
+**Files to Create:**
+- `src/core/optimization/ProductCoverageAnalyzer.js`
+- `src/core/optimization/CategoryClusteringService.js`  
+- `src/core/optimization/OptimalSeedSelector.js`
+
+**Success Metrics:**
+- Reduce category crawling by 80%+ while maintaining 95%+ product coverage
+- Quantify filter expansion ROI with coverage vs effort analysis
+- Provide actionable "crawl budget" recommendations per site
+
+---
+
 ## 🚧 Medium Priority
 
 ### **TICKET-003: Structural Navigation Classifier Improvements**

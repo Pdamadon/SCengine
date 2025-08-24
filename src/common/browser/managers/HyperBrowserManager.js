@@ -20,8 +20,8 @@
 
 const { chromium } = require('playwright-core');
 const { Hyperbrowser } = require('@hyperbrowser/sdk');
-const { logger } = require('../utils/logger');
-const ProxyConfig = require('../config/ProxyConfig');
+const { logger } = require('../../../utils/logger');
+const ProxyConfig = require('../../../config/ProxyConfig');
 
 // Site-specific backend configuration
 const SITE_BACKEND_CONFIG = {

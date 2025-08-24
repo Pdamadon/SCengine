@@ -10,7 +10,7 @@
  * - Practical improvements for 40% → 70% success rate goal
  */
 
-const { getHeaderProfile, getConfig } = require('../config/HttpHeaderProfiles');
+const { getHeaderProfile, getConfig } = require('../../config/HttpHeaderProfiles');
 
 class HttpRequestBuilder {
   constructor(logger, options = {}) {

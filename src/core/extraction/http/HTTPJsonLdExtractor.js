@@ -15,7 +15,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const { URL } = require('url');
-const HttpRequestBuilder = require('../../../common/HttpRequestBuilder');
+const HttpRequestBuilder = require('../../../common/network/HttpRequestBuilder');
 
 class HTTPJsonLdExtractor {
   constructor(logger, options = {}) {
@@ -63,13 +63,14 @@ class HTTPJsonLdExtractor {
 
     const startTime = Date.now();
     let host;
+    let rateLimitResult;
     
     try {
       const urlObj = new URL(url);
       host = urlObj.hostname;
       
       // Enforce per-host rate limiting
-      const rateLimitResult = await this.enforceRateLimit(host);
+      rateLimitResult = await this.enforceRateLimit(host);
       if (!rateLimitResult.ok) {
         return rateLimitResult;
       }
@@ -199,6 +200,11 @@ class HTTPJsonLdExtractor {
         reason,
         errorMessage: error.message
       };
+    } finally {
+      // Always cleanup the active request counter
+      if (rateLimitResult && rateLimitResult.cleanup) {
+        rateLimitResult.cleanup();
+      }
     }
   }
 
@@ -209,13 +215,9 @@ class HTTPJsonLdExtractor {
     const stats = this.getHostStats(host);
     const now = Date.now();
     
-    // Check concurrent requests limit
-    if (stats.activeRequests >= this.config.maxConcurrentPerHost) {
-      return { 
-        ok: false, 
-        reason: 'rate_limit_concurrent', 
-        errorMessage: `Too many concurrent requests to ${host}` 
-      };
+    // Wait for available slot if at concurrent limit (queue instead of reject)
+    while (stats.activeRequests >= this.config.maxConcurrentPerHost) {
+      await new Promise(resolve => setTimeout(resolve, 50)); // Wait 50ms and check again
     }
     
     // Check minimum time between requests
@@ -229,12 +231,13 @@ class HTTPJsonLdExtractor {
     stats.activeRequests++;
     stats.lastRequestTime = Date.now();
     
-    // Clean up active request count after request completes
-    setTimeout(() => {
-      stats.activeRequests = Math.max(0, stats.activeRequests - 1);
-    }, this.config.timeoutMs + 1000);
-    
-    return { ok: true };
+    // Return cleanup function to be called when request actually completes
+    return { 
+      ok: true,
+      cleanup: () => {
+        stats.activeRequests = Math.max(0, stats.activeRequests - 1);
+      }
+    };
   }
 
   /**

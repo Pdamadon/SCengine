@@ -7,7 +7,7 @@
  * Based on zen's guidance for minimal interface with canonicalized visited set.
  */
 
-const { canonicalizeUrl } = require('./UrlCanonicalizer');
+const { canonicalizeUrl } = require('../utils/UrlCanonicalizer');
 
 class PaginationHandler {
     constructor(options = {}) {

@@ -15,10 +15,11 @@
  * 4. Track which filter combinations were used
  */
 
-const NavigationTracker = require('../../../../common/NavigationTracker');
+const NavigationTracker = require('../../../../common/browser/tracking/NavigationTracker');
 const { logger } = require('../../../../utils/logger');
-const { canonicalizeUrl } = require('../../../../common/UrlCanonicalizer');
-const { FilterPatterns } = require('../../../../common/FilterPatterns');
+const { canonicalizeUrl } = require('../../../../common/utils/UrlCanonicalizer');
+const { FilterPatterns } = require('../../../../common/utils/FilterPatterns');
+const ProductDiscoveryProcessor = require('../../processors/ProductDiscoveryProcessor');
 
 class FilterBasedExplorationStrategy {
   constructor(browserManager, options = {}) {
@@ -48,6 +49,13 @@ class FilterBasedExplorationStrategy {
     
     // Initialize filter patterns for exclusions
     this.filterPatterns = new FilterPatterns();
+    
+    // Initialize ProductDiscoveryProcessor for consistent product extraction
+    this.productDiscoveryProcessor = new ProductDiscoveryProcessor({
+      maxProductsPerCategory: this.options.maxProductsPerCategory || 100,
+      enablePagination: true,
+      maxPaginationDepth: 3
+    });
     
     this.navigationTracker = null;
     this.discoveredProducts = new Map(); // Track unique products (now with canonical keys)
@@ -91,9 +99,14 @@ class FilterBasedExplorationStrategy {
       });
       await new Promise(resolve => setTimeout(resolve, this.options.pageLoadDelay));
 
-      // Get baseline products (no filters applied)
-      const baselineProducts = await this.captureProducts(page, 'baseline');
-      this.logger.info('Baseline products captured', { count: baselineProducts.length });
+      // Get baseline products (no filters applied) using ProductDiscoveryProcessor
+      const baselinePageProducts = await this.productDiscoveryProcessor.extractProductsFromPage(page);
+      const baselineProducts = await this.productDiscoveryProcessor.handlePagination(page, 1);
+      this.storeFilteredProducts(baselineProducts, 'baseline');
+      this.logger.info('Baseline products captured with pagination', { 
+        pageProducts: baselinePageProducts.length,
+        totalWithPagination: baselineProducts.length 
+      });
 
       // Identify all filters on the page
       const filters = await this.identifyFilters(page);
@@ -316,19 +329,25 @@ class FilterBasedExplorationStrategy {
       const isActive = urlChanged || await this.isFilterActive(page, element);
       
       if (isActive) {
-        // Capture products with this filter
-        const filteredProducts = await this.captureProducts(page, filter.text);
-        this.logger.info('Filter applied', {
+        // Extract products using ProductDiscoveryProcessor (with pagination!)
+        const pageProducts = await this.productDiscoveryProcessor.extractProductsFromPage(page);
+        const allFilteredProducts = await this.productDiscoveryProcessor.handlePagination(page, 1);
+        
+        this.logger.info('Filter applied with pagination', {
           filter: filter.text,
-          productsFound: filteredProducts.length
+          pageProducts: pageProducts.length,
+          totalWithPagination: allFilteredProducts.length
         });
+        
+        // Store products with filter metadata
+        this.storeFilteredProducts(allFilteredProducts, filter.text);
 
         // Store filter path for ML
         this.filterPaths.push({
           category: categoryName,
           filter: filter.text,
           selector: selector,
-          productsFound: filteredProducts.length
+          productsFound: allFilteredProducts.length
         });
 
         // Click again to remove filter - re-find element as DOM may have updated
@@ -371,150 +390,67 @@ class FilterBasedExplorationStrategy {
   }
 
   /**
-   * Capture all product URLs currently visible on the page
+   * Store filtered products with metadata (simplified - ProductDiscoveryProcessor handles extraction)
    */
-  async captureProducts(page, filterName) {
-    try {
-      // Pass category context to page evaluation
-      const categoryContext = this.currentCategory || { name: 'unknown', url: '' };
-      
-      const products = await page.evaluate((categoryData) => {
-        // Enhanced product extraction method inspired by structure analysis
-        const allLinks = Array.from(document.querySelectorAll('a[href]'));
-        const productsByUrl = new Map();
-
-        allLinks.forEach(link => {
-          const href = link.href;
-          if (href && href.includes('/products/') && !href.includes('#')) {
-            const text = link.textContent.trim();
-            
-            // Collect all instances of this product URL
-            if (!productsByUrl.has(href)) {
-              productsByUrl.set(href, {
-                url: href,
-                titleCandidates: [],
-                price: null,
-                image: null,
-                metadata: {
-                  containerClasses: [],
-                  linkClasses: []
-                }
-              });
-            }
-            
-            const product = productsByUrl.get(href);
-            
-            // Collect title candidates (non-empty text)
-            if (text && text !== 'Go to product page >' && text.length > 5) {
-              product.titleCandidates.push(text);
-            }
-            
-            // Try to extract price and image from card context
-            const card = link.closest('[class*="product"], .grid-item, .card, [class*="col-span"]');
-            if (card && !product.price) {
-              const priceEl = card.querySelector('[class*="price"], .price, [data-price]');
-              if (priceEl) product.price = priceEl.textContent.trim();
-              
-              const imgEl = card.querySelector('img');
-              if (imgEl) product.image = imgEl.src;
-            }
-            
-            // Collect metadata
-            const container = link.closest('div, li, article');
-            if (container) {
-              product.metadata.containerClasses.push(container.className || '');
-            }
-            product.metadata.linkClasses.push(link.className || '');
-          }
-        });
-
-        // Process results to get best title for each product
-        const foundProducts = [];
-        productsByUrl.forEach((product, url) => {
-          // Choose best title candidate (usually the longest meaningful one)
-          const bestTitle = product.titleCandidates
-            .filter(title => title.length > 10) // Reasonable product title length
-            .sort((a, b) => b.length - a.length)[0] || 
-            product.titleCandidates[0] || '';
-
-          foundProducts.push({
-            url: url,
-            title: bestTitle,
-            price: product.price,
-            image: product.image,
-            // Add category context
-            categoryName: categoryData.name,
-            categoryUrl: categoryData.url,
+  storeFilteredProducts(products, filterName) {
+    // Add category context to products and store with filter metadata
+    const categoryContext = this.currentCategory || { name: 'unknown', url: '' };
+    
+    products.forEach(productUrl => {
+      try {
+        // Apply canonicalized deduplication with feature flag
+        const useCanonical = this.options.features?.canonicalizedDedup === true;
+        const key = useCanonical ? canonicalizeUrl(productUrl) : productUrl;
+        
+        // Track canonicalization stats
+        if (useCanonical && key !== productUrl) {
+          this.stats.canonicalTransformChangedCount++;
+        }
+        
+        if (!this.discoveredProducts.has(key)) {
+          this.discoveredProducts.set(key, {
+            url: productUrl,
+            canonicalUrl: key,
+            categoryName: categoryContext.name,
+            categoryUrl: categoryContext.url,
             capturedAt: new Date().toISOString(),
-            metadata: {
-              titleCandidates: product.titleCandidates.length,
-              containerClasses: [...new Set(product.metadata.containerClasses)],
-              linkClasses: [...new Set(product.metadata.linkClasses)]
-            }
+            filters: [filterName]
           });
-        });
-
-        return foundProducts;
-      }, categoryContext);
-
-      // Add to discovered products with canonicalized deduplication (following zen's guidance)
-      products.forEach(product => {
-        try {
-          // Apply canonicalized deduplication with feature flag
-          const useCanonical = this.options.features?.canonicalizedDedup === true;
-          const key = useCanonical ? canonicalizeUrl(product.url) : product.url;
-          
-          // Track canonicalization stats
-          if (useCanonical && key !== product.url) {
-            this.stats.canonicalTransformChangedCount++;
+        } else {
+          // Track collision (duplicate removed by canonicalization)
+          if (useCanonical && key !== productUrl) {
+            this.stats.canonicalCollisionsCount++;
           }
           
-          // Cache canonical URL on product for potential downstream use
-          product.canonicalUrl = key;
-          
-          if (!this.discoveredProducts.has(key)) {
-            this.discoveredProducts.set(key, {
-              ...product,
-              filters: [filterName]
-            });
-          } else {
-            // Track collision (duplicate removed by canonicalization)
-            if (useCanonical && key !== product.url) {
-              this.stats.canonicalCollisionsCount++;
-            }
-            
-            // Add this filter to existing product
-            const existing = this.discoveredProducts.get(key);
-            if (!existing.filters.includes(filterName)) {
-              existing.filters.push(filterName);
-            }
-          }
-        } catch (error) {
-          // Fallback: use original URL if canonicalization fails
-          this.logger.warn('Canonicalization failed, using original URL', { 
-            url: product.url, 
-            error: error.message 
-          });
-          
-          if (!this.discoveredProducts.has(product.url)) {
-            this.discoveredProducts.set(product.url, {
-              ...product,
-              filters: [filterName]
-            });
-          } else {
-            const existing = this.discoveredProducts.get(product.url);
-            if (!existing.filters.includes(filterName)) {
-              existing.filters.push(filterName);
-            }
+          // Add this filter to existing product
+          const existing = this.discoveredProducts.get(key);
+          if (!existing.filters.includes(filterName)) {
+            existing.filters.push(filterName);
           }
         }
-      });
-
-      return products;
-    } catch (error) {
-      this.logger.warn('Failed to capture products', { error: error.message });
-      return [];
-    }
+      } catch (error) {
+        // Fallback: use original URL if canonicalization fails
+        this.logger.warn('Canonicalization failed, using original URL', { 
+          url: productUrl, 
+          error: error.message 
+        });
+        
+        if (!this.discoveredProducts.has(productUrl)) {
+          this.discoveredProducts.set(productUrl, {
+            url: productUrl,
+            categoryName: categoryContext.name,
+            categoryUrl: categoryContext.url,
+            capturedAt: new Date().toISOString(),
+            filters: [filterName]
+          });
+        } else {
+          const existing = this.discoveredProducts.get(productUrl);
+          if (!existing.filters.includes(filterName)) {
+            existing.filters.push(filterName);
+          }
+        }
+      }
+    });
   }
 
   /**
@@ -549,11 +485,12 @@ class FilterBasedExplorationStrategy {
             await element2.click();
             await new Promise(resolve => setTimeout(resolve, this.options.filterProcessDelay));
 
-            // Capture products with combination
-            const combinedProducts = await this.captureProducts(
-              page, 
-              `${filter1.text} + ${filter2.text}`
-            );
+            // Extract products using ProductDiscoveryProcessor
+            const pageProducts = await this.productDiscoveryProcessor.extractProductsFromPage(page);
+            const combinedProducts = await this.productDiscoveryProcessor.handlePagination(page, 1);
+            
+            // Store products with combination filter metadata
+            this.storeFilteredProducts(combinedProducts, `${filter1.text} + ${filter2.text}`);
 
             this.logger.info('Filter combination applied', {
               filters: [filter1.text, filter2.text],

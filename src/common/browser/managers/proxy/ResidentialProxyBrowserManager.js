@@ -4,7 +4,7 @@
  */
 
 const BrowserManagerBrowserless = require('./BrowserManagerBrowserless');
-const { logger } = require('../utils/logger');
+const { logger } = require('../../../../utils/logger');
 
 class ProxyBrowserManagerResidential extends BrowserManagerBrowserless {
   constructor(options = {}) {

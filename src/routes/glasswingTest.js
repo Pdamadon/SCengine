@@ -5,7 +5,7 @@
 
 const express = require('express');
 const router = express.Router();
-const BrowserManagerBrowserless = require('../common/BrowserManagerBrowserless');
+const BrowserManagerBrowserless = require('../common/browser/managers/BrowserManagerBrowserless');
 const ProductCatalogStrategy = require('../core/collection/strategies/ProductCatalogStrategy');
 const { logger } = require('../utils/logger');
 
